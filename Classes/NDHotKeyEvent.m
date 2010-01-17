@@ -26,7 +26,7 @@
 #import "NDHotKeyEvent.h"
 #import "NDKeyboardLayout.h"
 
-@interface NDHotKeyEvent (Private)
+@interface NDHotKeyEvent ()
 + (NSHashTable *)allHotKeyEvents;
 - (void)addHotKey;
 - (void)removeHotKey;
@@ -800,9 +800,7 @@ NSString * describeHashFunction( NSHashTable * aTable, const void * aHotKeyEntry
 	return [theHotKey description];
 }
 
-@end
-
-@implementation NDHotKeyEvent (Private)
+#pragma mark Private methods
 
 /*
  * +allHotKeyEvents
