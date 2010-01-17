@@ -25,6 +25,7 @@
 
 #import "NDHotKeyControl.h"
 #import "NDHotKeyEvent.h"
+#import "NDKeyboardLayout.h"
 
 /*
  * class implementation NDHotKeyControl
@@ -94,7 +95,7 @@
  */
 - (unichar)character
 {
-	return character;
+	return [[NDKeyboardLayout keyboardLayout] characterForKeyCode:[self keyCode]];
 }
 
 /*
@@ -134,9 +135,8 @@
 	{
 		keyCode = [anEvent keyCode];
 		modifierFlags = theModifierFlags;
-		character = theChar;
 
-		[self setStringValue:stringForKeyCodeAndModifierFlags( keyCode, character, modifierFlags )];
+		[self setStringValue:[[NDKeyboardLayout keyboardLayout] stringForKeyCode:keyCode modifierFlags:modifierFlags]];
 		[self performClick:self];
 		if( ![self stayReadyForEvent] )
 			[self setReadyForHotKeyEvent:NO];
@@ -148,8 +148,7 @@
  */
 - (NDHotKeyEvent *)hotKeyEvent
 {
-	return [NDHotKeyEvent getHotKeyForKeyCode:[self keyCode] character:[self character] modifierFlags:[self modifierFlags]];
-
+	return [NDHotKeyEvent getHotKeyForKeyCode:[self keyCode] modifierFlags:[self modifierFlags]];
 }
 
 - (void)setRequiresModifierKeys:(BOOL)aFlag

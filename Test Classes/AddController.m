@@ -80,7 +80,7 @@
 	NDHotKeyEvent		* theHotKey = nil;
 	if( [self getKeyCombo] )
 	{
-		theHotKey = [NDHotKeyEvent getHotKeyForKeyCode:[self keyCode] character:[self character] modifierFlags:[self modifierFlags]];
+		theHotKey = [NDHotKeyEvent getHotKeyForKeyCode:[self keyCode] modifierFlags:[self modifierFlags]];
 		NSLog(@"GOT KEYS { %u, %c, %u  }", [self keyCode], [self character], [self modifierFlags] );
 	}
 

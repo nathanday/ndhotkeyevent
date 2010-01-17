@@ -27,6 +27,7 @@
 	@header NDHotKeyControl.h
 	@abstract Header file for a subclass of NSTextField for getting hot key combinations from the user.
 	@discussion The <tt>NDHotKeyControl</tt> can be used to get a  <tt>NDHotKeyEvent</tt> for the last key combination pressed by the user.
+	@updated 2010-01-18
  */
 
 #import <AppKit/AppKit.h>
@@ -42,7 +43,6 @@
 {
 @private
 	unsigned short		keyCode;
-	unichar				character;
 	unsigned long		modifierFlags;
 	BOOL				requiresModifierKeys,
 						readyForEvent,

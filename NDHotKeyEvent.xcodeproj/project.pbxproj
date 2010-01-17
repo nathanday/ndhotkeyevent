@@ -12,8 +12,11 @@
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		D803AC731092D4D600D7857E /* AddController.m in Sources */ = {isa = PBXBuildFile; fileRef = D803AC701092D4D600D7857E /* AddController.m */; };
+		D803AC741092D4D600D7857E /* WindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = D803AC721092D4D600D7857E /* WindowController.m */; };
 		D81F4F3C10903C8000A9C32E /* NDHotKeyControl.m in Sources */ = {isa = PBXBuildFile; fileRef = D81F4F3910903C8000A9C32E /* NDHotKeyControl.m */; };
 		D81F4F3D10903C8000A9C32E /* NDHotKeyEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = D81F4F3B10903C8000A9C32E /* NDHotKeyEvent.m */; };
+		D853253F110321A700CB9879 /* NDKeyboardLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = D853253E110321A700CB9879 /* NDKeyboardLayout.m */; };
 		D85BE5381090407C002B3005 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D85BE5371090407C002B3005 /* Carbon.framework */; };
 /* End PBXBuildFile section */
 
@@ -22,18 +25,24 @@
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		1DDD58150DA1D0A300B32029 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		256AC3D80F4B6AC300CF3369 /* NDHotKeyEventAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NDHotKeyEventAppDelegate.h; sourceTree = "<group>"; };
-		256AC3D90F4B6AC300CF3369 /* NDHotKeyEventAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NDHotKeyEventAppDelegate.m; sourceTree = "<group>"; };
+		256AC3D80F4B6AC300CF3369 /* NDHotKeyEventAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NDHotKeyEventAppDelegate.h; path = "Test Classes/NDHotKeyEventAppDelegate.h"; sourceTree = "<group>"; };
+		256AC3D90F4B6AC300CF3369 /* NDHotKeyEventAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NDHotKeyEventAppDelegate.m; path = "Test Classes/NDHotKeyEventAppDelegate.m"; sourceTree = "<group>"; };
 		256AC3F00F4B6AF500CF3369 /* NDHotKeyEvent_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NDHotKeyEvent_Prefix.pch; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		8D1107310486CEB800E47090 /* NDHotKeyEvent-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "NDHotKeyEvent-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* NDHotKeyEvent.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NDHotKeyEvent.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D803AC6F1092D4D600D7857E /* AddController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddController.h; path = "Test Classes/AddController.h"; sourceTree = "<group>"; };
+		D803AC701092D4D600D7857E /* AddController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AddController.m; path = "Test Classes/AddController.m"; sourceTree = "<group>"; };
+		D803AC711092D4D600D7857E /* WindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WindowController.h; path = "Test Classes/WindowController.h"; sourceTree = "<group>"; };
+		D803AC721092D4D600D7857E /* WindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WindowController.m; path = "Test Classes/WindowController.m"; sourceTree = "<group>"; };
 		D81F4F3810903C8000A9C32E /* NDHotKeyControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NDHotKeyControl.h; sourceTree = "<group>"; };
 		D81F4F3910903C8000A9C32E /* NDHotKeyControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NDHotKeyControl.m; sourceTree = "<group>"; };
 		D81F4F3A10903C8000A9C32E /* NDHotKeyEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NDHotKeyEvent.h; sourceTree = "<group>"; };
 		D81F4F3B10903C8000A9C32E /* NDHotKeyEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NDHotKeyEvent.m; sourceTree = "<group>"; };
+		D853253D110321A700CB9879 /* NDKeyboardLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NDKeyboardLayout.h; sourceTree = "<group>"; };
+		D853253E110321A700CB9879 /* NDKeyboardLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NDKeyboardLayout.m; sourceTree = "<group>"; };
 		D85BE5371090407C002B3005 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
@@ -57,6 +66,8 @@
 				D81F4F3910903C8000A9C32E /* NDHotKeyControl.m */,
 				D81F4F3A10903C8000A9C32E /* NDHotKeyEvent.h */,
 				D81F4F3B10903C8000A9C32E /* NDHotKeyEvent.m */,
+				D853253D110321A700CB9879 /* NDKeyboardLayout.h */,
+				D853253E110321A700CB9879 /* NDKeyboardLayout.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -106,6 +117,10 @@
 				256AC3D80F4B6AC300CF3369 /* NDHotKeyEventAppDelegate.h */,
 				256AC3D90F4B6AC300CF3369 /* NDHotKeyEventAppDelegate.m */,
 				256AC3F00F4B6AF500CF3369 /* NDHotKeyEvent_Prefix.pch */,
+				D803AC6F1092D4D600D7857E /* AddController.h */,
+				D803AC701092D4D600D7857E /* AddController.m */,
+				D803AC711092D4D600D7857E /* WindowController.h */,
+				D803AC721092D4D600D7857E /* WindowController.m */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 			);
 			name = "Other Sources";
@@ -189,6 +204,9 @@
 				256AC3DA0F4B6AC300CF3369 /* NDHotKeyEventAppDelegate.m in Sources */,
 				D81F4F3C10903C8000A9C32E /* NDHotKeyControl.m in Sources */,
 				D81F4F3D10903C8000A9C32E /* NDHotKeyEvent.m in Sources */,
+				D803AC731092D4D600D7857E /* AddController.m in Sources */,
+				D803AC741092D4D600D7857E /* WindowController.m in Sources */,
+				D853253F110321A700CB9879 /* NDKeyboardLayout.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
