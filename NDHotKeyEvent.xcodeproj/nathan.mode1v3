@@ -319,7 +319,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>NDHotKeyControl.h</string>
+								<string>NDHotKeyControl.m</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -327,11 +327,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>NDHotKeyControl.h</string>
+										<string>NDHotKeyControl.m</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>D869683C110495AC005F4508</string>
+										<string>D869685211049753005F4508</string>
 										<key>history</key>
 										<array>
 											<string>D85BE5FA109040BE002B3005</string>
@@ -359,8 +359,8 @@
 											<string>D869682A11049568005F4508</string>
 											<string>D869682B11049568005F4508</string>
 											<string>D869682C11049568005F4508</string>
-											<string>D869682D11049568005F4508</string>
-											<string>D869682011049455005F4508</string>
+											<string>D869685011049753005F4508</string>
+											<string>D869685111049753005F4508</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -558,12 +558,13 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>D869685311049753005F4508</string>
 		<string>D869683711049568005F4508</string>
 		<string>D869683811049568005F4508</string>
-		<string>1C78EAAD065D492600B07095</string>
 		<string>1CD10A99069EF8BA00B06720</string>
 		<string>D8039116108DB680007AA146</string>
 		<string>/Users/nathan/Developer/Projects/Libraries/NDHotKeyEvent/NDHotKeyEvent.xcodeproj</string>
+		<string>1C78EAAD065D492600B07095</string>
 	</array>
 	<key>WindowString</key>
 	<string>20 36 1362 842 0 0 1440 878 </string>
@@ -939,7 +940,7 @@
 			<key>WindowToolGUID</key>
 			<string>1C78EAAD065D492600B07095</string>
 			<key>WindowToolIsVisible</key>
-			<false/>
+			<true/>
 		</dict>
 		<dict>
 			<key>Identifier</key>

@@ -73,6 +73,7 @@
 		{
 			[self setReadyForHotKeyEvent:YES];
 			lastReadyForEventSender = aSender;
+			[self setStringValue:@""];
 		}
 		else
 		{
@@ -85,7 +86,7 @@
 /*
  * -keyCode
  */
-- (UInt16)keyCode
+- (unsigned short)keyCode
 {
 	return keyCode;
 }
