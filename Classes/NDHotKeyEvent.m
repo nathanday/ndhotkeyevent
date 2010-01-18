@@ -181,22 +181,30 @@ struct HotKeyMappingEntry
 }
 
 /*
+ * +isEnabledKeyCharacter:modifierFlags:
+ */
++ (BOOL)isEnabledKeyCharacter:(unichar)aKeyCharacter modifierFlags:(NSUInteger)aModifierFlags
+{
+	return [[self findHotKeyForKeyCode:[[NDKeyboardLayout keyboardLayout] keyCodeForCharacter:aKeyCharacter] modifierFlags:aModifierFlags] isEnabled];
+}
+
+/*
  * +isEnabledKeyCode:modifierFlags:
  */
-+ (BOOL)isEnabledKeyCode:(unsigned short)aKeyCode modifierFlags:(NSUInteger)aModifierFlags
++ (BOOL)isEnabledKeyCode:(UInt16)aKeyCode modifierFlags:(NSUInteger)aModifierFlags
 {
 	return [[self findHotKeyForKeyCode:aKeyCode modifierFlags:aModifierFlags] isEnabled];
 }
 
-+ (NDHotKeyEvent *)getHotKeyForKeyCode:(unsigned short)aKeyCode character:(unichar)aChar modifierFlags:(NSUInteger)aModifierFlags
++ (NDHotKeyEvent *)getHotKeyForKeyCharacter:(unichar)aKeyCharacter modifierFlags:(NSUInteger)aModifierFlags
 {
-	return [self getHotKeyForKeyCode:aKeyCode modifierFlags:aModifierFlags];
+	return [self getHotKeyForKeyCode:[[NDKeyboardLayout keyboardLayout] keyCodeForCharacter:aKeyCharacter] modifierFlags:aModifierFlags];
 }
 
 /*
  * +getHotKeyForKeyCode:character:modifierFlags:
  */
-+ (NDHotKeyEvent *)getHotKeyForKeyCode:(unsigned short)aKeyCode modifierFlags:(NSUInteger)aModifierFlags
++ (NDHotKeyEvent *)getHotKeyForKeyCode:(UInt16)aKeyCode modifierFlags:(NSUInteger)aModifierFlags
 {
 	NDHotKeyEvent		* theHotKey = nil;
 
@@ -204,10 +212,15 @@ struct HotKeyMappingEntry
 	return theHotKey ? theHotKey : [self hotKeyWithKeyCode:aKeyCode modifierFlags:aModifierFlags];
 }
 
++ (NDHotKeyEvent *)findHotKeyForKeyCharacter:(unichar)aKeyCharacter modifierFlags:(NSUInteger)aModifierFlags
+{
+	return [self findHotKeyForKeyCode:[[NDKeyboardLayout keyboardLayout] keyCodeForCharacter:aKeyCharacter] modifierFlags:aModifierFlags];
+}
+
 /*
  * +findHotKeyForKeyCode:modifierFlags:
  */
-+ (NDHotKeyEvent *)findHotKeyForKeyCode:(unsigned short)aKeyCode modifierFlags:(NSUInteger)aModifierFlags
++ (NDHotKeyEvent *)findHotKeyForKeyCode:(UInt16)aKeyCode modifierFlags:(NSUInteger)aModifierFlags
 {
 	NDHotKeyEvent		* theFoundHotKeyEvent = nil;
 	NSHashTable			* theHashTable = [NDHotKeyEvent allHotKeyEvents];
@@ -273,33 +286,33 @@ struct HotKeyMappingEntry
 }
 
 /*
- * +hotKeyWithKeyCode:character:modifierFlags:
+ * +hotKeyWithKeyCode:modifierFlags:
  */
-+ (id)hotKeyWithKeyCode:(unsigned short)aKeyCode character:(unichar)aChar modifierFlags:(NSUInteger)aModifierFlags
++ (id)hotKeyWithKeyCharacter:(unichar)aKeyCharacter modifierFlags:(NSUInteger)aModifierFlags
 {
-	return [self hotKeyWithKeyCode:aKeyCode modifierFlags:aModifierFlags target:nil selector:NULL];
+	return [[[self alloc] initWithKeyCode:[[NDKeyboardLayout keyboardLayout] keyCodeForCharacter:aKeyCharacter] modifierFlags:aModifierFlags target:nil selector:(SEL)0] autorelease];
 }
 
 /*
- * +hotKeyWithKeyCode:character:modifierFlags:
+ * +hotKeyWithKeyCode:modifierFlags:
  */
-+ (id)hotKeyWithKeyCode:(unsigned short)aKeyCode modifierFlags:(NSUInteger)aModifierFlags
++ (id)hotKeyWithKeyCode:(UInt16)aKeyCode modifierFlags:(NSUInteger)aModifierFlags
 {
 	return [[[self alloc] initWithKeyCode:aKeyCode modifierFlags:aModifierFlags target:nil selector:(SEL)0] autorelease];
 }
 
 /*
- * +hotKeyWithKeyCode:character:modifierFlags:target:selector:
+ * +hotKeyWithKeyCharacter:modifierFlags:target:selector:
  */
-+ (id)hotKeyWithKeyCode:(unsigned short)aKeyCode character:(unichar)aChar modifierFlags:(NSUInteger)aModifierFlags target:(id)aTarget selector:(SEL)aSelector
++ (id)hotKeyWithKeyCharacter:(unichar)aKeyCharacter modifierFlags:(NSUInteger)aModifierFlags target:(id)aTarget selector:(SEL)aSelector
 {
-	return [[[self alloc] initWithKeyCode:aKeyCode modifierFlags:aModifierFlags target:aTarget selector:aSelector] autorelease];
+	return [[[self alloc] initWithKeyCode:[[NDKeyboardLayout keyboardLayout] keyCodeForCharacter:aKeyCharacter] modifierFlags:aModifierFlags target:aTarget selector:aSelector] autorelease];
 }
 
 /*
  * +hotKeyWithKeyCode:modifierFlags:target:selector:
  */
-+ (id)hotKeyWithKeyCode:(unsigned short)aKeyCode modifierFlags:(NSUInteger)aModifierFlags target:(id)aTarget selector:(SEL)aSelector
++ (id)hotKeyWithKeyCode:(UInt16)aKeyCode modifierFlags:(NSUInteger)aModifierFlags target:(id)aTarget selector:(SEL)aSelector
 {
 	return [[[self alloc] initWithKeyCode:aKeyCode modifierFlags:aModifierFlags target:aTarget selector:aSelector] autorelease];
 }
@@ -348,32 +361,33 @@ struct HotKeyMappingEntry
 }
 
 /*
- * -initWithKeyCode:character:modifierFlags:
+ * -initWithKeyCharacter:modifierFlags:
  */
-- (id)initWithKeyCode:(unsigned short)aKeyCode character:(unichar)aChar modifierFlags:(NSUInteger)aModifierFlags
+- (id)initWithKeyCharacter:(unichar)aKeyCharacter modifierFlags:(NSUInteger)aModifierFlags
 {
-	return [self initWithKeyCode:aKeyCode modifierFlags:aModifierFlags target:nil selector:NULL];
+	return [self initWithKeyCode:[[NDKeyboardLayout keyboardLayout] keyCodeForCharacter:aKeyCharacter] modifierFlags:aModifierFlags target:nil selector:NULL];
 }
 
 /*
  * -initWithKeyCode:modifierFlags:
  */
-- (id)initWithKeyCode:(unsigned short)aKeyCode modifierFlags:(NSUInteger)aModifierFlags
+- (id)initWithKeyCode:(UInt16)aKeyCode modifierFlags:(NSUInteger)aModifierFlags
 {
 	return [self initWithKeyCode:aKeyCode modifierFlags:aModifierFlags target:nil selector:NULL];
 }
 
 /*
- * -initWithKeyCode:character:modifierFlags:target:selector:
+ * -initWithKeyCharacter:character:modifierFlags:target:selector:
  */
-- (id)initWithKeyCode:(unsigned short)aKeyCode character:(unichar)aChar modifierFlags:(NSUInteger)aModifierFlags target:(id)aTarget selector:(SEL)aSelector
+- (id)initWithKeyCharacter:(unichar)aKeyCharacter modifierFlags:(NSUInteger)aModifierFlags target:(id)aTarget selector:(SEL)aSelector
 {
-	return [self initWithKeyCode:aKeyCode modifierFlags:aModifierFlags target:aTarget selector:aSelector];
+	return [self initWithKeyCode:[[NDKeyboardLayout keyboardLayout] keyCodeForCharacter:aKeyCharacter] modifierFlags:aModifierFlags target:aTarget selector:aSelector];
 }
+
 /*
  * -initWithKeyCode:character:modifierFlags:target:selector:
  */
-- (id)initWithKeyCode:(unsigned short)aKeyCode modifierFlags:(NSUInteger)aModifierFlags target:(id)aTarget selector:(SEL)aSelector
+- (id)initWithKeyCode:(UInt16)aKeyCode modifierFlags:(NSUInteger)aModifierFlags target:(id)aTarget selector:(SEL)aSelector
 {
 	if( (self = [super init]) != nil )
 	{
@@ -409,7 +423,7 @@ struct HotKeyMappingEntry
 		else
 		{
 			unichar				theCharacter;
-			[aDecoder decodeValueOfObjCType:@encode(unsigned short) at:&keyCode];
+			[aDecoder decodeValueOfObjCType:@encode(UInt16) at:&keyCode];
 			if( [aDecoder versionForClassName:@"NDHotKeyNoEvent"] == 0 )
 				[aDecoder decodeValueOfObjCType:@encode(unichar) at:&theCharacter];
 			[aDecoder decodeValueOfObjCType:@encode(NSUInteger) at:&modifierFlags];
@@ -436,7 +450,7 @@ struct HotKeyMappingEntry
 	}
 	else
 	{
-		[anEncoder encodeValueOfObjCType:@encode(unsigned short) at:&keyCode];
+		[anEncoder encodeValueOfObjCType:@encode(UInt16) at:&keyCode];
 		[anEncoder encodeValueOfObjCType:@encode(NSUInteger) at:&modifierFlags];
 
 		[anEncoder encodeObject:NSStringFromSelector( selectorReleased )];
@@ -547,6 +561,11 @@ struct HotKeyMappingEntry
 		theResult = NO;
 
 	return theResult;
+}
+
+- (void)setIsEnabled:(BOOL)aFlag
+{
+	[self setEnabled:aFlag];
 }
 
 /*
@@ -671,7 +690,7 @@ struct HotKeyMappingEntry
 /*
  * -keyCode
  */
-- (unsigned short)keyCode
+- (UInt16)keyCode
 {
 	return keyCode;
 }
@@ -941,6 +960,45 @@ static OSStatus switchHotKey( NDHotKeyEvent * self, BOOL aFlag )
 	}
 
 	return theError;
+}
+
+#pragma mark Deprecated Methods
+
++ (NDHotKeyEvent *)getHotKeyForKeyCode:(UInt16)aKeyCode character:(unichar)aChar modifierFlags:(NSUInteger)aModifierFlags
+{
+	return [self getHotKeyForKeyCode:aKeyCode modifierFlags:aModifierFlags];
+}
+
+/*
+ * +hotKeyWithKeyCode:character:modifierFlags:
+ */
++ (id)hotKeyWithKeyCode:(UInt16)aKeyCode character:(unichar)aChar modifierFlags:(NSUInteger)aModifierFlags
+{
+	return [self hotKeyWithKeyCode:aKeyCode modifierFlags:aModifierFlags target:nil selector:NULL];
+}
+
+/*
+ * +hotKeyWithKeyCode:character:modifierFlags:target:selector:
+ */
++ (id)hotKeyWithKeyCode:(UInt16)aKeyCode character:(unichar)aChar modifierFlags:(NSUInteger)aModifierFlags target:(id)aTarget selector:(SEL)aSelector
+{
+	return [[[self alloc] initWithKeyCode:aKeyCode modifierFlags:aModifierFlags target:aTarget selector:aSelector] autorelease];
+}
+
+/*
+ * -initWithKeyCode:character:modifierFlags:
+ */
+- (id)initWithKeyCode:(UInt16)aKeyCode character:(unichar)aChar modifierFlags:(NSUInteger)aModifierFlags
+{
+	return [self initWithKeyCode:aKeyCode modifierFlags:aModifierFlags target:nil selector:NULL];
+}
+
+/*
+ * -initWithKeyCode:character:modifierFlags:target:selector:
+ */
+- (id)initWithKeyCode:(UInt16)aKeyCode character:(unichar)aChar modifierFlags:(NSUInteger)aModifierFlags target:(id)aTarget selector:(SEL)aSelector
+{
+	return [self initWithKeyCode:aKeyCode modifierFlags:aModifierFlags target:aTarget selector:aSelector];
 }
 
 @end

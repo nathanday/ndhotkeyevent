@@ -85,7 +85,7 @@
 /*
  * -keyCode
  */
-- (unsigned short)keyCode
+- (UInt16)keyCode
 {
 	return keyCode;
 }
@@ -101,7 +101,7 @@
 /*
  * -modifierFlags
  */
-- (unsigned long)modifierFlags
+- (NSUInteger)modifierFlags
 {
 	return modifierFlags;
 }
@@ -127,8 +127,8 @@
  */
 - (void)keyDown:(NSEvent *)anEvent
 {
-	unsigned long		theModifierFlags = [anEvent modifierFlags];
-	unichar				theChar = [[anEvent charactersIgnoringModifiers] characterAtIndex:0];
+	NSUInteger		theModifierFlags = [anEvent modifierFlags];
+	unichar			theChar = [[anEvent charactersIgnoringModifiers] characterAtIndex:0];
 	theModifierFlags &= (NSShiftKeyMask|NSControlKeyMask|NSAlternateKeyMask|NSCommandKeyMask);
 
 	if( (theModifierFlags != 0 || !requiresModifierKeys || theChar > 255) && theChar != 0 )

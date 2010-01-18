@@ -42,8 +42,8 @@
 @interface NDHotKeyControl : NSTextField
 {
 @private
-	unsigned short		keyCode;
-	unsigned long		modifierFlags;
+	UInt16				keyCode;
+	NSUInteger			modifierFlags;
 	BOOL				requiresModifierKeys,
 						readyForEvent,
 						stayReadyForEvent;
@@ -55,9 +55,9 @@
 	@method keyCode
 	@abstract Get key code.
 	@discussion Returns the key code for the last key combination the user pressed while the reciever was active.
-	@result A <tt>unsigned short</tt> containing key code.
+	@result A <tt>UInt16</tt> containing key code.
  */
-- (unsigned short)keyCode;
+- (UInt16)keyCode;
 
 /*!
 	@method character
@@ -73,7 +73,7 @@
 	@discussion Returns the modifer flags for the last key combination the user pressed while the reciever was active.
 	@result A <tt>unsigned long</tt> containing modifer flags.
  */
-- (unsigned long)modifierFlags;
+- (NSUInteger)modifierFlags;
 
 /*!
 	@method hotKeyEvent
