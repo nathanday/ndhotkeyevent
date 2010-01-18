@@ -197,7 +197,48 @@
 	<key>Notifications</key>
 	<array/>
 	<key>OpenEditors</key>
-	<array/>
+	<array>
+		<dict>
+			<key>Content</key>
+			<dict>
+				<key>PBXProjectModuleGUID</key>
+				<string>D8F534AD11049F50005B7E6D</string>
+				<key>PBXProjectModuleLabel</key>
+				<string>NSEvent.h</string>
+				<key>PBXSplitModuleInNavigatorKey</key>
+				<dict>
+					<key>Split0</key>
+					<dict>
+						<key>PBXProjectModuleGUID</key>
+						<string>D8F534AE11049F50005B7E6D</string>
+						<key>PBXProjectModuleLabel</key>
+						<string>NSEvent.h</string>
+						<key>_historyCapacity</key>
+						<integer>0</integer>
+						<key>bookmark</key>
+						<string>D8F534D81104A05E005B7E6D</string>
+						<key>history</key>
+						<array>
+							<string>D8F534AF11049F50005B7E6D</string>
+						</array>
+					</dict>
+					<key>SplitCount</key>
+					<string>1</string>
+				</dict>
+				<key>StatusBarVisibility</key>
+				<true/>
+			</dict>
+			<key>Geometry</key>
+			<dict>
+				<key>Frame</key>
+				<string>{{0, 20}, {1035, 777}}</string>
+				<key>PBXModuleWindowStatusBarHidden2</key>
+				<false/>
+				<key>RubberWindowFrame</key>
+				<string>396 -68 1035 818 0 0 1440 878 </string>
+			</dict>
+		</dict>
+	</array>
 	<key>PerspectiveWidths</key>
 	<array>
 		<integer>-1</integer>
@@ -276,7 +317,7 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>3</integer>
+									<integer>5</integer>
 									<integer>1</integer>
 									<integer>0</integer>
 								</array>
@@ -319,7 +360,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>NDHotKeyControl.m</string>
+								<string>NDHotKeyEvent.m</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -327,11 +368,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>NDHotKeyControl.m</string>
+										<string>NDHotKeyEvent.m</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>D869685211049753005F4508</string>
+										<string>D8F534D71104A05E005B7E6D</string>
 										<key>history</key>
 										<array>
 											<string>D85BE5FA109040BE002B3005</string>
@@ -354,13 +395,14 @@
 											<string>D869681311048EE1005F4508</string>
 											<string>D869681C11049455005F4508</string>
 											<string>D869681D11049455005F4508</string>
-											<string>D869681E11049455005F4508</string>
-											<string>D869682911049568005F4508</string>
 											<string>D869682A11049568005F4508</string>
-											<string>D869682B11049568005F4508</string>
-											<string>D869682C11049568005F4508</string>
 											<string>D869685011049753005F4508</string>
-											<string>D869685111049753005F4508</string>
+											<string>D8F534A411049F50005B7E6D</string>
+											<string>D8F534A511049F50005B7E6D</string>
+											<string>D8F534A711049F50005B7E6D</string>
+											<string>D8F534C111049FAA005B7E6D</string>
+											<string>D8F534C211049FAA005B7E6D</string>
+											<string>D8F534D41104A05E005B7E6D</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -372,14 +414,14 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 0}, {1065, 626}}</string>
+								<string>{{0, 0}, {1065, 622}}</string>
 								<key>RubberWindowFrame</key>
 								<string>20 36 1362 842 0 0 1440 878 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
 							<key>Proportion</key>
-							<string>626pt</string>
+							<string>622pt</string>
 						</dict>
 						<dict>
 							<key>ContentConfiguration</key>
@@ -392,14 +434,14 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 631}, {1065, 170}}</string>
+								<string>{{0, 627}, {1065, 174}}</string>
 								<key>RubberWindowFrame</key>
 								<string>20 36 1362 842 0 0 1440 878 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
 							<key>Proportion</key>
-							<string>170pt</string>
+							<string>174pt</string>
 						</dict>
 					</array>
 					<key>Proportion</key>
@@ -418,9 +460,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>D869681711048EE1005F4508</string>
+				<string>D8F534AB11049F50005B7E6D</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>D869681811048EE1005F4508</string>
+				<string>D8F534AC11049F50005B7E6D</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -558,13 +600,14 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>D869685311049753005F4508</string>
-		<string>D869683711049568005F4508</string>
-		<string>D869683811049568005F4508</string>
+		<string>1C530D57069F1CE1000CFCEE</string>
+		<string>D8F534BA11049F50005B7E6D</string>
+		<string>D8F534BB11049F50005B7E6D</string>
 		<string>1CD10A99069EF8BA00B06720</string>
 		<string>D8039116108DB680007AA146</string>
-		<string>/Users/nathan/Developer/Projects/Libraries/NDHotKeyEvent/NDHotKeyEvent.xcodeproj</string>
+		<string>D8F534AD11049F50005B7E6D</string>
 		<string>1C78EAAD065D492600B07095</string>
+		<string>/Users/nathan/Developer/Projects/Libraries/NDHotKeyEvent/NDHotKeyEvent.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
 	<string>20 36 1362 842 0 0 1440 878 </string>
@@ -646,7 +689,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>D8039116108DB680007AA146</string>
-				<string>D869681011048AE1005F4508</string>
+				<string>D8F534B111049F50005B7E6D</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -768,13 +811,13 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1CD10A99069EF8BA00B06720</string>
-				<string>D869682F11049568005F4508</string>
+				<string>D8F534B211049F50005B7E6D</string>
 				<string>1C162984064C10D400B95A72</string>
-				<string>D869683011049568005F4508</string>
-				<string>D869683111049568005F4508</string>
-				<string>D869683211049568005F4508</string>
-				<string>D869683311049568005F4508</string>
-				<string>D869683411049568005F4508</string>
+				<string>D8F534B311049F50005B7E6D</string>
+				<string>D8F534B411049F50005B7E6D</string>
+				<string>D8F534B511049F50005B7E6D</string>
+				<string>D8F534B611049F50005B7E6D</string>
+				<string>D8F534B711049F50005B7E6D</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.debugV3</string>
@@ -864,8 +907,8 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D57069F1CE1000CFCEE</string>
-				<string>D853258711032C5100CB9879</string>
-				<string>D853258811032C5100CB9879</string>
+				<string>D8F534CB1104A041005B7E6D</string>
+				<string>D8F534CC1104A041005B7E6D</string>
 				<string>1CDD528C0622207200134675</string>
 				<string>1CD0528E0623707200166675</string>
 			</array>
@@ -930,7 +973,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C78EAAD065D492600B07095</string>
-				<string>D869683511049568005F4508</string>
+				<string>D8F534B811049F50005B7E6D</string>
 				<string>1C78EAAC065D492600B07095</string>
 			</array>
 			<key>ToolbarConfiguration</key>

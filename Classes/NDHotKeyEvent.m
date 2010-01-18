@@ -73,6 +73,17 @@ static NSUInteger hashValueHashFunction( NSHashTable * aTable, const void * aHot
 static BOOL isEqualHashFunction( NSHashTable * aTable, const void * aFirstHotKeyEvent, const void * aSecondHotKeyEvent);
 static NSString * describeHashFunction( NSHashTable * aTable, const void * aHotKeyEvent );
 
+UInt32 _idForKeyCodeAndModifer( UInt16 aKeyCode, NSUInteger aModFlags )
+{
+	return aKeyCode | aModFlags;
+}
+
+void _getKeyCodeAndModiferForId( UInt32 anId, UInt16 *aKeyCode, NSUInteger *aModFlags )
+{
+	*aModFlags = NSDeviceIndependentModifierFlagsMask&anId;
+	*aKeyCode = (UInt16)anId;
+}
+
 struct HotKeyMappingEntry
 {
 	UInt32				hotKeyId;
@@ -222,6 +233,9 @@ struct HotKeyMappingEntry
  */
 + (NDHotKeyEvent *)findHotKeyForKeyCode:(UInt16)aKeyCode modifierFlags:(NSUInteger)aModifierFlags
 {
+#if 1
+	return [self findHotKeyForId:_idForKeyCodeAndModifer(aKeyCode, aModifierFlags)];
+#else
 	NDHotKeyEvent		* theFoundHotKeyEvent = nil;
 	NSHashTable			* theHashTable = [NDHotKeyEvent allHotKeyEvents];
 
@@ -245,6 +259,7 @@ struct HotKeyMappingEntry
 		NDHotKeyEventUnlock;
 	}
 	return theFoundHotKeyEvent;
+#endif
 }
 
 /*
@@ -509,9 +524,9 @@ struct HotKeyMappingEntry
 			struct HotKeyMappingEntry		theDummyEntry = {[self hotKeyId],nil};
 
 			NDHotKeyEventLock;
-				switchHotKey( self, NO );
 				if( [self retainCount] == 1 )		// check again because it might have changed
 				{
+					switchHotKey( self, NO );
 					id		theHotKeyEvent = NSHashGet( theHashTable, (void*)&theDummyEntry );
 					if( theHotKeyEvent )
 						NSHashRemove( theHashTable, theHotKeyEvent );
@@ -522,12 +537,17 @@ struct HotKeyMappingEntry
 	[super release];
 }
 
+#if 0
 - (void)dealloc
 {
-	if( UnregisterEventHotKey( reference ) != noErr )	// in lock from release
-		NSLog( @"Failed to unregister hot key %@", self );
+	if( reference )
+	{
+		if( UnregisterEventHotKey( reference ) != noErr )	// in lock from release
+			NSLog( @"Failed to unregister hot key %@", self );
+	}
 	[super dealloc];
 }
+#endif
 
 /*
  * -setEnabled:
@@ -713,7 +733,7 @@ struct HotKeyMappingEntry
 
 - (UInt32)hotKeyId
 {
-	return hotKeyId;
+	return _idForKeyCodeAndModifer( [self keyCode], [self modifierFlags] );
 }
 
 /*
@@ -859,13 +879,10 @@ NSString * describeHashFunction( NSHashTable * aTable, const void * aHotKeyEntry
 			keep trying to add the hot key to the table until a unique id is found
 		 */
 		NDHotKeyEventLock;
-		theEntry->hotKeyId = (UInt32)self;		// just using self for an initial id value.
+		theEntry->hotKeyId = [self hotKeyId];
 		theEntry->hotKeyEvent = self;
 
-		while( NSHashInsertIfAbsent( theHashTable, (void*)theEntry ) != NULL )
-			theEntry->hotKeyId++;
-
-		hotKeyId = theEntry->hotKeyId;
+		NSParameterAssert( NSHashInsertIfAbsent( theHashTable, (void*)theEntry ) == NULL );
 		NDHotKeyEventUnlock;
 	}
 }

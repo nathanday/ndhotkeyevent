@@ -88,7 +88,6 @@ extern const OSType			NDHotKeyDefaultSignature;
 	id					target;
 	SEL					selectorReleased,
 						selectorPressed;
-	UInt32				hotKeyId;
 
 	struct
 	{
