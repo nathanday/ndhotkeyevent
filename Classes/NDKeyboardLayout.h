@@ -25,9 +25,8 @@
 
 /*!
 	@header NDKeyboardLayout.h
-	@abstract Header file for 
-	@discussion <#discussion#>
-	@author 
+	@abstract Header file for NDKeyboardLayout
+	@author Nathan Day
  */
 
 #import <Cocoa/Cocoa.h>
@@ -38,18 +37,14 @@ struct ReverseMappingEntry;
 
 /*!
 	@function NDCocoaModifierFlagsForCarbonModifierFlags
-	@abstract ￼<#abstract#>
-	@discussion ￼<#discussion#>
-	@param ￼ ￼<#name#> ￼<#discussion#>
-	@result ￼￼<#discussion#>
+	Convert Carbon modifer flags to Cocoa modifier flags.
+	@param modifierFlags one or more of the flags <tt>shiftKey</tt>, <tt>controlKey</tt>, <tt>optionKey</tt>, <tt>cmdKey</tt>
  */
 NSUInteger NDCocoaModifierFlagsForCarbonModifierFlags( NSUInteger modifierFlags );
 /*!
 	@function NDCarbonModifierFlagsForCocoaModifierFlags
-	@abstract ￼<#abstract#>
-	@discussion ￼<#discussion#>
-	@param ￼ ￼<#name#> ￼<#discussion#>
-	@result ￼￼<#discussion#>
+	Convert Cocoa modifer flags to Carbon modifier flags.
+	@param modifierFlags ￼one or more of the flags <tt>NSShiftKeyMask</tt>, <tt>NSControlKeyMask</tt>, <tt>NSAlternateKeyMask</tt>, <tt>NSCommandKeyMask</tt>
  */
 NSUInteger NDCarbonModifierFlagsForCocoaModifierFlags( NSUInteger modifierFlags );
 
@@ -69,31 +64,34 @@ NSUInteger NDCarbonModifierFlagsForCocoaModifierFlags( NSUInteger modifierFlags 
 
 /*!
 	@method keyboardLayout
-	@abstract Get a keyboard layout for the current keyboard
-	@discussion <#discussion#>
-	@result <#result#>
+	Get a keyboard layout for the current keyboard
  */
 + (id)keyboardLayout;
 /*!
 	@method init
-	 @abstract initialise a keyboard layout for the current keyboard
-	@discussion <#discussion#>
-	@result <#result#>
+	initialise a keyboard layout for the current keyboard
  */
 - (id)init;
 /*!
 	@method initWithInputSource:
 	@abstract initialise a keyboard layout.
-	@discussion <#discussion#>
-	@param sounce <#description#>
-	@result <#result#>
+	@discussion Initialises a KeyboardLayout with an <tt>TISInputSourceRef</tt>, this method is called with the result from <tt>initWithInputSource:TISCopyCurrentKeyboardInputSource()</tt>.
  */
 - (id)initWithInputSource:(TISInputSourceRef)sounce;
 
 /*!
+	@method stringForCharacter:modifierFlags:
+	@abstract Get a string for display purposes. 
+	@discussion <tt>stringForCharacter:modifierFlags:</tt> returns a string that can be displayed to the user, For example command-z would produce &#x2318;Z, shift-T would produce &#x21E7;T.
+	@param character The unmodified character on the keyboard.
+	@param modifierFlags <#description#>
+	@result <#result#>
+ */
+- (NSString*)stringForCharacter:(unichar)character modifierFlags:(UInt32)modifierFlags;
+/*!
 	@method stringForKeyCode:modifierFlags:
 	@abstract Get a string for display purposes. 
-	@discussion <#discussion#>
+	@discussion <tt>stringForKeyCode:modifierFlags:</tt> returns a string that can be displayed to the user. This method is called by <tt>stringForCharacter::modifierFlags</tt> and is problem more useful most of the time.
 	@param keyCode <#description#>
 	@param modifierFlags <#description#>
 	@result <#result#>
@@ -111,7 +109,7 @@ NSUInteger NDCarbonModifierFlagsForCocoaModifierFlags( NSUInteger modifierFlags 
 	@method keyCodeForCharacter:keyPad:
 	@abstract Get the key code for a given key character.
 	@discussion <#discussion#>
-	@param character <#description#>
+	@param character The unmodified character on the keyboard.
 	@param keyPad <#description#>
 	@result <#result#>
  */
@@ -120,7 +118,7 @@ NSUInteger NDCarbonModifierFlagsForCocoaModifierFlags( NSUInteger modifierFlags 
 	@method keyCodeForCharacter:
 	@abstract Get the key code for a given key character.
 	@discussion <#discussion#>
-	@param character <#description#>
+	@param character The unmodified character on the keyboard.
 	@result <#result#>
  */
 - (UInt16)keyCodeForCharacter:(unichar)character;

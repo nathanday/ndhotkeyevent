@@ -350,6 +350,11 @@ static NDKeyboardLayout		* kCurrentKeyboardLayout = nil;
 	[super dealloc];
 }
 
+- (NSString*)stringForCharacter:(unichar)aCharacter modifierFlags:(UInt32)aModifierFlags
+{
+	return [self stringForKeyCode:[self keyCodeForCharacter:aCharacter keyPad:(aModifierFlags&NSNumericPadKeyMask) != 0] modifierFlags:aModifierFlags];
+}
+
 - (NSString*)stringForKeyCode:(UInt16)aKeyCode modifierFlags:(UInt32)aModifierFlags
 {
 	NSString				* theResult = nil;
