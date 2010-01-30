@@ -1,0 +1,5 @@
+NDHotKeyEvent is a set of classes for providing access to carbon hot keys from Cocoa, as well as acting as instances that represent particular hot key combinations, the class object provides some methods for managing all of the hot keys created with NDHotKeyEvent.
+
+NDHotKeyEvent can send messages from both key down events and key up events and there is also a informal protocol to notify the target class when the NDHotKeyEvent instance is going to change target.
+
+There is also a NSControl subclass which can be used for giving users a mean of setting hot keys and a class for translation to and from virtual key codes and characters.
