@@ -104,6 +104,13 @@ extern const OSType			NDHotKeyDefaultSignature;
  */
 + (BOOL)install;
 
+/*!
+	@method uninstall
+	@abstract Unistall the evenr key handler.
+	@discussion This method can be called if you want to remove all hot key permanently, without you application having to quit, you do not need to call this method if you application is about to quite. 
+ */
++ (void)uninstall;
+
 	/*!
 	@method setSignature:
 	@abstract Set the hot key signature for this application

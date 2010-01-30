@@ -84,42 +84,39 @@ NSUInteger NDCarbonModifierFlagsForCocoaModifierFlags( NSUInteger modifierFlags 
 	@abstract Get a string for display purposes. 
 	@discussion <tt>stringForCharacter:modifierFlags:</tt> returns a string that can be displayed to the user, For example command-z would produce &#x2318;Z, shift-T would produce &#x21E7;T.
 	@param character The unmodified character on the keyboard.
-	@param modifierFlags <#description#>
-	@result <#result#>
+	@param modifierFlags Modifier flags <tt>NSControlKeyMask</tt>, <tt>NSAlternateKeyMask</tt>, <tt>NSShiftKeyMask</tt>, <tt>NSCommandKeyMask</tt> and <tt>NSNumericPadKeyMask</tt>.
  */
 - (NSString*)stringForCharacter:(unichar)character modifierFlags:(UInt32)modifierFlags;
 /*!
 	@method stringForKeyCode:modifierFlags:
 	@abstract Get a string for display purposes. 
 	@discussion <tt>stringForKeyCode:modifierFlags:</tt> returns a string that can be displayed to the user. This method is called by <tt>stringForCharacter::modifierFlags</tt> and is problem more useful most of the time.
-	@param keyCode <#description#>
-	@param modifierFlags <#description#>
-	@result <#result#>
+	@param keyCode A value specifying the virtual key code that is to be translated. For ADB keyboards, virtual key codes are in the range from 0 to 127.
+	@param modifierFlags Modifier flags <tt>NSControlKeyMask</tt>, <tt>NSAlternateKeyMask</tt>, <tt>NSShiftKeyMask</tt>, <tt>NSCommandKeyMask</tt> and <tt>NSNumericPadKeyMask</tt>.
  */
 - (NSString*)stringForKeyCode:(UInt16)keyCode modifierFlags:(UInt32)modifierFlags;
 /*!
 	@method characterForKeyCode:
 	@abstract Get the key character for a given key code.
-	@discussion <#discussion#>
-	@param keyCode <#description#>
-	@result <#result#>
+	@discussion The character returned is the unmodified version on the keyboard.
+	@param keyCode A value specifying the virtual key code that is to be translated. For ADB keyboards, virtual key codes are in the range from 0 to 127.
+	@result The character for the unmodified version of the key.
  */
 - (unichar)characterForKeyCode:(UInt16)keyCode;
 /*!
-	@method keyCodeForCharacter:keyPad:
+	@method keyCodeForCharacter:numericPad:
 	@abstract Get the key code for a given key character.
-	@discussion <#discussion#>
+	@discussion The character pass in must  be the unshifter character for the key, for example to get the key code for the '?' on keyboards where you type shift-/ to get '?' you should pass in the character '/" 
 	@param character The unmodified character on the keyboard.
-	@param keyPad <#description#>
-	@result <#result#>
+	@param numericPad For the keycode of a key on the keypad where the same character is also on the main keyboard this flag needs to be <tt>YES</tt>.
  */
-- (UInt16)keyCodeForCharacter:(unichar)character keyPad:(BOOL)keyPad;
+- (UInt16)keyCodeForCharacter:(unichar)character numericPad:(BOOL)numericPad;
 /*!
 	@method keyCodeForCharacter:
 	@abstract Get the key code for a given key character.
-	@discussion <#discussion#>
+	@discussion Calls <tt>keyCodeForCharacter:numericPad:</tt> with the keypad flag set to <tt>NO</tt>
 	@param character The unmodified character on the keyboard.
-	@result <#result#>
+	@result A value specifying the virtual key code that is to be translated. For ADB keyboards, virtual key codes are in the range from 0 to 127.
  */
 - (UInt16)keyCodeForCharacter:(unichar)character;
 

@@ -8,7 +8,8 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface NDHotKeyEventAppDelegate : NSObject <NSApplicationDelegate> {
+@interface NDHotKeyEventAppDelegate : NSObject
+{
     NSWindow *window;
 }
 

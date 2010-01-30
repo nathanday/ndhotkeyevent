@@ -98,9 +98,30 @@
  */
 - (BOOL)requiresModifierKeys;
 
+/*!
+	@method setReadyForHotKeyEvent:
+	@abstract Set up the control to accept input
+	@discussion Setting <tt>readyForHotKeyEvent</tt> to <tt>YES</tt> will disable all Hot Key Events and then prepare <tt>NDHotKeyControl</tt> for keyboard input. Setting <tt>readyForHotKeyEvent</tt> to <tt>NO</tt> will re-enables all Hot Key Events and then stops <tt>NDHotKeyControl</tt> for accepting keyboard input.
+	@param flag <#description#>
+ */
 - (void)setReadyForHotKeyEvent:(BOOL)flag;
+/*!
+	@method readyForHotKeyEvent
+	@abstract Is the control set up to accept input
+	@discussion Returns the current state of <tt>readyForHotKeyEvent</tt> as set by the method <tt>setReadyForHotKeyEvent:</tt>.
+ */
 - (BOOL)readyForHotKeyEvent;
+/*!
+	@method setStayReadyForEvent:
+	@abstract Will the control remain continually active.
+	@discussion By default <tt>NDHotKeyControl</tt> will accept one key and then call <tt>[self setReadyForHotKeyEvent:NO]</tt>, <tt>setStayReadyForEvent:</tt> allows you to change this behaviour so that <tt>NDHotKeyControl</tt> will continue accepting keys until it is manually deactivated.
+ */
 - (void)setStayReadyForEvent:(BOOL)flag;
+/*!
+	@method stayReadyForEvent
+	@abstract Will the control remain continually active.
+	@discussion By default <tt>NDHotKeyControl</tt> will accept one key and then call <tt>[self setReadyForHotKeyEvent:NO]</tt>, if <tt>stayReadyForEvent</tt> returns <tt>YES</tt>, <tt>NDHotKeyControl</tt> will continue accepting keys until it is manually deactivated.
+ */
 - (BOOL)stayReadyForEvent;
 
 

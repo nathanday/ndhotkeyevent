@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
-		256AC3DA0F4B6AC300CF3369 /* NDHotKeyEventAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 256AC3D90F4B6AC300CF3369 /* NDHotKeyEventAppDelegate.m */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -18,15 +17,24 @@
 		D81F4F3D10903C8000A9C32E /* NDHotKeyEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = D81F4F3B10903C8000A9C32E /* NDHotKeyEvent.m */; };
 		D853253F110321A700CB9879 /* NDKeyboardLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = D853253E110321A700CB9879 /* NDKeyboardLayout.m */; };
 		D85BE5381090407C002B3005 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D85BE5371090407C002B3005 /* Carbon.framework */; };
+		D8AD83211109CA96004EBEA2 /* TestSetOne.m in Sources */ = {isa = PBXBuildFile; fileRef = D8AD83201109CA96004EBEA2 /* TestSetOne.m */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D8AD83031109C827004EBEA2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D1107260486CEB800E47090;
+			remoteInfo = NDHotKeyEvent;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		1DDD58150DA1D0A300B32029 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		256AC3D80F4B6AC300CF3369 /* NDHotKeyEventAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NDHotKeyEventAppDelegate.h; path = "Test Classes/NDHotKeyEventAppDelegate.h"; sourceTree = "<group>"; };
-		256AC3D90F4B6AC300CF3369 /* NDHotKeyEventAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NDHotKeyEventAppDelegate.m; path = "Test Classes/NDHotKeyEventAppDelegate.m"; sourceTree = "<group>"; };
 		256AC3F00F4B6AF500CF3369 /* NDHotKeyEvent_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NDHotKeyEvent_Prefix.pch; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
@@ -45,6 +53,10 @@
 		D853253E110321A700CB9879 /* NDKeyboardLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NDKeyboardLayout.m; sourceTree = "<group>"; };
 		D857D9A611060184000009B3 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = /Developer/Library/Frameworks/SenTestingKit.framework; sourceTree = "<absolute>"; };
 		D85BE5371090407C002B3005 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		D8AD82FE1109C727004EBEA2 /* UnitTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UnitTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D8AD82FF1109C727004EBEA2 /* UnitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "UnitTests-Info.plist"; sourceTree = "<group>"; };
+		D8AD831F1109CA96004EBEA2 /* TestSetOne.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestSetOne.h; sourceTree = "<group>"; };
+		D8AD83201109CA96004EBEA2 /* TestSetOne.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSetOne.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +66,13 @@
 			files = (
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				D85BE5381090407C002B3005 /* Carbon.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D8AD82FB1109C727004EBEA2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -96,6 +115,7 @@
 			isa = PBXGroup;
 			children = (
 				8D1107320486CEB800E47090 /* NDHotKeyEvent.app */,
+				D8AD82FE1109C727004EBEA2 /* UnitTests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -108,7 +128,9 @@
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
+				D8AD831E1109CA64004EBEA2 /* UnitTests */,
 				D857D9A611060184000009B3 /* SenTestingKit.framework */,
+				D8AD82FF1109C727004EBEA2 /* UnitTests-Info.plist */,
 			);
 			name = NDHotKeyEvent;
 			sourceTree = "<group>";
@@ -116,8 +138,6 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				256AC3D80F4B6AC300CF3369 /* NDHotKeyEventAppDelegate.h */,
-				256AC3D90F4B6AC300CF3369 /* NDHotKeyEventAppDelegate.m */,
 				256AC3F00F4B6AF500CF3369 /* NDHotKeyEvent_Prefix.pch */,
 				D803AC6F1092D4D600D7857E /* AddController.h */,
 				D803AC701092D4D600D7857E /* AddController.m */,
@@ -147,6 +167,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		D8AD831E1109CA64004EBEA2 /* UnitTests */ = {
+			isa = PBXGroup;
+			children = (
+				D8AD831F1109CA96004EBEA2 /* TestSetOne.h */,
+				D8AD83201109CA96004EBEA2 /* TestSetOne.m */,
+			);
+			path = UnitTests;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -168,6 +197,25 @@
 			productReference = 8D1107320486CEB800E47090 /* NDHotKeyEvent.app */;
 			productType = "com.apple.product-type.application";
 		};
+		D8AD82FD1109C727004EBEA2 /* UnitTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D8AD83021109C728004EBEA2 /* Build configuration list for PBXNativeTarget "UnitTests" */;
+			buildPhases = (
+				D8AD82F91109C727004EBEA2 /* Resources */,
+				D8AD82FA1109C727004EBEA2 /* Sources */,
+				D8AD82FB1109C727004EBEA2 /* Frameworks */,
+				D8AD82FC1109C727004EBEA2 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D8AD83041109C827004EBEA2 /* PBXTargetDependency */,
+			);
+			name = UnitTests;
+			productName = UnitTests;
+			productReference = D8AD82FE1109C727004EBEA2 /* UnitTests.octest */;
+			productType = "com.apple.product-type.bundle";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -181,6 +229,7 @@
 			projectRoot = "";
 			targets = (
 				8D1107260486CEB800E47090 /* NDHotKeyEvent */,
+				D8AD82FD1109C727004EBEA2 /* UnitTests */,
 			);
 		};
 /* End PBXProject section */
@@ -195,7 +244,30 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D8AD82F91109C727004EBEA2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		D8AD82FC1109C727004EBEA2 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		8D11072C0486CEB800E47090 /* Sources */ = {
@@ -203,7 +275,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
-				256AC3DA0F4B6AC300CF3369 /* NDHotKeyEventAppDelegate.m in Sources */,
 				D81F4F3C10903C8000A9C32E /* NDHotKeyControl.m in Sources */,
 				D81F4F3D10903C8000A9C32E /* NDHotKeyEvent.m in Sources */,
 				D803AC731092D4D600D7857E /* AddController.m in Sources */,
@@ -212,7 +283,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D8AD82FA1109C727004EBEA2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D8AD83211109CA96004EBEA2 /* TestSetOne.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D8AD83041109C827004EBEA2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8D1107260486CEB800E47090 /* NDHotKeyEvent */;
+			targetProxy = D8AD83031109C827004EBEA2 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		089C165CFE840E0CC02AAC07 /* InfoPlist.strings */ = {
@@ -246,13 +333,14 @@
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_ENABLE_OBJC_GC = supported;
+				GCC_ENABLE_OBJC_GC = unsupported;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = NDHotKeyEvent_Prefix.pch;
 				INFOPLIST_FILE = "NDHotKeyEvent-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				PRODUCT_NAME = NDHotKeyEvent;
 			};
 			name = Debug;
@@ -267,12 +355,13 @@
 					"\"$(SDKROOT)$(DEVELOPER_FRAMEWORKS_DIR)\"",
 					"\"$(DEVELOPER_FRAMEWORKS_DIR)\"",
 				);
-				GCC_ENABLE_OBJC_GC = supported;
+				GCC_ENABLE_OBJC_GC = unsupported;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = NDHotKeyEvent_Prefix.pch;
 				INFOPLIST_FILE = "NDHotKeyEvent-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				PRODUCT_NAME = NDHotKeyEvent;
 			};
 			name = Release;
@@ -303,6 +392,66 @@
 			};
 			name = Release;
 		};
+		D8AD83001109C728004EBEA2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_LOADER = "$(CONFIGURATION_BUILD_DIR)/NDHotKeyEvent.app/Contents/MacOS/NDHotKeyEvent";
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
+				INFOPLIST_FILE = "UnitTests-Info.plist";
+				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					SenTestingKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = UnitTests;
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		D8AD83011109C728004EBEA2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_LOADER = "$(CONFIGURATION_BUILD_DIR)/NDHotKeyEvent.app/Contents/MacOS/NDHotKeyEvent";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
+				INFOPLIST_FILE = "UnitTests-Info.plist";
+				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					SenTestingKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = UnitTests;
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = octest;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -320,6 +469,15 @@
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,
 				C01FCF5008A954540054247B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D8AD83021109C728004EBEA2 /* Build configuration list for PBXNativeTarget "UnitTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D8AD83001109C728004EBEA2 /* Debug */,
+				D8AD83011109C728004EBEA2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

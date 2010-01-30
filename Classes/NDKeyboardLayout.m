@@ -119,7 +119,7 @@ static int _reverseMappingEntryCmpFunc( const void * a, const void * b )
 {
 	struct ReverseMappingEntry		* theA = (struct ReverseMappingEntry*)a,
 									* theB = (struct ReverseMappingEntry*)b;
-	return theA->character != theB->character ? theA->character - theB->character : theA->keypad - theA->keypad;
+	return theA->character != theB->character ? theA->character - theB->character : theA->keypad - theB->keypad;
 }
 
 static struct ReverseMappingEntry * _searchreverseMapping( struct ReverseMappingEntry * aMapping, NSUInteger aLength, struct ReverseMappingEntry * aSearchValue )
@@ -352,7 +352,7 @@ static NDKeyboardLayout		* kCurrentKeyboardLayout = nil;
 
 - (NSString*)stringForCharacter:(unichar)aCharacter modifierFlags:(UInt32)aModifierFlags
 {
-	return [self stringForKeyCode:[self keyCodeForCharacter:aCharacter keyPad:(aModifierFlags&NSNumericPadKeyMask) != 0] modifierFlags:aModifierFlags];
+	return [self stringForKeyCode:[self keyCodeForCharacter:aCharacter numericPad:(aModifierFlags&NSNumericPadKeyMask) != 0] modifierFlags:aModifierFlags];
 }
 
 - (NSString*)stringForKeyCode:(UInt16)aKeyCode modifierFlags:(UInt32)aModifierFlags
@@ -426,12 +426,12 @@ static NDKeyboardLayout		* kCurrentKeyboardLayout = nil;
 
 - (UInt16)keyCodeForCharacter:(unichar)aCharacter
 {
-	return [self keyCodeForCharacter:aCharacter keyPad:NO];
+	return [self keyCodeForCharacter:aCharacter numericPad:NO];
 }
 
-- (UInt16)keyCodeForCharacter:(unichar)aCharacter keyPad:(BOOL)aKeyPad
+- (UInt16)keyCodeForCharacter:(unichar)aCharacter numericPad:(BOOL)aNumericPad
 {
-	struct ReverseMappingEntry	theSearchValue = { tolower(aCharacter), aKeyPad, 0 };
+	struct ReverseMappingEntry	theSearchValue = { tolower(aCharacter), aNumericPad, 0 };
 	struct ReverseMappingEntry	* theEntry = NULL;
 	if( mappings == NULL )
 		[self generateMappings];
