@@ -134,10 +134,14 @@
 
 	if( (theModifierFlags != 0 || !requiresModifierKeys || theChar > 255) && theChar != 0 )
 	{
+		NDKeyboardLayout		* theKeyboardLayout = [NDKeyboardLayout keyboardLayout];
+
+		NSParameterAssert( theKeyboardLayout != nil );
+
 		keyCode = [anEvent keyCode];
 		modifierFlags = theModifierFlags;
 
-		[self setStringValue:[[NDKeyboardLayout keyboardLayout] stringForKeyCode:keyCode modifierFlags:modifierFlags]];
+		[self setStringValue:[theKeyboardLayout stringForKeyCode:keyCode modifierFlags:modifierFlags]];
 		[self performClick:self];
 		if( ![self stayReadyForEvent] )
 			[self setReadyForHotKeyEvent:NO];

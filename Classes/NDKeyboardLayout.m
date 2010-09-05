@@ -24,6 +24,7 @@
  */
 
 #import "NDKeyboardLayout.h"
+#include <libkern/OSAtomic.h>
 
 struct ReverseMappingEntry
 {
@@ -230,7 +231,7 @@ NSUInteger NDCarbonModifierFlagsForCocoaModifierFlags( NSUInteger aModifierFlags
 - (const UCKeyboardLayout *)keyboardLayout;
 @end
 
-static NDKeyboardLayout		* kCurrentKeyboardLayout = nil;
+static volatile NDKeyboardLayout		* kCurrentKeyboardLayout = nil;
 
 @implementation NDKeyboardLayout
 
@@ -248,15 +249,15 @@ static NDKeyboardLayout		* kCurrentKeyboardLayout = nil;
 		UniCharCount	theLength = 0;
 
 		if( UCKeyTranslate( [self keyboardLayout],
-						   i,
-						   kUCKeyActionDisplay,
-						   0,
-						   LMGetKbdType(),
-						   kUCKeyTranslateNoDeadKeysBit,
-						   &theDeadKeyState,
-						   1,
-						   &theLength,
-						   &mappings[numberOfMappings].character ) == noErr && theLength > 0 && isprint(mappings[numberOfMappings].character) )
+							   i,
+							   kUCKeyActionDisplay,
+							   0,
+							   LMGetKbdType(),
+							   kUCKeyTranslateNoDeadKeysBit,
+							   &theDeadKeyState,
+							   1,
+							   &theLength,
+							   &mappings[numberOfMappings].character ) == noErr && theLength > 0 && isprint(mappings[numberOfMappings].character) )
 		{
 			mappings[numberOfMappings].keyCode = i;
 			numberOfMappings++;
@@ -311,17 +312,22 @@ static NDKeyboardLayout		* kCurrentKeyboardLayout = nil;
 + (id)keyboardLayout
 {
 	if( kCurrentKeyboardLayout == nil )
-		kCurrentKeyboardLayout = [[[self alloc] init] autorelease];
+		[[self alloc] init];
 		
 	return kCurrentKeyboardLayout;
 }
 
 - (id)init
 {
-	if( kCurrentKeyboardLayout != nil )
-		[self release];
+	if( kCurrentKeyboardLayout == nil )
+	{
+		self = [self initWithInputSource:TISCopyCurrentKeyboardInputSource()];
+		if( !OSAtomicCompareAndSwapPtrBarrier( nil, self, (void**)&kCurrentKeyboardLayout ) )
+			[self release];
+	}
 	else
-		kCurrentKeyboardLayout = [[self initWithInputSource:TISCopyCurrentKeyboardInputSource()] retain];
+		[self release];
+
 	return kCurrentKeyboardLayout;
 }
 
@@ -331,7 +337,7 @@ static NDKeyboardLayout		* kCurrentKeyboardLayout = nil;
 	{
 		if( aSounce != NULL )
 		{
-			keyboardLayoutData = (CFDataRef)TISGetInputSourceProperty(aSounce, kTISPropertyUnicodeKeyLayoutData);
+			keyboardLayoutData = (CFDataRef)CFMakeCollectable(TISGetInputSourceProperty(aSounce, kTISPropertyUnicodeKeyLayoutData));
 			CFRetain( keyboardLayoutData );
 		}
 		else
@@ -345,8 +351,10 @@ static NDKeyboardLayout		* kCurrentKeyboardLayout = nil;
 
 - (void)dealloc
 {
-	free( (void*)mappings );
-	CFRelease( keyboardLayoutData );
+	if( mappings != NULL )
+		free( (void*)mappings );
+	if( keyboardLayoutData != NULL )
+		CFRelease( keyboardLayoutData );
 	[super dealloc];
 }
 
