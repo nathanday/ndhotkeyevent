@@ -276,6 +276,8 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
+									<integer>7</integer>
+									<integer>1</integer>
 									<integer>0</integer>
 								</array>
 							</array>
@@ -317,7 +319,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>NDHotKeyEvent.m</string>
+								<string>NDKeyboardLayout.m</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -325,11 +327,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>NDHotKeyEvent.m</string>
+										<string>NDKeyboardLayout.m</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>D88BEEC81233C8360040C424</string>
+										<string>D83DFA591236845900F3626C</string>
 										<key>history</key>
 										<array>
 											<string>D85BE5FA109040BE002B3005</string>
@@ -364,14 +366,14 @@
 											<string>D89EB7061233713D00C184D9</string>
 											<string>D88BECC81233B23F0040C424</string>
 											<string>D88BED1F1233B4ED0040C424</string>
-											<string>D88BED261233B57C0040C424</string>
 											<string>D88BEEA51233B9A00040C424</string>
 											<string>D88BEEA61233B9A00040C424</string>
 											<string>D88BEEA71233B9A00040C424</string>
 											<string>D88BEEA81233B9A00040C424</string>
 											<string>D88BEEA91233B9A00040C424</string>
 											<string>D88BEEB71233B9D20040C424</string>
-											<string>D88BEEBE1233C1DE0040C424</string>
+											<string>D83DFA561236845900F3626C</string>
+											<string>D83DFA571236845900F3626C</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -383,14 +385,14 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 0}, {1057, 644}}</string>
+								<string>{{0, 0}, {1057, 640}}</string>
 								<key>RubberWindowFrame</key>
 								<string>7 42 1354 836 0 0 1440 878 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
 							<key>Proportion</key>
-							<string>644pt</string>
+							<string>640pt</string>
 						</dict>
 						<dict>
 							<key>ContentConfiguration</key>
@@ -403,14 +405,14 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 649}, {1057, 146}}</string>
+								<string>{{0, 645}, {1057, 150}}</string>
 								<key>RubberWindowFrame</key>
 								<string>7 42 1354 836 0 0 1440 878 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
 							<key>Proportion</key>
-							<string>146pt</string>
+							<string>150pt</string>
 						</dict>
 					</array>
 					<key>Proportion</key>
@@ -429,9 +431,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>D88BECCD1233B23F0040C424</string>
+				<string>D83DFA4212367A2200F3626C</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>D88BECCE1233B23F0040C424</string>
+				<string>D83DFA4312367A2200F3626C</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -569,11 +571,11 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>D88BECD81233B23F0040C424</string>
-		<string>D88BECD91233B23F0040C424</string>
-		<string>1C78EAAD065D492600B07095</string>
+		<string>D83DFA511236838800F3626C</string>
+		<string>D83DFA521236838800F3626C</string>
 		<string>1CD10A99069EF8BA00B06720</string>
 		<string>D8039116108DB680007AA146</string>
+		<string>1C78EAAD065D492600B07095</string>
 		<string>/Users/nathan/Developer/Projects/Libraries/NDHotKeyEvent/NDHotKeyEvent.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
@@ -598,7 +600,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CD0528F0623707200166675</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>NDHotKeyEvent.m</string>
+								<string></string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>
@@ -615,8 +617,6 @@
 							<string>441pt</string>
 						</dict>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -656,7 +656,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>D8039116108DB680007AA146</string>
-				<string>D88BECCF1233B23F0040C424</string>
+				<string>D83DFA4412367A2200F3626C</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -778,13 +778,13 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1CD10A99069EF8BA00B06720</string>
-				<string>D88BECD01233B23F0040C424</string>
+				<string>D83DFA491236838800F3626C</string>
 				<string>1C162984064C10D400B95A72</string>
-				<string>D88BECD11233B23F0040C424</string>
-				<string>D88BECD21233B23F0040C424</string>
-				<string>D88BECD31233B23F0040C424</string>
-				<string>D88BECD41233B23F0040C424</string>
-				<string>D88BECD51233B23F0040C424</string>
+				<string>D83DFA4A1236838800F3626C</string>
+				<string>D83DFA4B1236838800F3626C</string>
+				<string>D83DFA4C1236838800F3626C</string>
+				<string>D83DFA4D1236838800F3626C</string>
+				<string>D83DFA4E1236838800F3626C</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.debugV3</string>
@@ -940,7 +940,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C78EAAD065D492600B07095</string>
-				<string>D88BECD61233B23F0040C424</string>
+				<string>D83DFA4F1236838800F3626C</string>
 				<string>1C78EAAC065D492600B07095</string>
 			</array>
 			<key>ToolbarConfiguration</key>
@@ -950,7 +950,7 @@
 			<key>WindowToolGUID</key>
 			<string>1C78EAAD065D492600B07095</string>
 			<key>WindowToolIsVisible</key>
-			<false/>
+			<true/>
 		</dict>
 		<dict>
 			<key>Identifier</key>

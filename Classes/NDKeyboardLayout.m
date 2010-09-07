@@ -312,23 +312,21 @@ static volatile NDKeyboardLayout		* kCurrentKeyboardLayout = nil;
 + (id)keyboardLayout
 {
 	if( kCurrentKeyboardLayout == nil )
-		[[self alloc] init];
-		
+	{
+		@synchronized(self)
+		{
+			if( kCurrentKeyboardLayout == nil )
+				kCurrentKeyboardLayout = [[self alloc] initWithInputSource:TISCopyCurrentKeyboardInputSource()];
+		}
+	}
+	
 	return kCurrentKeyboardLayout;
 }
 
 - (id)init
 {
-	if( kCurrentKeyboardLayout == nil )
-	{
-		self = [self initWithInputSource:TISCopyCurrentKeyboardInputSource()];
-		if( !OSAtomicCompareAndSwapPtrBarrier( nil, self, (void**)&kCurrentKeyboardLayout ) )
-			[self release];
-	}
-	else
-		[self release];
-
-	return kCurrentKeyboardLayout;
+	[self release];
+	return [[NDKeyboardLayout keyboardLayout] retain];
 }
 
 - (id)initWithInputSource:(TISInputSourceRef)aSounce
