@@ -368,11 +368,11 @@ static volatile NDKeyboardLayout		* kCurrentKeyboardLayout = nil;
 	
 	if( theEntry != NULL )
 	{
-		unichar		theCharacter[8];
+		unichar		theCharacter[sizeof(theEntry->description)/sizeof(*theEntry->description)+4+1];
 		memset( theCharacter, 0, sizeof(theCharacter) );
 		NSUInteger	thePos = _characterForModifierFlags(theCharacter,aModifierFlags);
-		memcpy( theCharacter+thePos, theEntry->description, 4 );
-		theResult  = [NSString stringWithCharacters:theCharacter length:sizeof(theEntry->description)+thePos];
+		memcpy( theCharacter+thePos, theEntry->description, sizeof(theEntry->description) );
+		theResult = [NSString stringWithCharacters:theCharacter length:sizeof(theEntry->description)/sizeof(*theEntry->description)+thePos];
 	}
 	else
 	{
