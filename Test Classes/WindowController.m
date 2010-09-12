@@ -35,13 +35,17 @@
 - (IBAction)start:(id)aSender
 {
 	start = YES;
-	[allHotKeyReponder makeObjectsPerformSelector:@selector(enable)];
+
+	for( HotKeyReponder * theHotKeyEvent in allHotKeyReponder )
+		[theHotKeyEvent enable];
 }
 
 - (IBAction)stop:(id)aSender
 {
 	start = NO;
-	[allHotKeyReponder makeObjectsPerformSelector:@selector(disable)];
+
+	for( HotKeyReponder * theHotKeyEvent in allHotKeyReponder )
+		[theHotKeyEvent disable];
 }
 
 - (IBAction)allHotKey:(id)aSender
@@ -240,13 +244,13 @@ static char						* eventNames[] = { "No Event", "Pressed Event", "Released Event
 
 - (void)enable
 {
-	if( [hotKey target] == self && [hotKey setEnabled:YES] == NO )
+	if( [hotKey setEnabled:YES] == NO )
 		NSLog(@"Enable Failed");
 }
 
 - (void)disable
 {
-	if( [hotKey target] == self && [hotKey setEnabled:NO] == NO )
+	if( [hotKey setEnabled:NO] == NO )
 		NSLog(@"Disable Failed");
 }
 
@@ -274,7 +278,7 @@ static char						* eventNames[] = { "No Event", "Pressed Event", "Released Event
 
 - (void)keyDown:(NSEvent *)theEvent
 {
-	NSLog( @"Here" );
+	NSLog( @"keyDown:" );
 }
 
 @end

@@ -744,8 +744,8 @@ struct HotKeyMappingEntry
  */
 - (void)performHotKeyReleased
 {
-	NSAssert( target, @"NDHotKeyEvent tried to perfrom release with no target" );
-	
+	NSAssert( target != nil || releasedBlock != nil, @"Release hot key fired without target or release block" );
+
 	currentEventType = NDHotKeyReleasedEvent;
 	if( selectorReleased )
 	{
@@ -766,7 +766,7 @@ struct HotKeyMappingEntry
  */
 - (void)performHotKeyPressed
 {
-	NSAssert( target, @"NDHotKeyEvent tried to perfrom press with no target" );
+	NSAssert( target != nil || pressedBlock != nil, @"Release hot key fired without target or pressed block" );
 
 	currentEventType = NDHotKeyPressedEvent;
 	if( selectorPressed )

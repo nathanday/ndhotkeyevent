@@ -482,6 +482,13 @@ extern const OSType			NDHotKeyDefaultSignature;
 - (BOOL)setTarget:(id)target selector:(SEL)selector;
 
 #ifdef NS_BLOCKS_AVAILABLE
+/*!
+	@method setBlock:
+	@abstract Set the hot key block called when the hot key is released.
+	@discussion Sets a block to be executed on hot key release.
+	@param block The block executed on key release, the block is passed the <tt>NDHotKeyEvent</tt> that represents the event.
+	@result returns <tt>YES</tt> if successful.
+ */
 - (BOOL)setBlock:(void(^)(NDHotKeyEvent*))block;
 #endif
 /*!
@@ -496,6 +503,14 @@ extern const OSType			NDHotKeyDefaultSignature;
 - (BOOL)setTarget:(id)target selectorReleased:(SEL)selectorReleased selectorPressed:(SEL)selectorPressed;
 
 #ifdef NS_BLOCKS_AVAILABLE
+/*!
+	@method setReleasedBlock:pressedBlock:
+	@abstract Set the hot key blocks called when the hot key is pressed and released.
+	@discussion Sets blocks to be executed on hot key released and pressed.
+	@param releasedBlock The block executed on key release, the block is passed the <tt>NDHotKeyEvent</tt> that represents the event.
+	@param pressedBlock The block executed on key pressed, the block is passed the <tt>NDHotKeyEvent</tt> that represents the event.
+	@result returns <tt>YES</tt> if successful.
+ */
 - (BOOL)setReleasedBlock:(void(^)(NDHotKeyEvent*))releasedBlock pressedBlock:(void(^)(NDHotKeyEvent*))pressedBlock;
 #endif
 /*!

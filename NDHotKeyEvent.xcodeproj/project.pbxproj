@@ -155,7 +155,6 @@
 			isa = PBXProject;
 			buildConfigurationList = D8FBCF43123CF87800084E89 /* Build configuration list for PBXProject "NDHotKeyEvent" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
