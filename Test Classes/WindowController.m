@@ -19,6 +19,7 @@
 @end
 
 @implementation WindowController
+@synthesize		useBlocks;
 
 - (void)dealloc
 {
@@ -155,6 +156,11 @@
 	[addController setModifierKeysRequired:[aSender state] == NSOnState];
 }
 
+- (IBAction)useBlocksChanged:(id)aSender
+{
+	self.useBlocks = [aSender state] == NSOnState;
+}
+
 - (IBAction)readyForHotKey:(id)aSender
 {
 }
@@ -171,7 +177,7 @@
 @implementation HotKeyReponder
 
 static unsigned long int		hotKeyReponderCount = 0;
-static char							* eventNames[] = { "No Event", "Pressed Event", "Released Event" };
+static char						* eventNames[] = { "No Event", "Pressed Event", "Released Event" };
 
 + (id)hotKeyReponderWithController:(WindowController *)aController hotKey:(NDHotKeyEvent *)aHotKey
 {
@@ -187,10 +193,29 @@ static char							* eventNames[] = { "No Event", "Pressed Event", "Released Even
 		count = hotKeyReponderCount++;
 
 //		[hotKey setTarget:self selector:@selector(hotKeyFired:)];
-		if( [hotKey setTarget:self selectorReleased:@selector(hotKeyReleased:) selectorPressed:@selector(hotKeyPressed:)] == NO )
+
+		if( ![aController useBlocks] )
 		{
-			[self release];
-			self = nil;
+			if( [hotKey setTarget:self selectorReleased:@selector(hotKeyReleased:) selectorPressed:@selector(hotKeyPressed:)] == NO )
+			{
+				[self release];
+				self = nil;
+			}
+		}
+		else
+		{
+			if( [hotKey setReleasedBlock:^(NDHotKeyEvent * anEvent)
+			{
+				[controller appendText:[NSString stringWithFormat:@"Block: [#%lu] Pressed hot key: %@", count, [aHotKey stringValue]]];
+			}
+							pressedBlock:^(NDHotKeyEvent * anEvent)
+			{
+				[controller appendText:[NSString stringWithFormat:@"Block: [#%lu] Released hot key: %@", count, [aHotKey stringValue]]];
+			}] == NO )
+			{
+				[self release];
+				self = nil;
+			}
 		}
 	}
 

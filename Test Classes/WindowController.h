@@ -11,7 +11,11 @@
 
 	BOOL					start;
 	NSMutableArray			* allHotKeyReponder;
+	BOOL					useBlocks;
 }
+
+@property	BOOL useBlocks;
+
 - (IBAction)clear:(id)sender;
 - (IBAction)start:(id)sender;
 - (IBAction)stop:(id)sender;
@@ -24,6 +28,7 @@
 - (IBAction)disableHotKey:(id)sender;
 
 - (IBAction)modifierKeysRequired:(id)sender;
+- (IBAction)useBlocksChanged:(id)sender;
 
 - (IBAction)readyForHotKey:(id)sender;
 

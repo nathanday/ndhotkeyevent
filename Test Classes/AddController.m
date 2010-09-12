@@ -81,7 +81,7 @@
 	if( [self getKeyCombo] )
 	{
 		theHotKey = [NDHotKeyEvent getHotKeyForKeyCode:[self keyCode] modifierFlags:[self modifierFlags]];
-		NSLog(@"GOT KEYS { %u, %c, %u  }", [self keyCode], [self character], [self modifierFlags] );
+		NSLog(@"GOT KEYS { %u, %c, %lu  }", [self keyCode], [self character], [self modifierFlags] );
 	}
 
 	return theHotKey;
@@ -93,7 +93,7 @@
 	if( [self getKeyCombo] )
 	{
 		theHotKey = [NDHotKeyEvent findHotKeyForKeyCode:[self keyCode] modifierFlags:[self modifierFlags]];
-		NSLog(@"GOT KEYS { %u, %u, }", [self keyCode], [self modifierFlags] );
+		NSLog(@"GOT KEYS { %u, %lu, }", [self keyCode], [self modifierFlags] );
 	}
 
 	return theHotKey;

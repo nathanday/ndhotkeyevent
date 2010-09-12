@@ -81,6 +81,7 @@ enum
  */
 extern const OSType			NDHotKeyDefaultSignature;
 
+@class			NDHotKeyEvent;
 /*!
 	@class NDHotKeyEvent
 	@abstract Class to represent a HotKey
@@ -97,7 +98,10 @@ extern const OSType			NDHotKeyDefaultSignature;
 	id					target;
 	SEL					selectorReleased,
 						selectorPressed;
-
+#ifdef NS_BLOCKS_AVAILABLE
+	void	(^releasedBlock)(NDHotKeyEvent * e);
+	void	(^pressedBlock)(NDHotKeyEvent * e);
+#endif
 	struct
 	{
 		unsigned			individual		: 1;
@@ -404,7 +408,7 @@ extern const OSType			NDHotKeyDefaultSignature;
 
 - (BOOL)setEnabled:(BOOL)flag;
 /*!
-	@method setEnabled:
+	@method setIsEnabled:
 	@abstract Set the hot key enabled or disable.
 	@discussion <tt>setEnabled:</tt> registers or unregisters the recievers hot key combination.
 	@param flag <tt>YES</tt> to enable, <tt>NO</tt> to disable.
@@ -477,6 +481,9 @@ extern const OSType			NDHotKeyDefaultSignature;
  */
 - (BOOL)setTarget:(id)target selector:(SEL)selector;
 
+#ifdef NS_BLOCKS_AVAILABLE
+- (BOOL)setBlock:(void(^)(NDHotKeyEvent*))block;
+#endif
 /*!
 	@method setTarget:selectorReleased:selectorPressed:
 	@abstract Set the hot key target.
@@ -488,6 +495,9 @@ extern const OSType			NDHotKeyDefaultSignature;
  */
 - (BOOL)setTarget:(id)target selectorReleased:(SEL)selectorReleased selectorPressed:(SEL)selectorPressed;
 
+#ifdef NS_BLOCKS_AVAILABLE
+- (BOOL)setReleasedBlock:(void(^)(NDHotKeyEvent*))releasedBlock pressedBlock:(void(^)(NDHotKeyEvent*))pressedBlock;
+#endif
 /*!
 	@method performHotKeyReleased
 	@abstract Invoke the target with the release selector.

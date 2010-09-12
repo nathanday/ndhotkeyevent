@@ -83,12 +83,12 @@ static BOOL isEqualHashFunction( NSHashTable * aTable, const void * aFirstHotKey
 static NSString * describeHashFunction( NSHashTable * aTable, const void * aHotKeyEvent );
 #endif
 
-UInt32 _idForKeyCodeAndModifer( UInt16 aKeyCode, NSUInteger aModFlags )
+static UInt32 _idForKeyCodeAndModifer( UInt16 aKeyCode, NSUInteger aModFlags )
 {
 	return aKeyCode | aModFlags;
 }
 
-void _getKeyCodeAndModiferForId( UInt32 anId, UInt16 *aKeyCode, NSUInteger *aModFlags )
+static void _getKeyCodeAndModiferForId( UInt32 anId, UInt16 *aKeyCode, NSUInteger *aModFlags )
 {
 	*aModFlags = NSDeviceIndependentModifierFlagsMask&anId;
 	*aKeyCode = (UInt16)anId;
@@ -672,32 +672,73 @@ struct HotKeyMappingEntry
 	return [self setTarget:aTarget selectorReleased:aSelector selectorPressed:(SEL)0];
 }
 
+#ifdef NS_BLOCKS_AVAILABLE
+- (BOOL)setBlock:(void(^)(NDHotKeyEvent*))aBlock
+{
+	return [self setReleasedBlock:aBlock pressedBlock:nil];
+}
+#endif
 /*
  * -setTarget:selectorReleased:selectorPressed:
  */
 - (BOOL)setTarget:(id)aTarget selectorReleased:(SEL)aSelectorReleased selectorPressed:(SEL)aSelectorPressed
 {
+	BOOL	theResult = NO;
 	[self setEnabled:NO];
-	if( target && target != aTarget )
+	if( target != nil && target != aTarget )
 	{
-		[self setEnabled:NO];
 		if( ![target respondsToSelector:@selector(targetWillChangeToObject:forHotKeyEvent:)] || [target targetWillChangeToObject:aTarget forHotKeyEvent:self] )
 		{
 			target = aTarget;
-			selectorReleased = aSelectorReleased;
-			selectorPressed = aSelectorPressed;
+			theResult = YES;
 		}
 	}
 	else
 	{
 		target = aTarget;
-		selectorReleased = aSelectorReleased;
-		selectorPressed = aSelectorPressed;
+		theResult = YES;
 	}
 
-	return target == aTarget;		// was change succesful
+	selectorReleased = aSelectorReleased;
+	selectorPressed = aSelectorPressed;
+
+#ifdef NS_BLOCKS_AVAILABLE
+	[releasedBlock release];
+	releasedBlock = nil;
+	[pressedBlock release];
+	pressedBlock = nil;
+#endif
+
+	return theResult;		// was change succesful
 }
 
+#ifdef NS_BLOCKS_AVAILABLE
+- (BOOL)setReleasedBlock:(void(^)(NDHotKeyEvent*))aReleasedBlock pressedBlock:(void(^)(NDHotKeyEvent*))aPressedBlock
+{
+	BOOL	theResult = NO;
+	[self setEnabled:NO];
+	if( ![target respondsToSelector:@selector(targetWillChangeToObject:forHotKeyEvent:)] || [target targetWillChangeToObject:nil forHotKeyEvent:self] )
+	{
+		if( releasedBlock != aReleasedBlock )
+		{
+			[releasedBlock release];
+			releasedBlock = [aReleasedBlock copy];
+		}
+		
+		if( pressedBlock != aPressedBlock )
+		{
+			[pressedBlock release];
+			pressedBlock = [aPressedBlock copy];
+		}
+
+		selectorReleased = (SEL)0;
+		selectorPressed = (SEL)0;
+		theResult = YES;
+	}
+	
+	return theResult;		// was change succesful
+}
+#endif
 /*
  * -performHotKeyReleased
  */
@@ -713,6 +754,10 @@ struct HotKeyMappingEntry
 		else if( [target respondsToSelector:@selector(makeObjectsPerformSelector:withObject:)] )
 			[target makeObjectsPerformSelector:selectorReleased withObject:self];
 	}
+#ifdef NS_BLOCKS_AVAILABLE
+	else if( releasedBlock )
+		releasedBlock(self);
+#endif
 	currentEventType = NDHotKeyNoEvent;
 }
 
@@ -731,6 +776,11 @@ struct HotKeyMappingEntry
 		else if( [target respondsToSelector:@selector(makeObjectsPerformSelector:withObject:)] )
 			[target makeObjectsPerformSelector:selectorPressed withObject:self];
 	}
+#ifdef NS_BLOCKS_AVAILABLE
+	else if( pressedBlock )
+		pressedBlock(self);
+#endif
+
 	currentEventType = NDHotKeyNoEvent;
 }
 
