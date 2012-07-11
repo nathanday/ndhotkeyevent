@@ -314,40 +314,19 @@ NSUInteger NDCarbonModifierFlagsForCocoaModifierFlags( NSUInteger aModifierFlags
 	if( kCurrentKeyboardLayout == nil )
 	{
 		@synchronized(self)
-		{
-			/*
-				TISCopyCurrentKeyboardInputSource can fail so if it does we try find a keyboard by going thru each
-				prefered language and then if that fails try the most recently used ASCII-capable keyboard.
+		{	/*
+				Try different method until we succeed.
 			 */
 			if( kCurrentKeyboardLayout == nil )
-				kCurrentKeyboardLayout = [[self alloc] initWithInputSource:TISCopyCurrentKeyboardInputSource()];
+				kCurrentKeyboardLayout = [[self alloc] initWithInputSource:TISCopyInputMethodKeyboardLayoutOverride()];
 			if( kCurrentKeyboardLayout == nil )
-			{
-				NSArray			* thePreferedLocals = [NSLocale preferredLanguages];
-				for( NSUInteger i = 0, c = [thePreferedLocals count]; kCurrentKeyboardLayout == nil && i < c; i++ )
-					kCurrentKeyboardLayout = [[self alloc] initWithLanguage:[thePreferedLocals objectAtIndex:i]];
-			}
+				kCurrentKeyboardLayout = [[self alloc] initWithInputSource:TISCopyCurrentKeyboardLayoutInputSource()];
 			if( kCurrentKeyboardLayout == nil )
-				kCurrentKeyboardLayout = [self mostRecentlyUsedASCIICapableKeyboardLayout];
+				kCurrentKeyboardLayout = [[self alloc] initWithInputSource:TISCopyCurrentASCIICapableKeyboardLayoutInputSource()];
 		}
 	}
 
 	return kCurrentKeyboardLayout;
-}
-
-+ (id)mostRecentlyUsedASCIICapableKeyboardLayout;
-{
-	static volatile NDKeyboardLayout		* kMostRecentlyUsedASCIICapableKeyboardLayout = nil;
-	if( kMostRecentlyUsedASCIICapableKeyboardLayout == nil )
-	{
-		@synchronized(self)
-		{
-			if( kMostRecentlyUsedASCIICapableKeyboardLayout == nil )
-				kMostRecentlyUsedASCIICapableKeyboardLayout = [[self alloc] initWithInputSource:TISCopyCurrentASCIICapableKeyboardInputSource()];
-		}
-	}
-	
-	return kMostRecentlyUsedASCIICapableKeyboardLayout;
 }
 
 - (id)init
