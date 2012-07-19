@@ -7,23 +7,27 @@
 
 @interface AddController : NSWindowController
 {
-	IBOutlet NDHotKeyControl	* hotKeyControl;
+	IBOutlet NSTextField	* hotKeyControl;
+	IBOutlet NSButtonCell	* shiftCheckBoxButton;
+	IBOutlet NSButtonCell	* optionCheckBoxButton;
+	IBOutlet NSButtonCell	* controlCheckBoxButton;
+	IBOutlet NSButtonCell	* commandCheckBoxButton;
+	IBOutlet NSButton		* numberPadCheckBoxButton;
 
 @private
-	unsigned short		keyCode;
-	unichar				character;
+	unichar				keyCharacter;
 	unsigned long		modifierFlags;
-	BOOL					gotKey;
-	BOOL					modifierKeysRequired;
+	BOOL				gotKey;
+	BOOL				modifierKeysRequired;
 }
 
 - (IBAction)acceptHotKey:(id)sender;
 - (IBAction)cancelHotKey:(id)sender;
-- (IBAction)hotKeyChanged:(id)sender;
+- (IBAction)modifierChanged:(NSButtonCell *)sender;
+
 - (void)setModifierKeysRequired:(BOOL)flag;
 
-- (unsigned short)keyCode;
-- (unichar)character;
+- (unichar)keyCharacter;
 - (unsigned long)modifierFlags;
 
 - (BOOL)getKeyCombo;

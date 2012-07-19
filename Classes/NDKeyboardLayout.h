@@ -35,6 +35,9 @@
 
 struct ReverseMappingEntry;
 
+extern NSString		* const NDKeyboardLayoutSelectedKeyboardInputSourceChangedNotification;
+extern NSString		* const NDKeyboardLayoutPreviousKeyboardLayoutUserInfoKey;
+
 /*!
 	@function NDCocoaModifierFlagsForCarbonModifierFlags
 	Convert Carbon modifer flags to Cocoa modifier flags.
@@ -55,12 +58,6 @@ NSUInteger NDCarbonModifierFlagsForCocoaModifierFlags( NSUInteger modifierFlags 
 	@helps Used by <tt>NDHotKeyEvent</tt>.
  */
 @interface NDKeyboardLayout : NSObject
-{
-@private
-	CFDataRef					keyboardLayoutData;
-	struct ReverseMappingEntry	* mappings;
-	NSUInteger					numberOfMappings;
-}
 
 /*!
 	@method keyboardLayout
@@ -68,11 +65,6 @@ NSUInteger NDCarbonModifierFlagsForCocoaModifierFlags( NSUInteger modifierFlags 
  */
 + (id)keyboardLayout;
 
-/*!
-	@method keyboardLayout
-	Get a keyboard layout for the most recently used ASCII-capable keyboard
- */
-+ (id)mostRecentlyUsedASCIICapableKeyboardLayout;
 /*!
 	@method init
 	initialise a keyboard layout for the current keyboard, if that fails a keyboard layout for one of the languages

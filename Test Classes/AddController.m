@@ -1,13 +1,10 @@
 #import "AddController.h"
 #import "NDHotKeyEvent.h"
-#import "NDHotKeyControl.h"
+#import "NDKeyboardLayout.h"
 
 @implementation AddController
 
-- (IBAction)acceptHotKey:(id)aSender
-{
-	[[NSApplication sharedApplication] stopModal];
-}
+- (IBAction)acceptHotKey:(id)aSender { [[NSApplication sharedApplication] stopModal]; }
 
 - (IBAction)cancelHotKey:(id)aSender
 {
@@ -15,74 +12,76 @@
 	[[NSApplication sharedApplication] stopModal];
 }
 
-- (IBAction)hotKeyChanged:(id)aSender
+- (void)controlTextDidChange:(NSNotification *)aNotification
 {
-	gotKey = YES;
+	NSString		* theString = hotKeyControl.stringValue;
+	if( theString.length > 0 )
+	{
+		keyCharacter = [theString characterAtIndex:theString.length-1];
+		if( islower(keyCharacter) )
+			keyCharacter -= 'a' - 'A';
+		[hotKeyControl setStringValue:[NSString stringWithFormat:@"%c", keyCharacter]];
+		gotKey = YES;
+	}
 }
 
-- (void)setModifierKeysRequired:(BOOL)aFlag
+- (IBAction)modifierChanged:(NSButtonCell *)aSender
 {
-	modifierKeysRequired = aFlag;
+	modifierFlags = 0;
+	if( shiftCheckBoxButton.state == NSOnState )
+		modifierFlags |= NSShiftKeyMask;
+	if( optionCheckBoxButton.state == NSOnState )
+		modifierFlags |= NSAlternateKeyMask;
+	if( controlCheckBoxButton.state == NSOnState )
+		modifierFlags |= NSControlKeyMask;
+	if( commandCheckBoxButton.state == NSOnState )
+		modifierFlags |= NSCommandKeyMask;
+	if( numberPadCheckBoxButton.state == NSOnState )
+		modifierFlags |= NSNumericPadKeyMask;
 }
+
+- (void)setModifierKeysRequired:(BOOL)aFlag { modifierKeysRequired = aFlag; }
 
 - (BOOL)getKeyCombo
 {
 	int					theResponse;
-	NSPanel				* thePanel;
+	NSPanel				* thePanel = nil;
 	NSModalSession		theSession;
 
 	gotKey = NO;
-	thePanel = (NSPanel*)[self window];
+	modifierFlags = 0;
+	shiftCheckBoxButton.state = NSOffState;
+	optionCheckBoxButton.state = NSOffState;
+	controlCheckBoxButton.state = NSOffState;
+	commandCheckBoxButton.state = NSOffState;
+	numberPadCheckBoxButton.state = NSOffState;
+
+	thePanel = (NSPanel*)self.window;
 	NSAssert( thePanel, @"No Panel" );
 
 	[hotKeyControl setStringValue:@""];
-	[hotKeyControl setRequiresModifierKeys:modifierKeysRequired];
 	[thePanel orderFront:self];
 
-	[hotKeyControl setReadyForHotKeyEvent:YES];
-	[hotKeyControl setStayReadyForEvent:YES];
 	theSession = [[NSApplication sharedApplication] beginModalSessionForWindow:thePanel];
 	do
-	{
 		theResponse = [[NSApplication sharedApplication] runModalSession:theSession];
-	}
 	while( theResponse == NSRunContinuesResponse);
-
-	[hotKeyControl setReadyForHotKeyEvent:NO];
 
 	[[NSApplication sharedApplication] endModalSession:theSession];
 	[thePanel orderOut:self];
 
-	keyCode = [hotKeyControl keyCode];
-	character = [hotKeyControl character];
-	modifierFlags = [hotKeyControl modifierFlags];
-
 	return gotKey;
 }
 
-- (unsigned short)keyCode
-{
-	return keyCode;
-}
-
-- (unichar)character
-{
-	return character;
-}
-
-- (unsigned long)modifierFlags
-{
-	return modifierFlags;
-}
+- (unichar)keyCharacter { return keyCharacter; }
+- (unsigned long)modifierFlags { return modifierFlags; }
 
 - (NDHotKeyEvent*)getHotKeyFromUser
 {
 	NDHotKeyEvent		* theHotKey = nil;
+
 	if( [self getKeyCombo] )
-	{
-		theHotKey = [NDHotKeyEvent getHotKeyForKeyCode:[self keyCode] modifierFlags:[self modifierFlags]];
-		NSLog(@"GOT KEYS { %u, %c, %lu  }", [self keyCode], [self character], [self modifierFlags] );
-	}
+		theHotKey = [NDHotKeyEvent getHotKeyForKeyCharacter:[self keyCharacter] modifierFlags:[self modifierFlags]];
 
 	return theHotKey;
 }
@@ -90,11 +89,9 @@
 - (NDHotKeyEvent*)findHotKeyFromUser
 {
 	NDHotKeyEvent		* theHotKey = nil;
+
 	if( [self getKeyCombo] )
-	{
-		theHotKey = [NDHotKeyEvent findHotKeyForKeyCode:[self keyCode] modifierFlags:[self modifierFlags]];
-		NSLog(@"GOT KEYS { %u, %lu, }", [self keyCode], [self modifierFlags] );
-	}
+		theHotKey = [NDHotKeyEvent findHotKeyForKeyCharacter:[self keyCharacter] modifierFlags:[self modifierFlags]];
 
 	return theHotKey;
 }

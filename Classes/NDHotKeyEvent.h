@@ -89,25 +89,6 @@ extern const OSType			NDHotKeyDefaultSignature;
  
  */
 @interface NDHotKeyEvent : NSObject <NSCoding>
-{
-@private
-	EventHotKeyRef		reference;
-	UInt16				keyCode;
-	NSUInteger			modifierFlags;
-	int					currentEventType;
-	id					target;
-	SEL					selectorReleased,
-						selectorPressed;
-#ifdef NS_BLOCKS_AVAILABLE
-	void	(^releasedBlock)(NDHotKeyEvent * e);
-	void	(^pressedBlock)(NDHotKeyEvent * e);
-#endif
-	struct
-	{
-		unsigned			individual		: 1;
-		unsigned			collective		: 1;
-	}						isEnabled;
-}
 
 /*!
 	@method install
@@ -536,12 +517,12 @@ extern const OSType			NDHotKeyDefaultSignature;
 - (UInt16)keyCode;
 
 /*!
-	@method character
+	@method keyCharacter
 	@abstract Get the hot key character.
 	@discussion This is the character for the key code, without modifier keys. The character is for display purposes only and dose not determine the key code.
 	@result A uni code character.
  */
-- (unichar)character;
+- (unichar)keyCharacter;
 
 /*!
 	@method modifierFlags
@@ -570,25 +551,10 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@methodgroup Deprecated Methods
  */
 
-/*!
-	@method getHotKeyForKeyCode:modifierFlags:
- */
 + (NDHotKeyEvent *)getHotKeyForKeyCode:(UInt16)keyCode character:(unichar)aChar modifierFlags:(NSUInteger)modifierFlags DEPRECATED_ATTRIBUTE;
-/*!
-	@method hotKeyWithKeyCode:character:modifierFlags:
- */
 + (id)hotKeyWithKeyCode:(UInt16)keyCode character:(unichar)aChar modifierFlags:(NSUInteger)modifer DEPRECATED_ATTRIBUTE;
-/*!
-	@method hotKeyWithKeyCode:character:modifierFlags:target:selector:
- */
 + (id)hotKeyWithKeyCode:(UInt16)keyCode character:(unichar)aChar modifierFlags:(NSUInteger)modifer target:(id)target selector:(SEL)selector DEPRECATED_ATTRIBUTE;
-/*!
-	@method initWithKeyCode:character:modifierFlags:target:selector:
- */
 - (id)initWithKeyCode:(UInt16)keyCode character:(unichar)aChar modifierFlags:(NSUInteger)modifer target:(id)target selector:(SEL)selector DEPRECATED_ATTRIBUTE;
-/*!
-	@method initWithKeyCode:character:modifierFlags
- */
 - (id)initWithKeyCode:(UInt16)keyCode character:(unichar)aChar modifierFlags:(NSUInteger)modifer DEPRECATED_ATTRIBUTE;
 
 @end

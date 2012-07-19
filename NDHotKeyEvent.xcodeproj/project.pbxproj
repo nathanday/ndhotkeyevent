@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D801A0D515AC39ED007F910F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D801A0D415AC39ED007F910F /* Cocoa.framework */; };
+		D801A0D715AC39F7007F910F /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D801A0D615AC39F7007F910F /* Carbon.framework */; };
 		D87A68BB123CF9930058BA42 /* NDHotKeyControl.m in Sources */ = {isa = PBXBuildFile; fileRef = D87A68B6123CF9930058BA42 /* NDHotKeyControl.m */; };
 		D87A68BC123CF9930058BA42 /* NDHotKeyEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = D87A68B8123CF9930058BA42 /* NDHotKeyEvent.m */; };
 		D87A68BD123CF9930058BA42 /* NDKeyboardLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = D87A68BA123CF9930058BA42 /* NDKeyboardLayout.m */; };
 		D8A87470123CF9C7001DFF80 /* AddController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A8746B123CF9C7001DFF80 /* AddController.m */; };
 		D8A87472123CF9C7001DFF80 /* WindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A8746F123CF9C7001DFF80 /* WindowController.m */; };
-		D8A87475123CFA58001DFF80 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8A87474123CFA58001DFF80 /* Carbon.framework */; };
-		D8FBCF51123CF87800084E89 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8FBCF50123CF87800084E89 /* Cocoa.framework */; };
 		D8FBCF56123CF87800084E89 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D8FBCF54123CF87800084E89 /* InfoPlist.strings */; };
 		D8FBCF58123CF87800084E89 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D8FBCF57123CF87800084E89 /* main.m */; };
 		D8FBCF5B123CF87900084E89 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = D8FBCF59123CF87900084E89 /* MainMenu.xib */; };
@@ -21,6 +21,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D801A0D415AC39ED007F910F /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
+		D801A0D615AC39F7007F910F /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/Carbon.framework; sourceTree = DEVELOPER_DIR; };
 		D87A68B5123CF9930058BA42 /* NDHotKeyControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NDHotKeyControl.h; sourceTree = "<group>"; };
 		D87A68B6123CF9930058BA42 /* NDHotKeyControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NDHotKeyControl.m; sourceTree = "<group>"; };
 		D87A68B7123CF9930058BA42 /* NDHotKeyEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NDHotKeyEvent.h; sourceTree = "<group>"; };
@@ -31,12 +33,10 @@
 		D8A8746B123CF9C7001DFF80 /* AddController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddController.m; sourceTree = "<group>"; };
 		D8A8746E123CF9C7001DFF80 /* WindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WindowController.h; sourceTree = "<group>"; };
 		D8A8746F123CF9C7001DFF80 /* WindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WindowController.m; sourceTree = "<group>"; };
-		D8A87474123CFA58001DFF80 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
 		D8FBCF4D123CF87800084E89 /* NDHotKeyEvent.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NDHotKeyEvent.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		D8FBCF50123CF87800084E89 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		D8FBCF52123CF87800084E89 /* NDHotKeyEvent-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "NDHotKeyEvent-Info.plist"; sourceTree = "<group>"; };
 		D8FBCF53123CF87800084E89 /* NDHotKeyEvent_Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NDHotKeyEvent_Prefix.pch; sourceTree = "<group>"; };
-		D8FBCF55123CF87800084E89 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		D8FBCF55123CF87800084E89 /* en */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		D8FBCF57123CF87800084E89 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		D8FBCF5A123CF87900084E89 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		D8FBCF5D123CF87900084E89 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
@@ -47,8 +47,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D8FBCF51123CF87800084E89 /* Cocoa.framework in Frameworks */,
-				D8A87475123CFA58001DFF80 /* Carbon.framework in Frameworks */,
+				D801A0D515AC39ED007F910F /* Cocoa.framework in Frameworks */,
+				D801A0D715AC39F7007F910F /* Carbon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -114,8 +114,8 @@
 		D8FBCF48123CF87800084E89 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				D8FBCF50123CF87800084E89 /* Cocoa.framework */,
-				D8A87474123CFA58001DFF80 /* Carbon.framework */,
+				D801A0D415AC39ED007F910F /* Cocoa.framework */,
+				D801A0D615AC39F7007F910F /* Carbon.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -153,8 +153,12 @@
 /* Begin PBXProject section */
 		D8FBCF40123CF87800084E89 /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0450;
+			};
 			buildConfigurationList = D8FBCF43123CF87800084E89 /* Build configuration list for PBXProject "NDHotKeyEvent" */;
 			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
@@ -230,6 +234,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				COMBINE_HIDPI_IMAGES = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
@@ -238,8 +243,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
-				PREBINDING = NO;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -247,13 +251,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				COMBINE_HIDPI_IMAGES = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				PREBINDING = NO;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};
@@ -262,6 +266,10 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SYSTEM_APPS_DIR)/Xcode45-DP1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks\"",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_MODEL_TUNING = G5;
@@ -280,6 +288,10 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SYSTEM_APPS_DIR)/Xcode45-DP1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks\"",
+				);
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;

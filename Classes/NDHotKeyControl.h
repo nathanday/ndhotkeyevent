@@ -40,15 +40,6 @@
 	@discussion The <tt>NDHotKeyControl</tt> can be used to get a  <tt>NDHotKeyEvent</tt> for the last key combination pressed by the user.
  */
 @interface NDHotKeyControl : NSTextField
-{
-@private
-	UInt16				keyCode;
-	NSUInteger			modifierFlags;
-	BOOL				requiresModifierKeys,
-						readyForEvent,
-						stayReadyForEvent;
-	id					lastReadyForEventSender;
-}
 
 - (IBAction)readyForHotKeyEventChanged:(id)sender;
 /*!
@@ -60,12 +51,12 @@
 - (UInt16)keyCode;
 
 /*!
-	@method character
+	@method keyCharacter
 	@abstract Get unicode character.
 	@discussion Returns the unicode character for the last key combination the user pressed while the reciever was active.
 	@result A <tt>unichar</tt> containing character.
  */
-- (unichar)character;
+- (unichar)keyCharacter;
 
 /*!
 	@method modifierFlags
