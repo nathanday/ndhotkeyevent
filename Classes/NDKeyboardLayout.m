@@ -324,7 +324,7 @@ void NDKeyboardLayoutNotificationCallback( CFNotificationCenterRef aCenter, void
 
 + (void)initialize
 {
-	CFNotificationCenterAddObserver( CFNotificationCenterGetLocalCenter(),
+	CFNotificationCenterAddObserver( CFNotificationCenterGetDistributedCenter(),
 									(const void *)self,
 									NDKeyboardLayoutNotificationCallback,
 									kTISNotifySelectedKeyboardInputSourceChanged,
