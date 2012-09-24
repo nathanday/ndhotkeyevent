@@ -28,15 +28,6 @@
 #import "NDKeyboardLayout.h"
 
 @interface NDHotKeyControl ()
-{
-@private
-	UInt16				keyCode;
-	NSUInteger			modifierFlags;
-	BOOL				requiresModifierKeys,
-	readyForEvent,
-	stayReadyForEvent;
-	id					lastReadyForEventSender;
-}
 
 @end
 

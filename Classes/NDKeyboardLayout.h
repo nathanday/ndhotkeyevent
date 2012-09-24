@@ -58,6 +58,12 @@ NSUInteger NDCarbonModifierFlagsForCocoaModifierFlags( NSUInteger modifierFlags 
 	@helps Used by <tt>NDHotKeyEvent</tt>.
  */
 @interface NDKeyboardLayout : NSObject
+{
+@private
+	CFDataRef						keyboardLayoutData;
+	struct ReverseMappingEntry		* mappings;
+	NSUInteger						numberOfMappings;
+}
 
 /*!
 	@method keyboardLayout
