@@ -39,6 +39,13 @@ extern NSString		* const NDKeyboardLayoutSelectedKeyboardInputSourceChangedNotif
 extern NSString		* const NDKeyboardLayoutPreviousKeyboardLayoutUserInfoKey;
 
 /*!
+ @function NDStringForModifiers
+ Converts modifiers to their unicode characters
+ @param modifierFlags ￼one or more of the flags <tt>NSShiftKeyMask</tt>, <tt>NSControlKeyMask</tt>, <tt>NSAlternateKeyMask</tt>, <tt>NSCommandKeyMask</tt>
+ */
+NSString *NDStringForModifiers(UInt32 modifierFlags);
+
+/*!
 	@function NDCocoaModifierFlagsForCarbonModifierFlags
 	Convert Carbon modifer flags to Cocoa modifier flags.
 	@param modifierFlags one or more of the flags <tt>shiftKey</tt>, <tt>controlKey</tt>, <tt>optionKey</tt>, <tt>cmdKey</tt>

@@ -194,6 +194,16 @@ static NSUInteger _characterForModifierFlags( unichar aBuff[kBufferSize], UInt32
 }
 
 /*
+ * NDStringForModifiers
+ */
+NSString *NDStringForModifiers(UInt32 aModifierFlags)
+{
+    unichar charBuffer[kBufferSize];
+    NSUInteger length = _characterForModifierFlags(&charBuffer, aModifierFlags);
+    return [NSString stringWithCharacters:charBuffer length:length];
+}
+
+/*
  * NDCocoaModifierFlagsForCarbonModifierFlags()
  */
 NSUInteger NDCocoaModifierFlagsForCarbonModifierFlags( NSUInteger aModifierFlags )
