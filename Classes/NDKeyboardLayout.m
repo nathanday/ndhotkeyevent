@@ -199,7 +199,7 @@ static NSUInteger _characterForModifierFlags( unichar aBuff[kBufferSize], UInt32
 NSString *NDStringForModifiers(UInt32 aModifierFlags)
 {
     unichar charBuffer[kBufferSize];
-    NSUInteger length = _characterForModifierFlags(&charBuffer, aModifierFlags);
+    NSUInteger length = _characterForModifierFlags(charBuffer, aModifierFlags);
     return [NSString stringWithCharacters:charBuffer length:length];
 }
 
