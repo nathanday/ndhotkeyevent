@@ -43,13 +43,22 @@ struct UnmappedEntry
 	unichar		description[4];
 };
 
+/* Those must be kept sorted by keyCode */
 struct UnmappedEntry	unmappedKeys[] =
 {
+    {kVK_Return, 0x24, {0x21A9, '\0', '\0', '\0'}},
+    {kVK_Tab, 0x30, {0x21E5, '\0', '\0', '\0'}},
+    {kVK_Space,        0x31, {0x23B5, '\0', '\0', '\0'}}, // 0x02FD
 	{NSDeleteFunctionKey, 0x33, {0x232B,'\0','\0','\0'}},
+    {kVK_Escape,       0x35, {0x238B, '\0', '\0', '\0'}},
 	{NSF17FunctionKey, 0x40, {'F','1','7','\0'}},
 	{NSClearDisplayFunctionKey, 0x47, {0x2327,'\0','\0','\0'}},
+//    {kVK_VolumeUp, 0x48, {}},
+//    {kVK_VolumeDown, 0x49, {}},
+//    {kVK_Mute, 0x4A, {}},
 	{NSF18FunctionKey, 0x4F, {'F','1','8','\0'}},
 	{NSF19FunctionKey, 0x50, {'F','1','9','\0'}},
+    {NSF20FunctionKey, 0x5A, {'F', '2', '0', '\0'}},
 	{NSF5FunctionKey, 0x60, {'F','5','\0','\0'}},
 	{NSF6FunctionKey, 0x61, {'F','6','\0','\0'}},
 	{NSF7FunctionKey, 0x62, {'F','7','\0','\0'}},
@@ -63,6 +72,7 @@ struct UnmappedEntry	unmappedKeys[] =
 	{NSF10FunctionKey, 0x6D, {'F','1','0','\0'}},
 	{NSF12FunctionKey, 0x6F, {'F','1','2','\0'}},
 	{NSF15FunctionKey, 0x71, {'F','1','5','\0'}},
+    {NSHelpFunctionKey, 0x72, {'H', 'e', 'l', 'p'}},
 	{NSHomeFunctionKey, 0x73, {0x21F1,'\0','\0','\0'}},
 	{NSPageUpFunctionKey, 0x74, {0x21DE,'\0','\0','\0'}},
 	{NSDeleteCharFunctionKey, 0x75, {0x2326,'\0','\0','\0'}},
@@ -74,8 +84,7 @@ struct UnmappedEntry	unmappedKeys[] =
 	{NSLeftArrowFunctionKey, 0x7B, {0x2190,'\0','\0','\0'}},
 	{NSRightArrowFunctionKey, 0x7C, {0x2192,'\0','\0','\0'}},
 	{NSDownArrowFunctionKey, 0x7D, {0x2193,'\0','\0','\0'}},
-	{NSUpArrowFunctionKey, 0x7E, {0x2191,'\0','\0','\0'}}
-//	{NSF20FunctionKey, 0xXXXX},
+	{NSUpArrowFunctionKey, 0x7E, {0x2191,'\0','\0','\0'}},
 //	{NSF21FunctionKey, 0xXXXX},
 //	{NSF22FunctionKey, 0xXXXX},
 //	{NSF23FunctionKey, 0xXXXX},
