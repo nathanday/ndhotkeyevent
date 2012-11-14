@@ -147,7 +147,7 @@ static struct ReverseMappingEntry * _searchreverseMapping( struct ReverseMapping
 				high = aLength - 1,
 				mid,
 				result;
-    
+
     while( low <= high )
 	{
         mid = (low + high)>>1;
@@ -168,7 +168,7 @@ static struct UnmappedEntry * _unmappedEntryForKeyCode( UInt16 aKeyCode )
 				high = sizeof(unmappedKeys)/sizeof(*unmappedKeys) - 1,
 				mid,
 				result;
-    
+
     while( low <= high )
 	{
         mid = (low + high)>>1;
@@ -183,22 +183,30 @@ static struct UnmappedEntry * _unmappedEntryForKeyCode( UInt16 aKeyCode )
     return '\0';
 }
 
-static const size_t			kBufferSize = 4;
+static const size_t			kBufferSize = 7;
 static NSUInteger _characterForModifierFlags( unichar aBuff[kBufferSize], UInt32 aModifierFlags )
 {
 	NSUInteger		thePos = 0;
 	memset( aBuff, 0, kBufferSize );
+
 	if(aModifierFlags & NSControlKeyMask)
 		aBuff[thePos++] = kControlUnicode;
-	
+
 	if(aModifierFlags & NSAlternateKeyMask)
 		aBuff[thePos++] = kOptionUnicode;
-	
+
 	if(aModifierFlags & NSShiftKeyMask)
 		aBuff[thePos++] = kShiftUnicode;
-	
+
 	if(aModifierFlags & NSCommandKeyMask)
 		aBuff[thePos++] = kCommandUnicode;
+
+    if(aModifierFlags & NSFunctionKeyMask) {
+        aBuff[thePos++] = 'F';
+        aBuff[thePos++] = 'n';
+        aBuff[thePos++] = '-';
+    }
+
 	return thePos;
 }
 
