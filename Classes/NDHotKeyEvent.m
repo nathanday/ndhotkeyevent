@@ -506,7 +506,6 @@ struct HotKeyMappingEntry
 	[super release];
 }
 
-#if 0
 - (void)dealloc
 {
 	if( reference )
@@ -514,9 +513,9 @@ struct HotKeyMappingEntry
 		if( UnregisterEventHotKey( reference ) != noErr )	// in lock from release
 			NSLog( @"Failed to unregister hot key %@", self );
 	}
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NDKeyboardLayoutSelectedKeyboardInputSourceChangedNotification object:nil];
 	[super dealloc];
 }
-#endif
 
 - (BOOL)setEnabled:(BOOL)aFlag
 {
