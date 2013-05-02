@@ -765,7 +765,7 @@ NSString * describeHashFunction( NSHashTable * aTable, const void * aHotKeyEntry
 
 - (void)addHotKey
 {
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardLayoutSelectedKeyboardInputSourceChangedNotification:) name:NDKeyboardLayoutSelectedKeyboardInputSourceChangedNotification object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(currentKeyboardLayoutChanged:) name:NDKeyboardLayoutSelectedKeyboardInputSourceChangedNotification object:nil];
 #ifdef NDMapTableClassDefined
 	NSMapTable			* theAllHotKeyEvents = [NDHotKeyEvent allHotKeyEvents];
 #else
@@ -787,7 +787,7 @@ NSString * describeHashFunction( NSHashTable * aTable, const void * aHotKeyEntry
 	}
 }
 
-- (void)keyboardLayoutSelectedKeyboardInputSourceChangedNotification:(NSNotification*)aNotification
+- (void)currentKeyboardLayoutChanged:(NSNotification*)aNotification
 {
 	if( self.isEnabled )		// if enable re-eable using new keyCode
 		switchHotKey( self, YES );
