@@ -144,6 +144,7 @@ struct HotKeyMappingEntry
 	}
 #endif
 #endif
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(currentKeyboardLayoutChanged:) name:NDKeyboardLayoutSelectedKeyboardInputSourceChangedNotification object:nil];
 }
 
 + (void)setSignature:(OSType)aSignature
@@ -762,9 +763,39 @@ NSString * describeHashFunction( NSHashTable * aTable, const void * aHotKeyEntry
 }
 #endif
 
++ (void)currentKeyboardLayoutChanged:(NSNotification *)aNotification
+{
+#ifdef NDMapTableClassDefined
+	NSMapTable			* theAllHotKeyEvents = [NDHotKeyEvent allHotKeyEvents];
+#else
+	NSHashTable			* theAllHotKeyEvents = [NDHotKeyEvent allHotKeyEvents];
+#endif
+
+#ifdef NDMapTableClassDefined
+    NDHotKeyEventLock;
+    for( NDHotKeyEvent * theHotEvent in [theAllHotKeyEvents objectEnumerator] )
+    {
+        switchHotKey( theHotEvent, theHotEvent.isEnabled );
+    }
+    NDHotKeyEventUnlock;
+#else
+    NSHashEnumerator			theEnumerator;
+    struct HotKeyMappingEntry	* theHotKeyMapEntry;
+    NDHotKeyEventLock;
+    theEnumerator =  NSEnumerateHashTable( theAllHotKeyEvents );
+
+    while( (theHotKeyMapEntry = (struct HotKeyMappingEntry*)NSNextHashEnumeratorItem(&theEnumerator) ) )
+    {
+        switchHotKey( theHotKeyMapEntry->hotKeyEvent, theHotKeyMapEntry->hotKeyEvent.isEnabled );
+    }
+
+    NSEndHashTableEnumeration( &theEnumerator );
+    NDHotKeyEventUnlock;
+#endif
+}
+
 - (void)addHotKey
 {
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(currentKeyboardLayoutChanged:) name:NDKeyboardLayoutSelectedKeyboardInputSourceChangedNotification object:nil];
 #ifdef NDMapTableClassDefined
 	NSMapTable			* theAllHotKeyEvents = [NDHotKeyEvent allHotKeyEvents];
 #else
@@ -784,12 +815,6 @@ NSString * describeHashFunction( NSHashTable * aTable, const void * aHotKeyEntry
 #endif
 		NDHotKeyEventUnlock;
 	}
-}
-
-- (void)currentKeyboardLayoutChanged:(NSNotification*)aNotification
-{
-	if( self.isEnabled )		// if enable re-eable using new keyCode
-		switchHotKey( self, YES );
 }
 
 - (void)removeHotKey
