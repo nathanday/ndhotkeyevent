@@ -29,6 +29,8 @@
 NSString		* const NDKeyboardLayoutSelectedKeyboardInputSourceChangedNotification = @"NDKeyboardLayoutSelectedKeyboardInputSourceChanged";
 NSString		* const NDKeyboardLayoutPreviousKeyboardLayoutUserInfoKey = @"NDKeyboardLayoutPreviousKeyboardLayout";
 
+NSString		* const NDKeyboardLayoutEnabledKeyboardInputSourcesChangedNotification = @"NDKeyboardLayoutEnabledKeyboardInputSourcesChanged";
+
 struct ReverseMappingEntry
 {
 	UniChar		character;
@@ -342,11 +344,16 @@ NSUInteger NDCarbonModifierFlagsForCocoaModifierFlags( NSUInteger aModifierFlags
 
 static volatile NDKeyboardLayout		* kCurrentKeyboardLayout = nil;
 
-void NDKeyboardLayoutNotificationCallback( CFNotificationCenterRef aCenter, void * self, CFStringRef aName, const void * anObj, CFDictionaryRef aUserInfo )
+void NDKeyboardLayoutNotificationCallback( CFNotificationCenterRef aCenter, void * observer, CFStringRef aName, const void * anObj, CFDictionaryRef aUserInfo )
 {
-	NSDictionary		* theUserInfo = [NSDictionary dictionaryWithObject:kCurrentKeyboardLayout forKey:NDKeyboardLayoutPreviousKeyboardLayoutUserInfoKey];
-	@synchronized(self) { [kCurrentKeyboardLayout release], kCurrentKeyboardLayout = nil; }
-	[[NSNotificationCenter defaultCenter] postNotificationName:NDKeyboardLayoutSelectedKeyboardInputSourceChangedNotification object:self userInfo:theUserInfo];
+    id observerId = (id)observer;
+    if (CFStringCompare(aName, kTISNotifySelectedKeyboardInputSourceChanged, 0) == 0) {
+        NSDictionary		* theUserInfo = [NSDictionary dictionaryWithObject:kCurrentKeyboardLayout forKey:NDKeyboardLayoutPreviousKeyboardLayoutUserInfoKey];
+        @synchronized(observerId) { [kCurrentKeyboardLayout release], kCurrentKeyboardLayout = nil; }
+        [[NSNotificationCenter defaultCenter] postNotificationName:NDKeyboardLayoutSelectedKeyboardInputSourceChangedNotification object:observerId userInfo:theUserInfo];
+    } else if (CFStringCompare(aName, kTISNotifyEnabledKeyboardInputSourcesChanged, 0) == 0) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:NDKeyboardLayoutSelectedKeyboardInputSourceChangedNotification object:observerId userInfo:nil];
+    }
 }
 
 + (void)initialize
@@ -355,6 +362,14 @@ void NDKeyboardLayoutNotificationCallback( CFNotificationCenterRef aCenter, void
 									(const void *)self,
 									NDKeyboardLayoutNotificationCallback,
 									kTISNotifySelectedKeyboardInputSourceChanged,
+									NULL,
+									CFNotificationSuspensionBehaviorDeliverImmediately
+									);
+
+	CFNotificationCenterAddObserver( CFNotificationCenterGetDistributedCenter(),
+									(const void *)self,
+									NDKeyboardLayoutNotificationCallback,
+									kTISNotifyEnabledKeyboardInputSourcesChanged,
 									NULL,
 									CFNotificationSuspensionBehaviorDeliverImmediately
 									);
