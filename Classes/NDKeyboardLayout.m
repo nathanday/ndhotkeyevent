@@ -191,17 +191,19 @@ static NSUInteger _characterForModifierFlags( unichar aBuff[kBufferSize], UInt32
 	NSUInteger		thePos = 0;
 	memset( aBuff, 0, kBufferSize );
 
-	if(aModifierFlags & NSControlKeyMask)
-		aBuff[thePos++] = kControlUnicode;
+    // Based on menus hotkeys order
 
-	if(aModifierFlags & NSAlternateKeyMask)
-		aBuff[thePos++] = kOptionUnicode;
+	if(aModifierFlags & NSCommandKeyMask)
+		aBuff[thePos++] = kCommandUnicode;
 
 	if(aModifierFlags & NSShiftKeyMask)
 		aBuff[thePos++] = kShiftUnicode;
 
-	if(aModifierFlags & NSCommandKeyMask)
-		aBuff[thePos++] = kCommandUnicode;
+	if(aModifierFlags & NSAlternateKeyMask)
+		aBuff[thePos++] = kOptionUnicode;
+
+	if(aModifierFlags & NSControlKeyMask)
+		aBuff[thePos++] = kControlUnicode;
 
     if(aModifierFlags & NSFunctionKeyMask) {
         aBuff[thePos++] = 'F';
