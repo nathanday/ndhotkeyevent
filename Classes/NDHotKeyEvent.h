@@ -178,7 +178,7 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@param modifierFlags The modifer flags, ( <tt>NSCommandKeyMask</tt>, <tt>NSControlKeyMask</tt>, <tt>NSAlternateKeyMask</tt>, <tt>NSShiftKeyMask</tt>, <tt>NSNumericPadKeyMask</tt> ).
 	@result The <tt>NDHotKeyEvent</tt> obejct or nil if failure.
  */
-+ (NDHotKeyEvent *)getHotKeyForKeyCharacter:(unichar)keyCharacter modifierFlags:(NSUInteger)modifierFlags;
++ (instancetype)getHotKeyForKeyCharacter:(unichar)keyCharacter modifierFlags:(NSUInteger)modifierFlags;
 /*!
 	@method getHotKeyForKeyCode:modifierFlags:
 	@abstract Get an <tt>NDHotKeyEvent</tt>
@@ -187,7 +187,7 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@param modifierFlags The modifer flags, ( <tt>NSCommandKeyMask</tt>, <tt>NSControlKeyMask</tt>, <tt>NSAlternateKeyMask</tt>, <tt>NSShiftKeyMask</tt> ).
 	@result The <tt>NDHotKeyEvent</tt> obejct or nil if failure.
  */
-+ (NDHotKeyEvent *)getHotKeyForKeyCode:(UInt16)keyCode modifierFlags:(NSUInteger)modifierFlags;
++ (instancetype)getHotKeyForKeyCode:(UInt16)keyCode modifierFlags:(NSUInteger)modifierFlags;
 /*!
 	@method findHotKeyForKeyCharacter:modifierFlags:
 	@abstract Find an <tt>NDHotKeyEvent</tt>
@@ -196,7 +196,7 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@param modifierFlags The modifer flags, ( <tt>NSCommandKeyMask</tt>, <tt>NSControlKeyMask</tt>, <tt>NSAlternateKeyMask</tt>, <tt>NSShiftKeyMask</tt>, <tt>NSNumericPadKeyMask</tt> ).
 	@result The <tt>NDHotKeyEvent</tt> obejct or nil if none found.
  */
-+ (NDHotKeyEvent *)findHotKeyForKeyCharacter:(unichar)keyCharacter modifierFlags:(NSUInteger)modifierFlags;
++ (instancetype)findHotKeyForKeyCharacter:(unichar)keyCharacter modifierFlags:(NSUInteger)modifierFlags;
 /*!
 	@method findHotKeyForKeyCode:modifierFlags:
 	@abstract Find an <tt>NDHotKeyEvent</tt>
@@ -205,7 +205,7 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@param modifierFlags The modifer flags, ( <tt>NSCommandKeyMask</tt>, <tt>NSControlKeyMask</tt>, <tt>NSAlternateKeyMask</tt>, <tt>NSShiftKeyMask</tt> ).
 	@result The <tt>NDHotKeyEvent</tt> obejct or nil if none found.
  */
-+ (NDHotKeyEvent *)findHotKeyForKeyCode:(UInt16)keyCode modifierFlags:(NSUInteger)modifierFlags;
++ (instancetype)findHotKeyForKeyCode:(UInt16)keyCode modifierFlags:(NSUInteger)modifierFlags;
 
 /*!
 	@method findHotKeyForId:
@@ -214,7 +214,7 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@param ID The hot key id as returned by <tt>hotKeyId</tt>
 	@result The <tt>NDHotKeyEvent</tt> obejct or nil if none found.
  */
-+ (NDHotKeyEvent *)findHotKeyForId:(UInt32)ID;
++ (instancetype)findHotKeyForId:(UInt32)ID;
 
 /*!
 	@method hotKeyWithEvent:
@@ -223,7 +223,7 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@param event The event generated from the user presssing the desired hot key combination.
 	@result An new <tt>NDHotKeyEvent</tt> or nil if failure.
  */
-+ (id)hotKeyWithEvent:(NSEvent *)event;
++ (instancetype)hotKeyWithEvent:(NSEvent *)event;
 /*!
 	@method hotKeyWithEvent:target:selector:
 	@abstract Get a <tt>NDHotKeyEvent</tt> object.
@@ -233,7 +233,7 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@param selector The selector sent when hot key is released
 	@result An new <tt>NDHotKeyEvent</tt> or nil if failure.
  */
-+ (id)hotKeyWithEvent:(NSEvent *)event target:(id)target selector:(SEL)selector;
++ (instancetype)hotKeyWithEvent:(NSEvent *)event target:(id)target selector:(SEL)selector;
 /*!
 	@method hotKeyWithKeyCharacter:modifierFlags:
 	@abstract Get a <tt>NDHotKeyEvent</tt> object.
@@ -242,7 +242,7 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@param modifierFlags The modifer flags, ( <tt>NSCommandKeyMask</tt>, <tt>NSControlKeyMask</tt>, <tt>NSAlternateKeyMask</tt>, <tt>NSShiftKeyMask</tt>, <tt>NSNumericPadKeyMask</tt> ).
 	@result An new <tt>NDHotKeyEvent</tt> or nil if failure.
  */
-+ (id)hotKeyWithKeyCharacter:(unichar)keyCharacter modifierFlags:(NSUInteger)modifer;
++ (instancetype)hotKeyWithKeyCharacter:(unichar)keyCharacter modifierFlags:(NSUInteger)modifer;
 /*!
 	@method hotKeyWithKeyCode:modifierFlags:
 	@abstract Get a <tt>NDHotKeyEvent</tt> object.
@@ -251,7 +251,7 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@param modifierFlags The modifer flags, ( <tt>NSCommandKeyMask</tt>, <tt>NSControlKeyMask</tt>, <tt>NSAlternateKeyMask</tt>, <tt>NSShiftKeyMask</tt> ).
 	@result An new <tt>NDHotKeyEvent</tt> or nil if failure.
  */
-+ (id)hotKeyWithKeyCode:(UInt16)keyCode modifierFlags:(NSUInteger)modifer;
++ (instancetype)hotKeyWithKeyCode:(UInt16)keyCode modifierFlags:(NSUInteger)modifer;
 
 /*!
 	@method hotKeyWithKeyCharacter:modifierFlags:target:selector:
@@ -263,7 +263,7 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@param selector The selector sent when hot key is released
 	@result A new <tt>NDHotKeyEvent</tt>
  */
-+ (id)hotKeyWithKeyCharacter:(unichar)keyCharacter modifierFlags:(NSUInteger)modifer target:(id)target selector:(SEL)selector;
++ (instancetype)hotKeyWithKeyCharacter:(unichar)keyCharacter modifierFlags:(NSUInteger)modifer target:(id)target selector:(SEL)selector;
 /*!
 	@method hotKeyWithKeyCode:modifierFlags:target:selector:
 	@abstract Get a <tt>NDHotKeyEvent</tt> object.
@@ -274,7 +274,7 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@param selector The selector sent when hot key is released
 	@result A new <tt>NDHotKeyEvent</tt>
  */
-+ (id)hotKeyWithKeyCode:(UInt16)keyCode modifierFlags:(NSUInteger)modifer target:(id)target selector:(SEL)selector;
++ (instancetype)hotKeyWithKeyCode:(UInt16)keyCode modifierFlags:(NSUInteger)modifer target:(id)target selector:(SEL)selector;
 
 /*!
 	@method initWithPropertyList:
@@ -283,7 +283,7 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@param propertyList A property list object
 	@result A initialized <tt>NDHotKeyEvent</tt>
  */
-+ (id)hotKeyWithWithPropertyList:(id)propertyList;
++ (instancetype)hotKeyWithWithPropertyList:(id)propertyList;
 /*!
 	@method initWithEvent:
 	@abstract Initialize a <tt>NDHotKeyEvent</tt> object.
@@ -291,7 +291,7 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@param event The key code used by the keyboard, can vary across hardware.
 	@result A initialized <tt>NDHotKeyEvent</tt>
  */
-- (id)initWithEvent:(NSEvent *)event;
+- (instancetype)initWithEvent:(NSEvent *)event;
 /*!
 	@method initWithEvent:target:selector:
 	@abstract Initialize a <tt>NDHotKeyEvent</tt> object.
@@ -301,7 +301,7 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@param selector The selector sent when hot key is released
 	@result A initialized <tt>NDHotKeyEvent</tt>
  */
-- (id)initWithEvent:(NSEvent *)event target:(id)target selector:(SEL)selector;
+- (instancetype)initWithEvent:(NSEvent *)event target:(id)target selector:(SEL)selector;
 
 /*!
 	@method initWithKeyCode:character:modifierFlags:target:selector:
@@ -313,7 +313,7 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@param selector The selector sent when hot key is released
 	@result A initialized <tt>NDHotKeyEvent</tt>
  */
-- (id)initWithKeyCharacter:(unichar)keyCharacter modifierFlags:(NSUInteger)modifer target:(id)target selector:(SEL)selector;
+- (instancetype)initWithKeyCharacter:(unichar)keyCharacter modifierFlags:(NSUInteger)modifer target:(id)target selector:(SEL)selector;
 /*!
 	@method initWithKeyCode:character:modifierFlags:target:selector:
 	@abstract Initialize a <tt>NDHotKeyEvent</tt> object.
@@ -324,7 +324,7 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@param selector The selector sent when hot key is released
 	@result A initialized <tt>NDHotKeyEvent</tt>
  */
-- (id)initWithKeyCode:(UInt16)keyCode modifierFlags:(NSUInteger)modifer target:(id)target selector:(SEL)selector;
+- (instancetype)initWithKeyCode:(UInt16)keyCode modifierFlags:(NSUInteger)modifer target:(id)target selector:(SEL)selector;
 
 /*!
 	@method initWithKeyCode:character:modifierFlags
@@ -334,7 +334,7 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@param modifierFlags The modifer flags, ( <tt>NSCommandKeyMask</tt>, <tt>NSControlKeyMask</tt>, <tt>NSAlternateKeyMask</tt>, <tt>NSShiftKeyMask</tt>, <tt>NSNumericPadKeyMask</tt> ).
 	@result A initialized <tt>NDHotKeyEvent</tt>
  */
-- (id)initWithKeyCharacter:(unichar)keyCharacter modifierFlags:(NSUInteger)modifer;
+- (instancetype)initWithKeyCharacter:(unichar)keyCharacter modifierFlags:(NSUInteger)modifer;
 /*!
 	@method initWithKeyCode:character:modifierFlags
 	@abstract Initialize a <tt>NDHotKeyEvent</tt> object.
@@ -343,7 +343,7 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@param modifierFlags The modifer flags, ( <tt>NSCommandKeyMask</tt>, <tt>NSControlKeyMask</tt>, <tt>NSAlternateKeyMask</tt>, <tt>NSShiftKeyMask</tt> ).
 	@result A initialized <tt>NDHotKeyEvent</tt>
  */
-- (id)initWithKeyCode:(UInt16)keyCode modifierFlags:(NSUInteger)modifer;
+- (instancetype)initWithKeyCode:(UInt16)keyCode modifierFlags:(NSUInteger)modifer;
 
 /*!
 	@method initWithPropertyList:
@@ -359,7 +359,7 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@param propertyList A property list object
 	@result A initialized <tt>NDHotKeyEvent</tt>
   */
-- (id)initWithPropertyList:(id)propertyList;
+- (instancetype)initWithPropertyList:(id)propertyList;
 /*!
 	@method propertyList
 	@abstract Returns a property list for the reciever.
@@ -390,7 +390,7 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@param decoder A subclass of <tt>NSCoder</tt>
 	@result A initialized <tt>NDHotKeyEvent</tt>
  */
-- (id)initWithCoder:(NSCoder *)decoder;
+- (instancetype)initWithCoder:(NSCoder *)decoder;
 
 /*!
 	@method encodeWithCoder:
@@ -572,11 +572,11 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@methodgroup Deprecated Methods
  */
 
-+ (NDHotKeyEvent *)getHotKeyForKeyCode:(UInt16)keyCode character:(unichar)aChar modifierFlags:(NSUInteger)modifierFlags DEPRECATED_ATTRIBUTE;
-+ (id)hotKeyWithKeyCode:(UInt16)keyCode character:(unichar)aChar modifierFlags:(NSUInteger)modifer DEPRECATED_ATTRIBUTE;
-+ (id)hotKeyWithKeyCode:(UInt16)keyCode character:(unichar)aChar modifierFlags:(NSUInteger)modifer target:(id)target selector:(SEL)selector DEPRECATED_ATTRIBUTE;
-- (id)initWithKeyCode:(UInt16)keyCode character:(unichar)aChar modifierFlags:(NSUInteger)modifer target:(id)target selector:(SEL)selector DEPRECATED_ATTRIBUTE;
-- (id)initWithKeyCode:(UInt16)keyCode character:(unichar)aChar modifierFlags:(NSUInteger)modifer DEPRECATED_ATTRIBUTE;
++ (instancetype)getHotKeyForKeyCode:(UInt16)keyCode character:(unichar)aChar modifierFlags:(NSUInteger)modifierFlags DEPRECATED_ATTRIBUTE;
++ (instancetype)hotKeyWithKeyCode:(UInt16)keyCode character:(unichar)aChar modifierFlags:(NSUInteger)modifer DEPRECATED_ATTRIBUTE;
++ (instancetype)hotKeyWithKeyCode:(UInt16)keyCode character:(unichar)aChar modifierFlags:(NSUInteger)modifer target:(id)target selector:(SEL)selector DEPRECATED_ATTRIBUTE;
+- (instancetype)initWithKeyCode:(UInt16)keyCode character:(unichar)aChar modifierFlags:(NSUInteger)modifer target:(id)target selector:(SEL)selector DEPRECATED_ATTRIBUTE;
+- (instancetype)initWithKeyCode:(UInt16)keyCode character:(unichar)aChar modifierFlags:(NSUInteger)modifer DEPRECATED_ATTRIBUTE;
 
 @end
 

@@ -212,13 +212,13 @@ struct HotKeyMappingEntry
 	return [[self findHotKeyForKeyCode:aKeyCode modifierFlags:aModifierFlags] isEnabled];
 }
 
-+ (NDHotKeyEvent *)getHotKeyForKeyCode:(UInt16)aKeyCode modifierFlags:(NSUInteger)aModifierFlags
++ (instancetype)getHotKeyForKeyCode:(UInt16)aKeyCode modifierFlags:(NSUInteger)aModifierFlags
 {
 	return [self getHotKeyForKeyCharacter:[[NDKeyboardLayout keyboardLayout] characterForKeyCode:aKeyCode] modifierFlags:aModifierFlags];
 }
 
 #pragma mark - finding hot key event objects
-+ (NDHotKeyEvent *)getHotKeyForKeyCharacter:(unichar)aKeyCharacter modifierFlags:(NSUInteger)aModifierFlags
++ (instancetype)getHotKeyForKeyCharacter:(unichar)aKeyCharacter modifierFlags:(NSUInteger)aModifierFlags
 {
 	NDHotKeyEvent		* theHotKey = nil;
 
@@ -226,17 +226,17 @@ struct HotKeyMappingEntry
 	return theHotKey ? theHotKey : [self hotKeyWithKeyCharacter:aKeyCharacter modifierFlags:aModifierFlags];
 }
 
-+ (NDHotKeyEvent *)findHotKeyForKeyCode:(UInt16)aKeyCode modifierFlags:(NSUInteger)aModifierFlags
++ (instancetype)findHotKeyForKeyCode:(UInt16)aKeyCode modifierFlags:(NSUInteger)aModifierFlags
 {
 	return [self findHotKeyForKeyCharacter:[[NDKeyboardLayout keyboardLayout] characterForKeyCode:aKeyCode] modifierFlags:aModifierFlags];
 }
 
-+ (NDHotKeyEvent *)findHotKeyForKeyCharacter:(unichar)aKeyCharacter modifierFlags:(NSUInteger)aModifierFlags
++ (instancetype)findHotKeyForKeyCharacter:(unichar)aKeyCharacter modifierFlags:(NSUInteger)aModifierFlags
 {
 	return [self findHotKeyForId:_idForCharacterAndModifer(aKeyCharacter, aModifierFlags)];
 }
 
-+ (NDHotKeyEvent *)findHotKeyForId:(UInt32)anID
++ (instancetype)findHotKeyForId:(UInt32)anID
 {
 	NDHotKeyEvent				* theResult = nil;
 #ifdef NDMapTableClassDefined
@@ -267,37 +267,37 @@ struct HotKeyMappingEntry
 	return theResult;
 }
 
-+ (id)hotKeyWithEvent:(NSEvent *)anEvent
++ (instancetype)hotKeyWithEvent:(NSEvent *)anEvent
 {
 	return [[[self alloc] initWithEvent:anEvent] autorelease];
 }
 
-+ (id)hotKeyWithEvent:(NSEvent *)anEvent target:(id)aTarget selector:(SEL)aSelector
++ (instancetype)hotKeyWithEvent:(NSEvent *)anEvent target:(id)aTarget selector:(SEL)aSelector
 {
 	return [[[self alloc] initWithEvent:anEvent target:aTarget selector:aSelector] autorelease];
 }
 
-+ (id)hotKeyWithKeyCharacter:(unichar)aKeyCharacter modifierFlags:(NSUInteger)aModifierFlags
++ (instancetype)hotKeyWithKeyCharacter:(unichar)aKeyCharacter modifierFlags:(NSUInteger)aModifierFlags
 {
 	return [[[self alloc] initWithKeyCharacter:aKeyCharacter modifierFlags:aModifierFlags target:nil selector:(SEL)0] autorelease];
 }
 
-+ (id)hotKeyWithKeyCode:(UInt16)aKeyCode modifierFlags:(NSUInteger)aModifierFlags
++ (instancetype)hotKeyWithKeyCode:(UInt16)aKeyCode modifierFlags:(NSUInteger)aModifierFlags
 {
 	return [[[self alloc] initWithKeyCode:aKeyCode modifierFlags:aModifierFlags target:nil selector:(SEL)0] autorelease];
 }
 
-+ (id)hotKeyWithKeyCharacter:(unichar)aKeyCharacter modifierFlags:(NSUInteger)aModifierFlags target:(id)aTarget selector:(SEL)aSelector
++ (instancetype)hotKeyWithKeyCharacter:(unichar)aKeyCharacter modifierFlags:(NSUInteger)aModifierFlags target:(id)aTarget selector:(SEL)aSelector
 {
 	return [[[self alloc] initWithKeyCharacter:aKeyCharacter modifierFlags:aModifierFlags target:aTarget selector:aSelector] autorelease];
 }
 
-+ (id)hotKeyWithKeyCode:(UInt16)aKeyCode modifierFlags:(NSUInteger)aModifierFlags target:(id)aTarget selector:(SEL)aSelector
++ (instancetype)hotKeyWithKeyCode:(UInt16)aKeyCode modifierFlags:(NSUInteger)aModifierFlags target:(id)aTarget selector:(SEL)aSelector
 {
 	return [[[self alloc] initWithKeyCode:aKeyCode modifierFlags:aModifierFlags target:aTarget selector:aSelector] autorelease];
 }
 
-+ (id)hotKeyWithWithPropertyList:(id)aPropertyList
++ (instancetype)hotKeyWithWithPropertyList:(id)aPropertyList
 {
 	return [[[self alloc] initWithPropertyList:aPropertyList] autorelease];
 }
@@ -324,19 +324,19 @@ struct HotKeyMappingEntry
 }
 
 #pragma mark - creation and destruction
-- (id)init
+- (instancetype)init
 {
 	[self release];
 	NSAssert( NO, @"You can not initialize a Hot Key with the init method" );
 	return nil;
 }
 
-- (id)initWithEvent:(NSEvent *)anEvent
+- (instancetype)initWithEvent:(NSEvent *)anEvent
 {
 	return [self initWithEvent:anEvent target:nil selector:NULL];
 }
 
-- (id)initWithEvent:(NSEvent *)anEvent target:(id)aTarget selector:(SEL)aSelector
+- (instancetype)initWithEvent:(NSEvent *)anEvent target:(id)aTarget selector:(SEL)aSelector
 {
 	unsigned long		theModifierFlags = [anEvent modifierFlags] & (NSShiftKeyMask|NSControlKeyMask|NSAlternateKeyMask|NSCommandKeyMask);
 
@@ -346,22 +346,22 @@ struct HotKeyMappingEntry
 						selector:aSelector];
 }
 
-- (id)initWithKeyCharacter:(unichar)aKeyCharacter modifierFlags:(NSUInteger)aModifierFlags
+- (instancetype)initWithKeyCharacter:(unichar)aKeyCharacter modifierFlags:(NSUInteger)aModifierFlags
 {
 	return [self initWithKeyCode:[[NDKeyboardLayout keyboardLayout] keyCodeForCharacter:aKeyCharacter numericPad:(aModifierFlags&NSNumericPadKeyMask) != 0] modifierFlags:aModifierFlags target:nil selector:NULL];
 }
 
-- (id)initWithKeyCode:(UInt16)aKeyCode modifierFlags:(NSUInteger)aModifierFlags
+- (instancetype)initWithKeyCode:(UInt16)aKeyCode modifierFlags:(NSUInteger)aModifierFlags
 {
 	return [self initWithKeyCode:aKeyCode modifierFlags:aModifierFlags target:nil selector:NULL];
 }
 
-- (id)initWithKeyCode:(UInt16)aKeyCode modifierFlags:(NSUInteger)aModifierFlags target:(id)aTarget selector:(SEL)aSelector
+- (instancetype)initWithKeyCode:(UInt16)aKeyCode modifierFlags:(NSUInteger)aModifierFlags target:(id)aTarget selector:(SEL)aSelector
 {
 	return [self initWithKeyCharacter:[[NDKeyboardLayout keyboardLayout] characterForKeyCode:aKeyCode] modifierFlags:aModifierFlags target:aTarget selector:aSelector];
 }
 
-- (id)initWithKeyCharacter:(unichar)aKeyCharacter modifierFlags:(NSUInteger)aModifierFlags target:(id)aTarget selector:(SEL)aSelector
+- (instancetype)initWithKeyCharacter:(unichar)aKeyCharacter modifierFlags:(NSUInteger)aModifierFlags target:(id)aTarget selector:(SEL)aSelector
 {
 	if( (self = [super init]) != nil )
 	{
@@ -379,7 +379,7 @@ struct HotKeyMappingEntry
 	return self;
 }
 
-- (id)initWithCoder:(NSCoder *)aDecoder
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
 	if( (self = [super init]) != nil)
 	{
@@ -440,7 +440,7 @@ struct HotKeyMappingEntry
 	}
 }
 
-- (id)initWithPropertyList:(id)aPropertyList
+- (instancetype)initWithPropertyList:(id)aPropertyList
 {
 	if( aPropertyList )
 	{
