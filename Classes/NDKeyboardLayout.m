@@ -446,7 +446,7 @@ void NDKeyboardLayoutNotificationCallback( CFNotificationCenterRef aCenter, void
 		memset( theCharacter, 0, sizeof(theCharacter) );
 		NSUInteger	thePos = _characterForModifierFlags(theCharacter,aModifierFlags);
 		memcpy( theCharacter+thePos, theEntry->description, sizeof(theEntry->description) );
-        theResult = [NSString stringWithFormat:@"%S", (const unsigned short *)theCharacter];
+        theResult = [NSString stringWithCharacters:theCharacter length:thePos+1];
 	}
 	else
 	{
