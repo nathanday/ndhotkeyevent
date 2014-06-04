@@ -344,7 +344,7 @@ NSUInteger NDCarbonModifierFlagsForCocoaModifierFlags( NSUInteger aModifierFlags
 
 #pragma mark Constructor Methods
 
-static volatile NDKeyboardLayout		* kCurrentKeyboardLayout = nil;
+static NDKeyboardLayout		* kCurrentKeyboardLayout = nil;
 
 void NDKeyboardLayoutNotificationCallback( CFNotificationCenterRef aCenter, void * observer, CFStringRef aName, const void * anObj, CFDictionaryRef aUserInfo )
 {
@@ -387,8 +387,8 @@ void NDKeyboardLayoutNotificationCallback( CFNotificationCenterRef aCenter, void
 			 */
 			TISInputSourceRef (*theInputSourceFunctions[])() = {
 									TISCopyInputMethodKeyboardLayoutOverride,
-									TISCopyCurrentKeyboardLayoutInputSource,
-									TISCopyCurrentASCIICapableKeyboardLayoutInputSource
+                                    TISCopyCurrentASCIICapableKeyboardLayoutInputSource,
+                                    TISCopyCurrentKeyboardLayoutInputSource,
 								};
 
 			for( NSUInteger i = 0; i < sizeof(theInputSourceFunctions)/sizeof(*theInputSourceFunctions) && kCurrentKeyboardLayout == nil; i++ )
