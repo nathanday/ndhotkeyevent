@@ -38,11 +38,6 @@
 #import <Cocoa/Cocoa.h>
 #import <Carbon/Carbon.h>
 
-/*!
-	@defined NDHotKeyEventThreadSafe
-	@abstract A flag to enable thread safety.
-	@discussion By default the class object <tt>NDHotKeyEvent</tt> is not thread safe. Defining the this flag will make th class methods of <tt>NDHotKeyEvent</tt> thread safe, see introduction for more details..
- */
 enum
 {
 /*!

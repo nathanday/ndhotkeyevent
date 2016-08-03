@@ -72,22 +72,6 @@ static OSStatus	switchHotKey( NDHotKeyEvent * self, BOOL aFlag );
  */
 @implementation NDHotKeyEvent
 
-#ifdef NDHotKeyEventThreadSafe
-	#warning Thread saftey has been enabled for NDHotKeyEvent class methods
-	#if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_4
-		#define	NDHotKeyEventLock @synchronized([self class]) {
-		#define	NDHotKeyEventUnlock }
-	#else
-		static NSLock				* hotKeysLock = nil;
-		#define	NDHotKeyEventLock [hotKeysLock lock]
-		#define	NDHotKeyEventUnlock [hotKeysLock unlock]
-	#endif
-#else
-	#define	NDHotKeyEventLock // lock
-	#define	NDHotKeyEventUnlock // unlock
-#endif
-
-static NSMapTable		* allHotKeyEvents = nil;
 static EventHandlerRef	hotKeysEventHandler = NULL;
 static OSType			signature = 0;
 
@@ -112,13 +96,13 @@ static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSU
 			{ kEventClassKeyboard, kEventHotKeyReleased }
 		};
 		
-		NDHotKeyEventLock;
-		if( theHotKeyEvents != nil && hotKeysEventHandler == NULL )
-		{
-			if( InstallEventHandler( GetEventDispatcherTarget(), NewEventHandlerUPP((EventHandlerProcPtr)eventHandlerCallback), 2, theTypeSpec, theHotKeyEvents, &hotKeysEventHandler ) != noErr )
-				NSLog(@"Could not install Event handler");
+		@synchronized([self class]) {
+			if( theHotKeyEvents != nil && hotKeysEventHandler == NULL )
+			{
+				if( InstallEventHandler( GetEventDispatcherTarget(), NewEventHandlerUPP((EventHandlerProcPtr)eventHandlerCallback), 2, theTypeSpec, theHotKeyEvents, &hotKeysEventHandler ) != noErr )
+					NSLog(@"Could not install Event handler");
+			}
 		}
-		NDHotKeyEventUnlock;
 	}
 	
 	return hotKeysEventHandler != NULL;
@@ -133,17 +117,7 @@ static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSU
 + (void)initialize
 {
 	[NDHotKeyEvent setVersion:kNDHotKeyEventVersion];			// the character attribute has been removed
-#ifdef NDHotKeyEventThreadSafe
-#if MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_4
-	if( hotKeysLock == nil )
-	{
-		NSLock		* theInstance = [[NSLock alloc] init];
 
-		if( !CompareAndSwap( nil, (unsigned long int)theInstance, (unsigned long int*)&hotKeysLock) )
-			[theInstance release];			// did not use instance
-	}
-#endif
-#endif
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(currentKeyboardLayoutChanged:) name:NDKeyboardLayoutSelectedKeyboardInputSourceChangedNotification object:nil];
 }
 
@@ -170,13 +144,13 @@ static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSU
 	 */
 	if( theAllHotKeyEvents && [NDHotKeyEvent install] )
 	{
-		NDHotKeyEventLock;
+		@synchronized([self class]) {
 			for( NDHotKeyEvent * theHotEvent in [theAllHotKeyEvents objectEnumerator] )
 			{
 				if( ![theHotEvent setCollectiveEnabled:aFlag] )
 					theAllSucceeded = NO;
 			}
-		NDHotKeyEventUnlock;
+		}
 	}
 
 	return theAllSucceeded;
@@ -223,9 +197,9 @@ static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSU
 
 	if( theAllHotKeyEvents )
 	{
-		NDHotKeyEventLock;
-		theResult = [theAllHotKeyEvents objectForKey:[NSNumber numberWithUnsignedInt:anID]];
-		NDHotKeyEventUnlock;
+		@synchronized([self class]) {
+			theResult = [theAllHotKeyEvents objectForKey:[NSNumber numberWithUnsignedInt:anID]];
+		}
 	}
 	
 	return theResult;
@@ -272,9 +246,9 @@ static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSU
 	NSString		* theDescription = nil;
 	if( theAllHotKeyEvents )
 	{
-		NDHotKeyEventLock;
-		theDescription = [theAllHotKeyEvents description];
-		NDHotKeyEventUnlock;
+		@synchronized([self class]) {
+			theDescription = [theAllHotKeyEvents description];
+		}
 	}
 	return theDescription;
 }
@@ -438,13 +412,13 @@ static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSU
 		NSMapTable		* theAllHotKeyEvents = [NDHotKeyEvent allHotKeyEvents];
 		if( theAllHotKeyEvents )
 		{
-			NDHotKeyEventLock;
+			@synchronized([self class]) {
 				if( [self retainCount] == 1 )		// check again because it might have changed
 				{
 					switchHotKey( self, NO );
 					[theAllHotKeyEvents removeObjectForKey:[NSNumber numberWithUnsignedInt:[self hotKeyId]]];
 				}
-			NDHotKeyEventUnlock;
+			}
 		}
 	}
 	[super release];
@@ -470,12 +444,12 @@ static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSU
 		/*
 		 * if individual and collective YES then currently ON, otherwise currently off
 		 */
-		NDHotKeyEventLock;
+		@synchronized([self class]) {
 			if( aFlag == YES && isEnabled.collective == YES  && isEnabled.individual == NO )
 				theResult = (switchHotKey( self, YES ) == noErr);
 			else if( aFlag == NO && isEnabled.collective == YES  && isEnabled.individual == YES )
 				theResult = (switchHotKey( self, NO ) == noErr);
-		NDHotKeyEventUnlock;
+		}
 
 		if( theResult )
 			isEnabled.individual = aFlag;
@@ -648,36 +622,28 @@ pascal OSErr eventHandlerCallback( EventHandlerCallRef anInHandlerCallRef, Event
 
 + (NSMapTable *)allHotKeyEvents
 {
-	if( allHotKeyEvents == NULL )
-	{
-		NDHotKeyEventLock;
-		if( allHotKeyEvents == NULL )
-			allHotKeyEvents = [[NSMapTable alloc] initWithKeyOptions:NSMapTableStrongMemory valueOptions:NSMapTableWeakMemory capacity:0];
-		NDHotKeyEventUnlock;
-	}
+	static NSMapTable		* allHotKeyEvents = nil;
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		allHotKeyEvents = [[NSMapTable alloc] initWithKeyOptions:NSMapTableStrongMemory valueOptions:NSMapTableWeakMemory capacity:0];
+	});
 	return allHotKeyEvents;
 }
 
 + (void)currentKeyboardLayoutChanged:(NSNotification *)aNotification
 {
-	NSMapTable			* theAllHotKeyEvents = [NDHotKeyEvent allHotKeyEvents];
-
-    NDHotKeyEventLock;
-    for( NDHotKeyEvent * theHotEvent in [theAllHotKeyEvents objectEnumerator] )
-    {
-        switchHotKey( theHotEvent, theHotEvent.isEnabled );
-    }
-    NDHotKeyEventUnlock;
+	@synchronized([self class]) {
+		for( NDHotKeyEvent * theHotEvent in [[NDHotKeyEvent allHotKeyEvents] objectEnumerator] )
+		{
+			switchHotKey( theHotEvent, theHotEvent.isEnabled );
+		}
+	}
 }
 
 - (void)addHotKey
 {
-	NSMapTable			* theAllHotKeyEvents = [NDHotKeyEvent allHotKeyEvents];
-	if( theAllHotKeyEvents )
-	{
-		NDHotKeyEventLock;
-			[theAllHotKeyEvents setObject:self forKey:[NSNumber numberWithUnsignedInt:[self hotKeyId]]];
-		NDHotKeyEventUnlock;
+	@synchronized([self class]) {
+		[[NDHotKeyEvent allHotKeyEvents] setObject:self forKey:[NSNumber numberWithUnsignedInt:[self hotKeyId]]];
 	}
 }
 
@@ -685,13 +651,8 @@ pascal OSErr eventHandlerCallback( EventHandlerCallRef anInHandlerCallRef, Event
 {
 	[self setEnabled:NO];
 
-	NSMapTable			* theAllHotKeyEvents = [NDHotKeyEvent allHotKeyEvents];
-
-	if( theAllHotKeyEvents )
-	{
-		NDHotKeyEventLock;
-			[theAllHotKeyEvents removeObjectForKey:[NSNumber numberWithUnsignedInt:[self hotKeyId]]];
-		NDHotKeyEventUnlock;
+	@synchronized([self class]) {
+		[[NDHotKeyEvent allHotKeyEvents] removeObjectForKey:[NSNumber numberWithUnsignedInt:[self hotKeyId]]];
 	}
 }
 
@@ -704,12 +665,12 @@ pascal OSErr eventHandlerCallback( EventHandlerCallRef anInHandlerCallRef, Event
 		/*
 		 * if individual and collective YES then currently ON, otherwise currently off
 		 */
-		NDHotKeyEventLock;
+		@synchronized([self class]) {
 			if( aFlag == YES && isEnabled.collective == NO  && isEnabled.individual == YES )
 				theResult = (switchHotKey( self, YES ) == noErr);
 			else if( aFlag == NO && isEnabled.collective == YES  && isEnabled.individual == YES )
 				theResult = (switchHotKey( self, NO ) == noErr);
-		NDHotKeyEventUnlock;
+		}
 
 		if( theResult )
 			isEnabled.collective = aFlag;
