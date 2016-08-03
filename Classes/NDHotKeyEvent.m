@@ -87,9 +87,9 @@ static BOOL isEqualHashFunction( NSHashTable * aTable, const void * aFirstHotKey
 static NSString * describeHashFunction( NSHashTable * aTable, const void * aHotKeyEvent );
 #endif
 
-static UInt32 _idForCharacterAndModifer( unichar aCharacter, NSUInteger aModFlags ) { return (NSUInteger)aCharacter | (aModFlags<<16); }
+static UInt32 _idForCharacterAndModifier( unichar aCharacter, NSUInteger aModFlags ) { return (UInt32)(aCharacter | (aModFlags<<16)); }
 
-static void _getCharacterAndModiferForId( UInt32 anId, unichar *aCharacter, NSUInteger *aModFlags )
+static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSUInteger *aModFlags )
 {
 	*aModFlags = anId>>16;
 	*aCharacter = anId&0xFFFF;
@@ -233,7 +233,7 @@ struct HotKeyMappingEntry
 
 + (instancetype)findHotKeyForKeyCharacter:(unichar)aKeyCharacter modifierFlags:(NSUInteger)aModifierFlags
 {
-	return [self findHotKeyForId:_idForCharacterAndModifer(aKeyCharacter, aModifierFlags)];
+	return [self findHotKeyForId:_idForCharacterAndModifier(aKeyCharacter, aModifierFlags)];
 }
 
 + (instancetype)findHotKeyForId:(UInt32)anID
@@ -466,7 +466,7 @@ struct HotKeyMappingEntry
 {
 	return [NSDictionary dictionaryWithObjectsAndKeys:
 		[NSNumber numberWithUnsignedShort:[self keyCode]], kArchivingKeyCodeKey,
-		[NSNumber numberWithUnsignedInt:[self modifierFlags]], kArchivingModifierFlagsKey,
+		[NSNumber numberWithUnsignedInteger:[self modifierFlags]], kArchivingModifierFlagsKey,
 		NSStringFromSelector( selectorPressed ), kArchivingSelectorPressedCodeKey,
 		NSStringFromSelector( selectorReleased ), kArchivingSelectorReleasedCodeKey,
 		nil];
@@ -653,7 +653,7 @@ struct HotKeyMappingEntry
 - (BOOL)keyPad { return keyPad; }
 - (UInt16)keyCode { return [[NDKeyboardLayout keyboardLayout] keyCodeForCharacter:self.keyCharacter numericPad:self.keyPad]; }
 - (NSUInteger)modifierFlags { return modifierFlags; }
-- (UInt32)hotKeyId { return _idForCharacterAndModifer( self.keyCharacter, self.modifierFlags ); }
+- (UInt32)hotKeyId { return _idForCharacterAndModifier( self.keyCharacter, self.modifierFlags ); }
 - (NSString *)stringValue { return [[NDKeyboardLayout keyboardLayout] stringForKeyCode:[self keyCode] modifierFlags:[self modifierFlags]]; }
 
 - (BOOL)isEqual:(id)anObject

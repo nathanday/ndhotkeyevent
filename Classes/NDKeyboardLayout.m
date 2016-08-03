@@ -186,7 +186,7 @@ static struct UnmappedEntry * _unmappedEntryForKeyCode( UInt16 aKeyCode )
 }
 
 static const size_t			kBufferSize = 7;
-static NSUInteger _characterForModifierFlags( unichar aBuff[kBufferSize], UInt32 aModifierFlags )
+static NSUInteger _characterForModifierFlags( unichar aBuff[kBufferSize], NSUInteger aModifierFlags )
 {
 	NSUInteger		thePos = 0;
 	memset( aBuff, 0, kBufferSize );
@@ -217,7 +217,7 @@ static NSUInteger _characterForModifierFlags( unichar aBuff[kBufferSize], UInt32
 /*
  * NDStringForModifiers
  */
-NSString *NDStringForModifiers(UInt32 aModifierFlags)
+NSString *NDStringForModifiers(NSUInteger aModifierFlags)
 {
     unichar charBuffer[kBufferSize];
     NSUInteger length = _characterForModifierFlags(charBuffer, aModifierFlags);
@@ -227,7 +227,7 @@ NSString *NDStringForModifiers(UInt32 aModifierFlags)
 /*
  * NDCocoaModifierFlagsForCarbonModifierFlags()
  */
-NSUInteger NDCocoaModifierFlagsForCarbonModifierFlags( NSUInteger aModifierFlags )
+NSUInteger NDCocoaModifierFlagsForCarbonModifierFlags( UInt32 aModifierFlags )
 {
 	NSUInteger	theCocoaModifierFlags = 0;
 	
@@ -249,9 +249,9 @@ NSUInteger NDCocoaModifierFlagsForCarbonModifierFlags( NSUInteger aModifierFlags
 /*
  * NDCarbonModifierFlagsForCocoaModifierFlags()
  */
-NSUInteger NDCarbonModifierFlagsForCocoaModifierFlags( NSUInteger aModifierFlags )
+UInt32 NDCarbonModifierFlagsForCocoaModifierFlags( NSUInteger aModifierFlags )
 {
-	NSUInteger	theCarbonModifierFlags = 0;
+	UInt32	theCarbonModifierFlags = 0;
 	
 	if(aModifierFlags & NSShiftKeyMask)
 		theCarbonModifierFlags |= shiftKey;
@@ -437,12 +437,12 @@ void NDKeyboardLayoutNotificationCallback( CFNotificationCenterRef aCenter, void
 	[super dealloc];
 }
 
-- (NSString*)stringForCharacter:(unichar)aCharacter modifierFlags:(UInt32)aModifierFlags
+- (NSString*)stringForCharacter:(unichar)aCharacter modifierFlags:(NSUInteger)aModifierFlags
 {
 	return [self stringForKeyCode:[self keyCodeForCharacter:aCharacter numericPad:(aModifierFlags&NSNumericPadKeyMask) != 0] modifierFlags:aModifierFlags];
 }
 
-- (NSString*)stringForKeyCode:(UInt16)aKeyCode modifierFlags:(UInt32)aModifierFlags
+- (NSString*)stringForKeyCode:(UInt16)aKeyCode modifierFlags:(NSUInteger)aModifierFlags
 {
 	NSString				* theResult = nil;
 	struct UnmappedEntry	* theEntry = _unmappedEntryForKeyCode( aKeyCode );		// is it one of the unmapped values
