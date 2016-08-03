@@ -401,15 +401,14 @@ void NDKeyboardLayoutNotificationCallback( CFNotificationCenterRef aCenter, void
 	return kCurrentKeyboardLayout;
 }
 
-- (id)init
+- (instancetype)init
 {
-	[self release];
-	return [[NDKeyboardLayout keyboardLayout] retain];
+	return [[self class] keyboardLayout];
 }
 
-- (id)initWithLanguage:(NSString *)aLangauge { return [self initWithInputSource:TISCopyInputSourceForLanguage((CFStringRef)aLangauge)]; }
+- (instancetype)initWithLanguage:(NSString *)aLangauge { return [self initWithInputSource:TISCopyInputSourceForLanguage((CFStringRef)aLangauge)]; }
 
-- (id)initWithInputSource:(TISInputSourceRef)aSource
+- (instancetype)initWithInputSource:(TISInputSourceRef)aSource
 {
 	if( (self = [super init]) != nil )
 	{

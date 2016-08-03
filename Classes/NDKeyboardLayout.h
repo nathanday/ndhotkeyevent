@@ -70,7 +70,7 @@ UInt32 NDCarbonModifierFlagsForCocoaModifierFlags( NSUInteger modifierFlags );
 	@method keyboardLayout
 	Get a keyboard layout for the current keyboard
  */
-+ (id)keyboardLayout;
++ (instancetype)keyboardLayout;
 
 /*!
 	@method init
@@ -78,19 +78,19 @@ UInt32 NDCarbonModifierFlagsForCocoaModifierFlags( NSUInteger modifierFlags );
 	returned from <tt>[NSLocale preferredLanguages]</tt> is attempted and if finally if that fails a keyboard layout
 	for the most recently used ASCII-capable keyboard is created. If that fails then this method returns <tt>nil</tt>.
  */
-- (id)init;
+- (instancetype)init;
 /*!
 	@method initWithLanguage:
 	@abstract initialise a keyboard layout.
 	@discussion Initialises a KeyboardLayout with an <tt>TISInputSourceRef</tt> for the supplied language.
  */
-- (id)initWithLanguage:(NSString *)langauge;
+- (instancetype)initWithLanguage:(NSString *)langauge;
 /*!
 	@method initWithInputSource:
 	@abstract initialise a keyboard layout.
 	@discussion Initialises a KeyboardLayout with an <tt>TISInputSourceRef</tt>, this method is called with the result from <tt>initWithInputSource:TISCopyCurrentKeyboardInputSource()</tt>.
  */
-- (id)initWithInputSource:(TISInputSourceRef)source;
+- (instancetype)initWithInputSource:(TISInputSourceRef)source;
 
 /*!
 	@method stringForCharacter:modifierFlags:
