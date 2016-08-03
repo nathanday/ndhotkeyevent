@@ -38,8 +38,7 @@ const OSType		NDHotKeyDefaultSignature = 'NDHK';
 @interface NDHotKeyEvent () {
 @private
 	EventHotKeyRef		_reference;
-//	UInt16				keyCode;
-	unichar				_keyCharacter;
+	UInt16				_keyCode;
 	BOOL				_keyPad;
 	NSUInteger			_modifierFlags;
 	NDHotKeyEventType	_currentEventType;
@@ -66,7 +65,7 @@ static OSType			signature = 0;
 
 static pascal OSErr eventHandlerCallback( EventHandlerCallRef anInHandlerCallRef, EventRef anInEvent, void * self );
 
-static UInt32 _idForCharacterAndModifier( unichar aCharacter, NSUInteger aModFlags ) { return (UInt32)(aCharacter | (aModFlags << 16)); }
+static UInt32 _idForKeyCodeAndModifier( UInt16 aKeyCode, NSUInteger aModFlags ) { return (UInt32)(aKeyCode | (aModFlags << 16)); }
 
 static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSUInteger *aModFlags )
 {
@@ -169,14 +168,14 @@ static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSU
 	return theHotKey ? theHotKey : [self hotKeyWithKeyCharacter:aKeyCharacter modifierFlags:aModifierFlags];
 }
 
-+ (instancetype)findHotKeyForKeyCode:(UInt16)aKeyCode modifierFlags:(NSUInteger)aModifierFlags
-{
-	return [self findHotKeyForKeyCharacter:[[NDKeyboardLayout keyboardLayout] characterForKeyCode:aKeyCode] modifierFlags:aModifierFlags];
-}
-
 + (instancetype)findHotKeyForKeyCharacter:(unichar)aKeyCharacter modifierFlags:(NSUInteger)aModifierFlags
 {
-	return [self findHotKeyForId:_idForCharacterAndModifier(aKeyCharacter, aModifierFlags)];
+	return [self findHotKeyForKeyCode:[[NDKeyboardLayout keyboardLayout] keyCodeForCharacter:aKeyCharacter] modifierFlags:aModifierFlags];
+}
+
++ (instancetype)findHotKeyForKeyCode:(UInt16)aKeyCode modifierFlags:(NSUInteger)aModifierFlags
+{
+	return [self findHotKeyForId:_idForKeyCodeAndModifier(aKeyCode, aModifierFlags)];
 }
 
 + (instancetype)findHotKeyForId:(UInt32)anID
@@ -273,16 +272,16 @@ static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSU
 	return [self initWithKeyCode:aKeyCode modifierFlags:aModifierFlags target:nil];
 }
 
-- (instancetype)initWithKeyCode:(UInt16)aKeyCode modifierFlags:(NSUInteger)aModifierFlags target:(id)aTarget
+- (instancetype)initWithKeyCharacter:(unichar)aKeyCharacter modifierFlags:(NSUInteger)aModifierFlags target:(id)aTarget
 {
-	return [self initWithKeyCharacter:[[NDKeyboardLayout keyboardLayout] characterForKeyCode:aKeyCode] modifierFlags:aModifierFlags target:aTarget];
+	return [self initWithKeyCode:[[NDKeyboardLayout keyboardLayout] keyCodeForCharacter:aKeyCharacter] modifierFlags:aModifierFlags target:aTarget];
 }
 
-- (instancetype)initWithKeyCharacter:(unichar)aKeyCharacter modifierFlags:(NSUInteger)aModifierFlags target:(id)aTarget
+- (instancetype)initWithKeyCode:(UInt16)aKeyCode modifierFlags:(NSUInteger)aModifierFlags target:(id)aTarget
 {
 	if( (self = [super init]) != nil )
 	{
-		_keyCharacter = aKeyCharacter;
+		_keyCode = aKeyCode;
 		_modifierFlags = aModifierFlags;
 		_target = aTarget;
 		_currentEventType = NDHotKeyNoEvent;
@@ -301,26 +300,28 @@ static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSU
 	{
 		if( aDecoder.allowsKeyedCoding )
 		{
-			NSNumber	* theValue = [aDecoder decodeObjectForKey:kArchivingKeyCharacterKey];
+			NSNumber	* theValue = [aDecoder decodeObjectForKey:kArchivingKeyCodeKey];
 			if( theValue == nil )
 			{
-				theValue = [aDecoder decodeObjectForKey:kArchivingKeyCodeKey];
-				_keyCharacter = [[NDKeyboardLayout keyboardLayout] characterForKeyCode:theValue.unsignedShortValue];
+				theValue = [aDecoder decodeObjectForKey:kArchivingKeyCharacterKey];
+				_keyCode = [[NDKeyboardLayout keyboardLayout] keyCodeForCharacter:theValue.unsignedShortValue];
 			}
 			else
-				_keyCharacter = theValue.unsignedShortValue;
+				_keyCode = theValue.unsignedShortValue;
 			_modifierFlags = [[aDecoder decodeObjectForKey:kArchivingModifierFlagsKey] unsignedIntegerValue];
 		}
 		else
 		{
 			if( [aDecoder versionForClassName:@"NDHotKeyNoEvent"] == 1 )
 			{
-				unsigned short		theKeyCode;
-				[aDecoder decodeValueOfObjCType:@encode(UInt16) at:&theKeyCode];
-				_keyCharacter = [[NDKeyboardLayout keyboardLayout] characterForKeyCode:theKeyCode];
+				[aDecoder decodeValueOfObjCType:@encode(UInt16) at:&_keyCode];
 			}
 			else
-				[aDecoder decodeValueOfObjCType:@encode(unichar) at:&_keyCharacter];
+			{
+				unichar aKeyCharacter;
+				[aDecoder decodeValueOfObjCType:@encode(unichar) at:&aKeyCharacter];
+				_keyCode = [[NDKeyboardLayout keyboardLayout] keyCodeForCharacter:aKeyCharacter];
+			}
 			[aDecoder decodeValueOfObjCType:@encode(NSUInteger) at:&_modifierFlags];
 		}
 
@@ -334,12 +335,12 @@ static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSU
 {
 	if( anEncoder.allowsKeyedCoding )
 	{
-		[anEncoder encodeObject:@(_keyCharacter) forKey:kArchivingKeyCharacterKey];
+		[anEncoder encodeObject:@(_keyCode) forKey:kArchivingKeyCodeKey];
 		[anEncoder encodeObject:@(_modifierFlags) forKey:kArchivingModifierFlagsKey];
 	}
 	else
 	{
-		[anEncoder encodeValueOfObjCType:@encode(unichar) at:&_keyCharacter];
+		[anEncoder encodeValueOfObjCType:@encode(UInt16) at:&_keyCode];
 		[anEncoder encodeValueOfObjCType:@encode(NSUInteger) at:&_modifierFlags];
 	}
 }
@@ -389,50 +390,42 @@ static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSU
 - (BOOL)switchHotKey:(BOOL)aFlag error:(NSError **)error
 {
 	OSStatus		theError = noErr;
-	if( aFlag )
-	{
-		EventHotKeyID 		theHotKeyID;
 
-		if( _reference )
-			theError = UnregisterEventHotKey( _reference );
-
-		if ( theError != noErr )
-		{
-			if ( error )
-			{
-				*error = [NSError errorWithDomain:NSOSStatusErrorDomain code:theError userInfo:nil];
-			}
-			return NO;
-		}
-
-		theHotKeyID.signature = [NDHotKeyEvent signature];
-		theHotKeyID.id = [self hotKeyId];
-
-		NSCAssert( theHotKeyID.signature, @"HotKeyEvent signature has not been set yet" );
-		NSCParameterAssert(sizeof(unsigned long) >= sizeof(id) );
-
-		theError = RegisterEventHotKey( self.keyCode, NDCarbonModifierFlagsForCocoaModifierFlags(self.modifierFlags), theHotKeyID, GetEventDispatcherTarget(), 0, &_reference );
-		if ( theError != noErr )
-		{
-			if ( error )
-			{
-				*error = [NSError errorWithDomain:NSOSStatusErrorDomain code:theError userInfo:nil];
-			}
-			return NO;
-		}
-	}
-	else
-	{
+	// Whether we enable or disable, we always invalidate first
+	if( _reference )
 		theError = UnregisterEventHotKey( _reference );
-		if ( theError != noErr )
+
+	if ( theError != noErr )
+	{
+		if ( error )
 		{
-			if ( error )
-			{
-				*error = [NSError errorWithDomain:NSOSStatusErrorDomain code:theError userInfo:nil];
-			}
-			return NO;
+			*error = [NSError errorWithDomain:NSOSStatusErrorDomain code:theError userInfo:nil];
 		}
-		_reference = NULL;
+		return NO;
+	}
+	_reference = NULL;
+
+	if( !aFlag )
+	{
+		// We were asked to disable, we're done
+		return YES;
+	}
+
+	EventHotKeyID 		theHotKeyID;
+	theHotKeyID.signature = [NDHotKeyEvent signature];
+	theHotKeyID.id = [self hotKeyId];
+
+	NSCAssert( theHotKeyID.signature, @"HotKeyEvent signature has not been set yet" );
+	NSCParameterAssert(sizeof(unsigned long) >= sizeof(id) );
+
+	theError = RegisterEventHotKey( self.keyCode, NDCarbonModifierFlagsForCocoaModifierFlags(self.modifierFlags), theHotKeyID, GetEventDispatcherTarget(), 0, &_reference );
+	if ( theError != noErr )
+	{
+		if ( error )
+		{
+			*error = [NSError errorWithDomain:NSOSStatusErrorDomain code:theError userInfo:nil];
+		}
+		return NO;
 	}
 
 	return YES;
@@ -559,11 +552,14 @@ static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSU
 	_currentEventType = NDHotKeyNoEvent;
 }
 
-- (unichar)keyCharacter { return _keyCharacter; }
+- (unichar)keyCharacter { return [[NDKeyboardLayout keyboardLayout] characterForKeyCode:self.keyCode]; }
 - (BOOL)keyPad { return _keyPad; }
-- (UInt16)keyCode { return [[NDKeyboardLayout keyboardLayout] keyCodeForCharacter:self.keyCharacter numericPad:self.keyPad]; }
+- (UInt16)keyCode { return _keyCode; }
+- (void)setKeyCode:(UInt32)keyCode {
+	_keyCode = keyCode;
+}
 - (NSUInteger)modifierFlags { return _modifierFlags; }
-- (UInt32)hotKeyId { return _idForCharacterAndModifier( self.keyCharacter, self.modifierFlags ); }
+- (UInt32)hotKeyId { return _idForKeyCodeAndModifier( self.keyCode, self.modifierFlags ); }
 - (NSString *)stringValue { return [[NDKeyboardLayout keyboardLayout] stringForKeyCode:[self keyCode] modifierFlags:[self modifierFlags]]; }
 
 - (BOOL)isEqual:(id)anObject
@@ -624,9 +620,30 @@ pascal OSErr eventHandlerCallback( EventHandlerCallRef anInHandlerCallRef, Event
 + (void)currentKeyboardLayoutChanged:(NSNotification *)aNotification
 {
 	@synchronized([self class]) {
-		for( NDHotKeyEvent * theHotEvent in [[NDHotKeyEvent allHotKeyEvents] objectEnumerator] )
+		// We have to remap all keys to their new virtual key position
+		// Start by copying all current hotkeys
+		NSMapTable *oldHotKeys = [[NDHotKeyEvent allHotKeyEvents] copy];
+
+		for( NDHotKeyEvent * theHotEvent in [oldHotKeys objectEnumerator] )
 		{
-			[theHotEvent switchHotKey:theHotEvent.isEnabled error:NULL];
+			NDKeyboardLayout *oldLayout = aNotification.userInfo[NDKeyboardLayoutPreviousKeyboardLayoutUserInfoKey];
+
+			// Remap the current keycode through the new keyboard layout
+			unichar oldChar = [oldLayout characterForKeyCode:theHotEvent.keyCode];
+			UInt16 newKeyCode = [[NDKeyboardLayout keyboardLayout] keyCodeForCharacter:oldChar];
+
+			// Update our table, removing ourselves first since our hash depends on the keycode
+			BOOL wasEnabled = theHotEvent.isEnabled;
+			[theHotEvent removeHotKey];
+			theHotEvent.keyCode = newKeyCode;
+			[theHotEvent addHotKey];
+
+			// We can reenable ourselves, if appropriate
+			NSError *error = nil;
+			if (![theHotEvent setEnabled:wasEnabled])
+			{
+				NSLog(@"error restoring hotkey state %@: %@", @(wasEnabled), error);
+			}
 		}
 	}
 }

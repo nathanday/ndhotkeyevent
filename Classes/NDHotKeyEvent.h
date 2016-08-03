@@ -291,7 +291,7 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@param target The target of hot key event.
 	@result A initialized <tt>NDHotKeyEvent</tt>
  */
-- (instancetype)initWithKeyCharacter:(unichar)keyCharacter modifierFlags:(NSUInteger)modifer target:(id <NDHotKeyEventTarget>)target NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithKeyCharacter:(unichar)keyCharacter modifierFlags:(NSUInteger)modifer target:(id <NDHotKeyEventTarget>)target;
 /*!
 	@method initWithKeyCode:character:modifierFlags:target:selector:
 	@abstract Initialize a <tt>NDHotKeyEvent</tt> object.
@@ -301,7 +301,7 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@param target The target of hot key event.
 	@result A initialized <tt>NDHotKeyEvent</tt>
  */
-- (instancetype)initWithKeyCode:(UInt16)keyCode modifierFlags:(NSUInteger)modifer target:(id <NDHotKeyEventTarget>)target;
+- (instancetype)initWithKeyCode:(UInt16)keyCode modifierFlags:(NSUInteger)modifer target:(id <NDHotKeyEventTarget>)target NS_DESIGNATED_INITIALIZER;
 
 /*!
 	@method initWithKeyCode:character:modifierFlags
