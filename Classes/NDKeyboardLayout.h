@@ -90,7 +90,7 @@ UInt32 NDCarbonModifierFlagsForCocoaModifierFlags( NSUInteger modifierFlags );
 	@abstract initialise a keyboard layout.
 	@discussion Initialises a KeyboardLayout with an <tt>TISInputSourceRef</tt>, this method is called with the result from <tt>initWithInputSource:TISCopyCurrentKeyboardInputSource()</tt>.
  */
-- (instancetype)initWithInputSource:(TISInputSourceRef)source;
+- (instancetype)initWithInputSource:(TISInputSourceRef)source NS_DESIGNATED_INITIALIZER;
 
 /*!
 	@method stringForCharacter:modifierFlags:

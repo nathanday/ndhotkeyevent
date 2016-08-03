@@ -52,7 +52,7 @@ static OSStatus	switchHotKey( NDHotKeyEvent * self, BOOL aFlag );
 	unichar				keyCharacter;
 	BOOL				keyPad;
 	NSUInteger			modifierFlags;
-	int					currentEventType;
+	NDHotKeyEventType	currentEventType;
 	id					target;
 	SEL					selectorReleased,
 	selectorPressed;
@@ -198,7 +198,7 @@ static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSU
 	if( theAllHotKeyEvents )
 	{
 		@synchronized([self class]) {
-			theResult = [theAllHotKeyEvents objectForKey:[NSNumber numberWithUnsignedInt:anID]];
+			theResult = [theAllHotKeyEvents objectForKey:@(anID)];
 		}
 	}
 	
@@ -247,14 +247,14 @@ static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSU
 	if( theAllHotKeyEvents )
 	{
 		@synchronized([self class]) {
-			theDescription = [theAllHotKeyEvents description];
+			theDescription = theAllHotKeyEvents.description;
 		}
 	}
 	return theDescription;
 }
 
 #pragma mark - creation and destruction
-- (instancetype)init
+- (instancetype)init NS_UNAVAILABLE
 {
 	NSAssert( NO, @"You can not initialize a Hot Key with the init method" );
 	return nil;
@@ -267,9 +267,9 @@ static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSU
 
 - (instancetype)initWithEvent:(NSEvent *)anEvent target:(id)aTarget selector:(SEL)aSelector
 {
-	unsigned long		theModifierFlags = [anEvent modifierFlags] & (NSShiftKeyMask|NSControlKeyMask|NSAlternateKeyMask|NSCommandKeyMask);
+	unsigned long		theModifierFlags = anEvent.modifierFlags & (NSShiftKeyMask|NSControlKeyMask|NSAlternateKeyMask|NSCommandKeyMask);
 
-	return [self initWithKeyCode:[anEvent keyCode]
+	return [self initWithKeyCode:anEvent.keyCode
 				   modifierFlags:theModifierFlags
 						  target:aTarget
 						selector:aSelector];
@@ -312,16 +312,16 @@ static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSU
 {
 	if( (self = [super init]) != nil)
 	{
-		if( [aDecoder allowsKeyedCoding] )
+		if( aDecoder.allowsKeyedCoding )
 		{
 			NSNumber	* theValue = [aDecoder decodeObjectForKey:kArchivingKeyCharacterKey];
 			if( theValue == nil )
 			{
 				theValue = [aDecoder decodeObjectForKey:kArchivingKeyCodeKey];
-				keyCharacter = [[NDKeyboardLayout keyboardLayout] characterForKeyCode:[theValue unsignedShortValue]];
+				keyCharacter = [[NDKeyboardLayout keyboardLayout] characterForKeyCode:theValue.unsignedShortValue];
 			}
 			else
-				keyCharacter = [theValue unsignedShortValue];
+				keyCharacter = theValue.unsignedShortValue;
 			modifierFlags = [[aDecoder decodeObjectForKey:kArchivingModifierFlagsKey] unsignedIntegerValue];
 			
 			selectorReleased = NSSelectorFromString( [aDecoder decodeObjectForKey:kArchivingSelectorReleasedCodeKey] );
@@ -351,10 +351,10 @@ static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSU
 
 - (void)encodeWithCoder:(NSCoder *)anEncoder
 {
-	if( [anEncoder allowsKeyedCoding] )
+	if( anEncoder.allowsKeyedCoding )
 	{
-		[anEncoder encodeObject:[NSNumber numberWithUnsignedShort:keyCharacter] forKey:kArchivingKeyCharacterKey];
-		[anEncoder encodeObject:[NSNumber numberWithUnsignedInteger:modifierFlags] forKey:kArchivingModifierFlagsKey];
+		[anEncoder encodeObject:@(keyCharacter) forKey:kArchivingKeyCharacterKey];
+		[anEncoder encodeObject:@(modifierFlags) forKey:kArchivingModifierFlagsKey];
 
 		[anEncoder encodeObject:NSStringFromSelector( selectorReleased ) forKey:kArchivingSelectorReleasedCodeKey];
 		[anEncoder encodeObject:NSStringFromSelector( selectorPressed ) forKey:kArchivingSelectorPressedCodeKey];
@@ -376,13 +376,13 @@ static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSU
 		NSNumber	* theKeyCode,
 					* theModiferFlag;
 
-		theKeyCode = [aPropertyList objectForKey:kArchivingKeyCodeKey];
-		theModiferFlag = [aPropertyList objectForKey:kArchivingModifierFlagsKey];
+		theKeyCode = aPropertyList[kArchivingKeyCodeKey];
+		theModiferFlag = aPropertyList[kArchivingModifierFlagsKey];
 
-		if( (self = [self initWithKeyCode:[theKeyCode unsignedShortValue] modifierFlags:[theModiferFlag unsignedIntValue]]) != nil )
+		if( (self = [self initWithKeyCode:theKeyCode.unsignedShortValue modifierFlags:theModiferFlag.unsignedIntValue]) != nil )
 		{
-			selectorPressed = NSSelectorFromString([aPropertyList objectForKey:kArchivingSelectorPressedCodeKey]);
-			selectorReleased = NSSelectorFromString([aPropertyList objectForKey:kArchivingSelectorReleasedCodeKey]);
+			selectorPressed = NSSelectorFromString(aPropertyList[kArchivingSelectorPressedCodeKey]);
+			selectorReleased = NSSelectorFromString(aPropertyList[kArchivingSelectorReleasedCodeKey]);
 		}
 	}
 	else
@@ -393,12 +393,10 @@ static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSU
 
 - (id)propertyList
 {
-	return [NSDictionary dictionaryWithObjectsAndKeys:
-		[NSNumber numberWithUnsignedShort:[self keyCode]], kArchivingKeyCodeKey,
-		[NSNumber numberWithUnsignedInteger:[self modifierFlags]], kArchivingModifierFlagsKey,
-		NSStringFromSelector( selectorPressed ), kArchivingSelectorPressedCodeKey,
-		NSStringFromSelector( selectorReleased ), kArchivingSelectorReleasedCodeKey,
-		nil];
+	return @{kArchivingKeyCodeKey: @([self keyCode]),
+		kArchivingModifierFlagsKey: @([self modifierFlags]),
+		kArchivingSelectorPressedCodeKey: NSStringFromSelector( selectorPressed ),
+		kArchivingSelectorReleasedCodeKey: NSStringFromSelector( selectorReleased )};
 }
 
 - (void)dealloc
@@ -449,7 +447,7 @@ static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSU
 - (SEL)selector { return selectorReleased; }
 - (SEL)selectorReleased { return selectorReleased; }
 - (SEL)selectorPressed { return selectorPressed; }
-- (int)currentEventType { return currentEventType; }				// (NDHotKeyNoEvent | NDHotKeyPressedEvent | NDHotKeyReleasedEvent)
+- (NDHotKeyEventType)currentEventType { return currentEventType; }				// (NDHotKeyNoEvent | NDHotKeyPressedEvent | NDHotKeyReleasedEvent)
 - (BOOL)setTarget:(id)aTarget selector:(SEL)aSelector { return [self setTarget:aTarget selectorReleased:aSelector selectorPressed:(SEL)0]; }
 
 #ifdef NS_BLOCKS_AVAILABLE
@@ -623,7 +621,7 @@ pascal OSErr eventHandlerCallback( EventHandlerCallRef anInHandlerCallRef, Event
 - (void)addHotKey
 {
 	@synchronized([self class]) {
-		[[NDHotKeyEvent allHotKeyEvents] setObject:self forKey:[NSNumber numberWithUnsignedInt:[self hotKeyId]]];
+		[[NDHotKeyEvent allHotKeyEvents] setObject:self forKey:@([self hotKeyId])];
 	}
 }
 
@@ -632,7 +630,7 @@ pascal OSErr eventHandlerCallback( EventHandlerCallRef anInHandlerCallRef, Event
 	[self setEnabled:NO];
 
 	@synchronized([self class]) {
-		[[NDHotKeyEvent allHotKeyEvents] removeObjectForKey:[NSNumber numberWithUnsignedInt:[self hotKeyId]]];
+		[[NDHotKeyEvent allHotKeyEvents] removeObjectForKey:@([self hotKeyId])];
 	}
 }
 

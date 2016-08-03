@@ -38,8 +38,7 @@
 #import <Cocoa/Cocoa.h>
 #import <Carbon/Carbon.h>
 
-enum
-{
+typedef NS_ENUM(NSUInteger, NDHotKeyEventType) {
 /*!
 	@const NDHotKeyNoEvent
 	@abstract A value returned from the method <tt>-[NDHotKeyEvent currentEventType]</tt>
@@ -278,7 +277,7 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@param selector The selector sent when hot key is released
 	@result A initialized <tt>NDHotKeyEvent</tt>
  */
-- (instancetype)initWithKeyCharacter:(unichar)keyCharacter modifierFlags:(NSUInteger)modifer target:(id)target selector:(SEL)selector;
+- (instancetype)initWithKeyCharacter:(unichar)keyCharacter modifierFlags:(NSUInteger)modifer target:(id)target selector:(SEL)selector NS_DESIGNATED_INITIALIZER;
 /*!
 	@method initWithKeyCode:character:modifierFlags:target:selector:
 	@abstract Initialize a <tt>NDHotKeyEvent</tt> object.
@@ -355,7 +354,7 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@param decoder A subclass of <tt>NSCoder</tt>
 	@result A initialized <tt>NDHotKeyEvent</tt>
  */
-- (instancetype)initWithCoder:(NSCoder *)decoder;
+- (instancetype)initWithCoder:(NSCoder *)decoder NS_DESIGNATED_INITIALIZER;
 
 /*!
 	@method encodeWithCoder:
@@ -373,14 +372,13 @@ extern const OSType			NDHotKeyDefaultSignature;
  */
 - (void)encodeWithCoder:(NSCoder *)encoder;
 
-- (BOOL)setEnabled:(BOOL)flag;
 /*!
-	@method setIsEnabled:
+	@method setEnabled:
 	@abstract Set the hot key enabled or disable.
 	@discussion <tt>setEnabled:</tt> registers or unregisters the recievers hot key combination.
 	@param flag <tt>YES</tt> to enable, <tt>NO</tt> to disable.
  */
-- (void)setIsEnabled:(BOOL)flag;
+- (BOOL)setEnabled:(BOOL)flag;
 
 /*!
 	@method isEnabled
@@ -396,7 +394,7 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@discussion Returns the object that is sent the key pressed and key released hot key events, see the methods <tt>-selector</tt>, <tt>-selectorReleased</tt> and <tt>selectorPressed</tt>.
 	@result The target object.
  */
-- (id)target;
+@property (readonly, weak) id target;
 
 /*!
 	@method selector
@@ -404,7 +402,7 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@discussion This is the selector sent when the hot key combination for the reciever is released. This is the same selector has returned from the method <tt>[NDHotKeyEvent selectorReleased]</tt>
 	@result The method selector.
  */
-- (SEL)selector;
+@property (readonly) SEL selector;
 
 /*!
 	@method selectorReleased
@@ -412,7 +410,7 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@discussion This is the selector sent when the hot key combination for the reciever is released. This is the same selector has returned from the method <tt>[NDHotKeyEvent selector]</tt>
 	@result The method selector.
  */
-- (SEL)selectorReleased;
+@property (readonly) SEL selectorReleased;
 
 /*!
 	@method selectorPressed
@@ -420,7 +418,7 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@discussion This is the selector sent when the hot key combination for the reciever is pressed.
 	@result The method selector.
  */
-- (SEL)selectorPressed;
+@property (readonly) SEL selectorPressed;
 
 /*!
 	@method currentEventType
@@ -436,7 +434,7 @@ extern const OSType			NDHotKeyDefaultSignature;
 	</blockquote>
 	@result The last event type.
  */
-- (int)currentEventType;
+@property (readonly) NDHotKeyEventType currentEventType;
 
 /*!
 	@method setTarget:selector:
@@ -500,7 +498,7 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@discussion The key code for the hot key, this is hardware specific.
 	@result The key code.
  */
-- (UInt16)keyCode;
+@property (readonly) UInt16 keyCode;
 
 /*!
 	@method keyCharacter
@@ -508,7 +506,7 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@discussion This is the character for the key code, without modifier keys. The character is for display purposes only and dose not determine the key code.
 	@result A uni code character.
  */
-- (unichar)keyCharacter;
+@property (readonly) unichar keyCharacter;
 
 /*!
 	@method modifierFlags
@@ -516,14 +514,14 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@discussion The <tt>modifierFlags</tt> can be a bitwise and combination of <tt>NSControlKeyMask</tt>, <tt>NSAlternateKeyMask</tt>, <tt>NSShiftKeyMask</tt>, and <tt>NSCommandKeyMask</tt>.
 	@result The modifer key flags.
  */
-- (NSUInteger)modifierFlags;
+@property (readonly) NSUInteger modifierFlags;
 
 /*!
 	@method hotKeyId
 	@abstract Get the hot key id.
 	@discussion The id is how Apples 'Carbon Event Manager' keeps track of hot keys, if you want to use apples Hot Key function directly with <tt>NDHotKeyEvent</tt> then you can use the value returned from this method.
  */
-- (UInt32)hotKeyId;
+@property (readonly) UInt32 hotKeyId;
 
 /*!
 	@method stringValue
@@ -531,7 +529,7 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@discussion This is a string that can be used for display purposes.
 	@result A <tt>NSString</tt>
  */
-- (NSString *)stringValue;
+@property (readonly, copy) NSString *stringValue;
 
 /*!
 	@methodgroup Deprecated Methods

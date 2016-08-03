@@ -48,7 +48,7 @@
 	@discussion Returns the key code for the last key combination the user pressed while the reciever was active.
 	@result A <tt>UInt16</tt> containing key code.
  */
-- (UInt16)keyCode;
+@property (readonly) UInt16 keyCode;
 
 /*!
 	@method keyCharacter
@@ -56,7 +56,7 @@
 	@discussion Returns the unicode character for the last key combination the user pressed while the reciever was active.
 	@result A <tt>unichar</tt> containing character.
  */
-- (unichar)keyCharacter;
+@property (readonly) unichar keyCharacter;
 
 /*!
 	@method modifierFlags
@@ -64,7 +64,7 @@
 	@discussion Returns the modifer flags for the last key combination the user pressed while the reciever was active.
 	@result A <tt>unsigned long</tt> containing modifer flags.
  */
-- (NSUInteger)modifierFlags;
+@property (readonly) NSUInteger modifierFlags;
 
 /*!
 	@method hotKeyEvent
@@ -72,7 +72,7 @@
 	@discussion Returns the <tt>NDHotKeyEvent</tt> instance for the last key combination the user pressed while the reciever was active. The <tt>NDHotKeyEvent</tt> returned will either be one that has already been created or a newly created one otherwise.
 	@result A <tt>NDHotKeyEvent</tt> for the hot key event.
  */
-- (NDHotKeyEvent *)hotKeyEvent;
+@property (readonly, strong) NDHotKeyEvent *hotKeyEvent;
 
 /*!
 	@method setRequiresModifierKeys:
@@ -80,14 +80,13 @@
 	@discussion This does not include function key which do not require modifier keys no matter what the value you pass for the argument <tt><i>flag</i></tt>
 	@param flag If <tt>NO</tt> then the reciever only accepts hot keys combination containing modifer keys.
  */
-- (void)setRequiresModifierKeys:(BOOL)flag;
 /*!
 	@method requiresModifierKeys
 	@abstract Returns whether hot keys entered need modifiers keys.
 	@discussion This does not include key which do not require modifier keys no matter what the value is returned.
 	@result If <tt>NO</tt> then the reciever only accepts hot keys combination containing modifer keys.
  */
-- (BOOL)requiresModifierKeys;
+@property  BOOL requiresModifierKeys;
 
 /*!
 	@method setReadyForHotKeyEvent:
@@ -95,25 +94,23 @@
 	@discussion Setting <tt>readyForHotKeyEvent</tt> to <tt>YES</tt> will disable all Hot Key Events and then prepare <tt>NDHotKeyControl</tt> for keyboard input. Setting <tt>readyForHotKeyEvent</tt> to <tt>NO</tt> will re-enables all Hot Key Events and then stops <tt>NDHotKeyControl</tt> for accepting keyboard input.
 	@param flag <#description#>
  */
-- (void)setReadyForHotKeyEvent:(BOOL)flag;
 /*!
 	@method readyForHotKeyEvent
 	@abstract Is the control set up to accept input
 	@discussion Returns the current state of <tt>readyForHotKeyEvent</tt> as set by the method <tt>setReadyForHotKeyEvent:</tt>.
  */
-- (BOOL)readyForHotKeyEvent;
+@property  BOOL readyForHotKeyEvent;
 /*!
 	@method setStayReadyForEvent:
 	@abstract Will the control remain continually active.
 	@discussion By default <tt>NDHotKeyControl</tt> will accept one key and then call <tt>[self setReadyForHotKeyEvent:NO]</tt>, <tt>setStayReadyForEvent:</tt> allows you to change this behaviour so that <tt>NDHotKeyControl</tt> will continue accepting keys until it is manually deactivated.
  */
-- (void)setStayReadyForEvent:(BOOL)flag;
 /*!
 	@method stayReadyForEvent
 	@abstract Will the control remain continually active.
 	@discussion By default <tt>NDHotKeyControl</tt> will accept one key and then call <tt>[self setReadyForHotKeyEvent:NO]</tt>, if <tt>stayReadyForEvent</tt> returns <tt>YES</tt>, <tt>NDHotKeyControl</tt> will continue accepting keys until it is manually deactivated.
  */
-- (BOOL)stayReadyForEvent;
+@property  BOOL stayReadyForEvent;
 
 
 @end

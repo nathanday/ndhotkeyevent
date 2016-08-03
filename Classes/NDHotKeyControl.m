@@ -44,7 +44,7 @@
  */
 @implementation NDHotKeyControl
 
-- (id)initWithFrame:(NSRect)aFrame
+- (instancetype)initWithFrame:(NSRect)aFrame
 {
     if( (self = [super initWithFrame:aFrame]) != nil )
 	{
@@ -56,7 +56,7 @@
     return self;
 }
 
-- (id)initWithCoder:(NSCoder *)aCoder
+- (instancetype)initWithCoder:(NSCoder *)aCoder
 {
 	if( (self = [super initWithCoder:aCoder]) != nil )
 	{
@@ -79,7 +79,7 @@
 		{
 			[self setReadyForHotKeyEvent:YES];
 			lastReadyForEventSender = aSender;
-			[self setStringValue:@""];
+			self.stringValue = @"";
 		}
 		else
 		{
@@ -108,8 +108,8 @@
 
 - (void)keyDown:(NSEvent *)anEvent
 {
-	NSUInteger		theModifierFlags = [anEvent modifierFlags];
-	unichar			theChar = [[anEvent charactersIgnoringModifiers] characterAtIndex:0];
+	NSUInteger		theModifierFlags = anEvent.modifierFlags;
+	unichar			theChar = [anEvent.charactersIgnoringModifiers characterAtIndex:0];
 	theModifierFlags &= (NSShiftKeyMask|NSControlKeyMask|NSAlternateKeyMask|NSCommandKeyMask);
 
 	if( (theModifierFlags != 0 || !requiresModifierKeys || theChar > 255) && theChar != 0 )
@@ -118,10 +118,10 @@
 
 		NSParameterAssert( theKeyboardLayout != nil );
 
-		keyCode = [anEvent keyCode];
+		keyCode = anEvent.keyCode;
 		modifierFlags = theModifierFlags;
 
-		[self setStringValue:[theKeyboardLayout stringForKeyCode:keyCode modifierFlags:modifierFlags]];
+		self.stringValue = [theKeyboardLayout stringForKeyCode:keyCode modifierFlags:modifierFlags];
 		[self performClick:self];
 		if( ![self stayReadyForEvent] )
 			[self setReadyForHotKeyEvent:NO];
