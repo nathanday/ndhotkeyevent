@@ -49,7 +49,27 @@ const OSType		NDHotKeyDefaultSignature = 'NDHK';
 
 static OSStatus	switchHotKey( NDHotKeyEvent * self, BOOL aFlag );
 
-@interface NDHotKeyEvent ()
+@interface NDHotKeyEvent () {
+@private
+	EventHotKeyRef		reference;
+	//	UInt16				keyCode;
+	unichar				keyCharacter;
+	BOOL				keyPad;
+	NSUInteger			modifierFlags;
+	int					currentEventType;
+	id					target;
+	SEL					selectorReleased,
+	selectorPressed;
+#ifdef NS_BLOCKS_AVAILABLE
+	void	(^releasedBlock)(NDHotKeyEvent * e);
+	void	(^pressedBlock)(NDHotKeyEvent * e);
+#endif
+	struct
+	{
+		unsigned			individual		: 1;
+		unsigned			collective		: 1;
+	}						isEnabled;
+}
 @end
 /*
  * class implementation NDHotKeyEvent
@@ -734,7 +754,7 @@ NSString * describeHashFunction( NSHashTable * aTable, const void * aHotKeyEntry
 	{
 		NDHotKeyEventLock;
 		if( allHotKeyEvents == NULL )
-			allHotKeyEvents = [[NSMapTable alloc] initWithKeyOptions:NSMapTableStrongMemory valueOptions:NSMapTableZeroingWeakMemory capacity:0];
+			allHotKeyEvents = [[NSMapTable alloc] initWithKeyOptions:NSMapTableStrongMemory valueOptions:NSMapTableWeakMemory capacity:0];
 		NDHotKeyEventUnlock;
 	}
 	return allHotKeyEvents;

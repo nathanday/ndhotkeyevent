@@ -40,15 +40,6 @@
 	@discussion The <tt>NDHotKeyControl</tt> can be used to get a  <tt>NDHotKeyEvent</tt> for the last key combination pressed by the user.
  */
 @interface NDHotKeyControl : NSTextField
-{
-@private
-	UInt16				keyCode;
-	NSUInteger			modifierFlags;
-	BOOL				requiresModifierKeys,
-	readyForEvent,
-	stayReadyForEvent;
-	id					lastReadyForEventSender;
-}
 
 - (IBAction)readyForHotKeyEventChanged:(id)sender;
 /*!

@@ -130,7 +130,12 @@ struct UnmappedEntry	unmappedKeys[] =
 //	{NSModeSwitchFunctionKey, 0xXXXX}
 };
 
-@interface NDKeyboardLayout ()
+@interface NDKeyboardLayout () {
+@private
+	CFDataRef						keyboardLayoutData;
+	struct ReverseMappingEntry		* mappings;
+	NSUInteger						numberOfMappings;
+}
 
 @property(readonly,nonatomic)	const UCKeyboardLayout		* keyboardLayoutPtr;
 

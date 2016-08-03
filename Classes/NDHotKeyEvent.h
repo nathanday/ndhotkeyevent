@@ -89,27 +89,6 @@ extern const OSType			NDHotKeyDefaultSignature;
  
  */
 @interface NDHotKeyEvent : NSObject <NSCoding>
-{
-@private
-	EventHotKeyRef		reference;
-	//	UInt16				keyCode;
-	unichar				keyCharacter;
-	BOOL				keyPad;
-	NSUInteger			modifierFlags;
-	int					currentEventType;
-	id					target;
-	SEL					selectorReleased,
-	selectorPressed;
-#ifdef NS_BLOCKS_AVAILABLE
-	void	(^releasedBlock)(NDHotKeyEvent * e);
-	void	(^pressedBlock)(NDHotKeyEvent * e);
-#endif
-	struct
-	{
-		unsigned			individual		: 1;
-		unsigned			collective		: 1;
-	}						isEnabled;
-}
 
 /*!
 	@method install
