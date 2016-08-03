@@ -59,6 +59,24 @@ typedef NS_ENUM(NSUInteger, NDHotKeyEventType) {
 	NDHotKeyReleasedEvent
 };
 
+@class NDHotKeyEvent;
+
+@protocol NDHotKeyEventTarget <NSObject>
+@optional
+/*!
+	@method targetWillChangeToObject:forHotKeyEvent:
+	@abstract Message sent to a target object to inform it that the target is going to change.
+	@discussion This method can be used to notify the receiver that it will no longer be the target for a <tt>NDHotKeyEvent</tt> or used to prevent the target from changing by returning <tt>NO</tt>
+	@param target The new target for the <tt>NDHotKeyEvent</tt>  or a collection (for example <tt>NSArray</tt>) of target.
+	@param hotKeyEvent The <tt>NDHotKeyEvent</tt> for which the target is changing.
+	@result Return <tt>NO</tt> to prevent the target from changing, otherwise return <tt>YES</tt>.
+ */
+- (BOOL)targetWillChangeToObject:(id <NDHotKeyEventTarget>)target forHotKeyEvent:(NDHotKeyEvent *)hotKeyEvent;
+
+- (void)hotKeyPressed:(NDHotKeyEvent *)hotKey;
+- (void)hotKeyReleased:(NDHotKeyEvent *)hotKey;
+@end
+
 /*!
 	@const NDHotKeyDefaultSignature
 	@abstract The default signature
@@ -66,7 +84,6 @@ typedef NS_ENUM(NSUInteger, NDHotKeyEventType) {
  */
 extern const OSType			NDHotKeyDefaultSignature;
 
-@class			NDHotKeyEvent;
 /*!
 	@class NDHotKeyEvent
 	@abstract Class to represent a HotKey
@@ -197,7 +214,7 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@param selector The selector sent when hot key is released
 	@result An new <tt>NDHotKeyEvent</tt> or nil if failure.
  */
-+ (instancetype)hotKeyWithEvent:(NSEvent *)event target:(id)target selector:(SEL)selector;
++ (instancetype)hotKeyWithEvent:(NSEvent *)event target:(id <NDHotKeyEventTarget>)target;
 /*!
 	@method hotKeyWithKeyCharacter:modifierFlags:
 	@abstract Get a <tt>NDHotKeyEvent</tt> object.
@@ -227,7 +244,7 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@param selector The selector sent when hot key is released
 	@result A new <tt>NDHotKeyEvent</tt>
  */
-+ (instancetype)hotKeyWithKeyCharacter:(unichar)keyCharacter modifierFlags:(NSUInteger)modifer target:(id)target selector:(SEL)selector;
++ (instancetype)hotKeyWithKeyCharacter:(unichar)keyCharacter modifierFlags:(NSUInteger)modifer target:(id <NDHotKeyEventTarget>)target;
 /*!
 	@method hotKeyWithKeyCode:modifierFlags:target:selector:
 	@abstract Get a <tt>NDHotKeyEvent</tt> object.
@@ -235,10 +252,9 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@param keyCode The key code used by the keyboard, can vary across hardware.
 	@param modifierFlags The modifer flags, ( <tt>NSCommandKeyMask</tt>, <tt>NSControlKeyMask</tt>, <tt>NSAlternateKeyMask</tt>, <tt>NSShiftKeyMask</tt> ).
 	@param target The target of hot key event.
-	@param selector The selector sent when hot key is released
 	@result A new <tt>NDHotKeyEvent</tt>
  */
-+ (instancetype)hotKeyWithKeyCode:(UInt16)keyCode modifierFlags:(NSUInteger)modifer target:(id)target selector:(SEL)selector;
++ (instancetype)hotKeyWithKeyCode:(UInt16)keyCode modifierFlags:(NSUInteger)modifer target:(id <NDHotKeyEventTarget>)target;
 
 /*!
 	@method initWithPropertyList:
@@ -262,10 +278,9 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@discussion Initialize the reciever with the supplied hot key combination contained with the event <tt>event</tt> and target object and selector, if there is already a hot key for the supplied event then nil is returned.
 	@param event An event used to create a hot key from.
 	@param target The target of hot key event.
-	@param selector The selector sent when hot key is released
 	@result A initialized <tt>NDHotKeyEvent</tt>
  */
-- (instancetype)initWithEvent:(NSEvent *)event target:(id)target selector:(SEL)selector;
+- (instancetype)initWithEvent:(NSEvent *)event target:(id <NDHotKeyEventTarget>)target;
 
 /*!
 	@method initWithKeyCode:character:modifierFlags:target:selector:
@@ -274,10 +289,9 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@param keyCharacter The key character used by the keyboard.
 	@param modifierFlags The modifer flags, ( <tt>NSCommandKeyMask</tt>, <tt>NSControlKeyMask</tt>, <tt>NSAlternateKeyMask</tt>, <tt>NSShiftKeyMask</tt>, <tt>NSNumericPadKeyMask</tt>, <tt>NSNumericPadKeyMask</tt> ).
 	@param target The target of hot key event.
-	@param selector The selector sent when hot key is released
 	@result A initialized <tt>NDHotKeyEvent</tt>
  */
-- (instancetype)initWithKeyCharacter:(unichar)keyCharacter modifierFlags:(NSUInteger)modifer target:(id)target selector:(SEL)selector NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithKeyCharacter:(unichar)keyCharacter modifierFlags:(NSUInteger)modifer target:(id <NDHotKeyEventTarget>)target NS_DESIGNATED_INITIALIZER;
 /*!
 	@method initWithKeyCode:character:modifierFlags:target:selector:
 	@abstract Initialize a <tt>NDHotKeyEvent</tt> object.
@@ -285,10 +299,9 @@ extern const OSType			NDHotKeyDefaultSignature;
 	@param keyCode The key code used by the keyboard, can vary across hardware.
 	@param modifierFlags The modifer flags, ( <tt>NSCommandKeyMask</tt>, <tt>NSControlKeyMask</tt>, <tt>NSAlternateKeyMask</tt>, <tt>NSShiftKeyMask</tt> ).
 	@param target The target of hot key event.
-	@param selector The selector sent when hot key is released
 	@result A initialized <tt>NDHotKeyEvent</tt>
  */
-- (instancetype)initWithKeyCode:(UInt16)keyCode modifierFlags:(NSUInteger)modifer target:(id)target selector:(SEL)selector;
+- (instancetype)initWithKeyCode:(UInt16)keyCode modifierFlags:(NSUInteger)modifer target:(id <NDHotKeyEventTarget>)target;
 
 /*!
 	@method initWithKeyCode:character:modifierFlags
@@ -389,62 +402,37 @@ extern const OSType			NDHotKeyDefaultSignature;
 - (BOOL)isEnabled;
 
 /*!
-	@method target
-	@abstract Get the hot key event target.
-	@discussion Returns the object that is sent the key pressed and key released hot key events, see the methods <tt>-selector</tt>, <tt>-selectorReleased</tt> and <tt>selectorPressed</tt>.
-	@result The target object.
- */
-@property (readonly, weak) id target;
-
-/*!
-	@method selector
-	@abstract The selector for a key released event.
-	@discussion This is the selector sent when the hot key combination for the reciever is released. This is the same selector has returned from the method <tt>[NDHotKeyEvent selectorReleased]</tt>
-	@result The method selector.
- */
-@property (readonly) SEL selector;
-
-/*!
-	@method selectorReleased
-	@abstract The selector for a key released event.
-	@discussion This is the selector sent when the hot key combination for the reciever is released. This is the same selector has returned from the method <tt>[NDHotKeyEvent selector]</tt>
-	@result The method selector.
- */
-@property (readonly) SEL selectorReleased;
-
-/*!
-	@method selectorPressed
-	@abstract The selector for a key pressed event.
-	@discussion This is the selector sent when the hot key combination for the reciever is pressed.
-	@result The method selector.
- */
-@property (readonly) SEL selectorPressed;
-
-/*!
 	@method currentEventType
 	@abstract Get the current hot key event type.
 	@discussion This value returns what event last occured. Can be used in your target when it is sent a event message to find out what event occured, possible values are
 	<blockquote>
-		<table border = "1"  width = "90%">
-			<thead><tr><th>Value</th><th>Description</th></tr></thead>
-			<tr><td align = "center"><tt>NDHotKeyNoEvent</tt></td><td>The hot key has not been pressed yet.</td></tr>
-			<tr><td align = "center"><tt>NDHotKeyPressedEvent</tt></td><td>The hot key was pressed last.</td></tr>
-			<tr><td align = "center"><tt>NDHotKeyReleasedEvent</tt></td><td>The hot key was released last.</td></tr>
-		</table>
+ <table border = "1"  width = "90%">
+ <thead><tr><th>Value</th><th>Description</th></tr></thead>
+ <tr><td align = "center"><tt>NDHotKeyNoEvent</tt></td><td>The hot key has not been pressed yet.</td></tr>
+ <tr><td align = "center"><tt>NDHotKeyPressedEvent</tt></td><td>The hot key was pressed last.</td></tr>
+ <tr><td align = "center"><tt>NDHotKeyReleasedEvent</tt></td><td>The hot key was released last.</td></tr>
+ </table>
 	</blockquote>
 	@result The last event type.
  */
 @property (readonly) NDHotKeyEventType currentEventType;
 
 /*!
+	@method target
+	@abstract Get the hot key event target.
+	@discussion Returns the object that is sent the key pressed and key released hot key events, see the methods <tt>-selector</tt>, <tt>-selectorReleased</tt> and <tt>selectorPressed</tt>.
+	@result The target object.
+ */
+@property (readonly, weak) id <NDHotKeyEventTarget> target;
+
+/*!
 	@method setTarget:selector:
 	@abstract Set the hot key target.
 	@discussion Set the target object and selector to be sent when the hot key is released. The target needs to either respond to the method represented by the selector <tt>selector</tt> or to the method <tt>makeObjectsPerformSelector:withObject:</tt> in which case the method <tt>makeObjectsPerformSelector:withObject:</tt> is invoked with the selector <tt>selector</tt>, for example <tt>NSArray</tt>
 	@param target The traget object or a collection (for example <tt>NSArray</tt>) of target.
-	@param selector The selector.
 	@result returns <tt>YES</tt> if successful.
  */
-- (BOOL)setTarget:(id)target selector:(SEL)selector;
+- (BOOL)setTarget:(id <NDHotKeyEventTarget>)target;
 
 #ifdef NS_BLOCKS_AVAILABLE
 /*!
@@ -456,16 +444,6 @@ extern const OSType			NDHotKeyDefaultSignature;
  */
 - (BOOL)setBlock:(void(^)(NDHotKeyEvent*))block;
 #endif
-/*!
-	@method setTarget:selectorReleased:selectorPressed:
-	@abstract Set the hot key target.
-	@discussion Set the target object and selector to be sent when the hot key is pressed and wehn it is released. The target needs to either respond to the method represented by the selector <tt>selector</tt> or to the method <tt>makeObjectsPerformSelector:withObject:</tt> in which case the method <tt>makeObjectsPerformSelector:withObject:</tt> is invoked with the selector <tt>selector</tt>, for example <tt>NSArray</tt>
-	@param target The traget object or a collection (for example <tt>NSArray</tt>) of target.
-	@param selectorReleased The key released selector.
-	@param selectorPressed The key pressed selector.
-	@result returns <tt>YES</tt> if successful.
- */
-- (BOOL)setTarget:(id)target selectorReleased:(SEL)selectorReleased selectorPressed:(SEL)selectorPressed;
 
 #ifdef NS_BLOCKS_AVAILABLE
 /*!
@@ -543,21 +521,3 @@ extern const OSType			NDHotKeyDefaultSignature;
 
 @end
 
-/*!
-	@protocol NSObject(NDHotKeyEventTragetWillChange)
-	@abstract Informal protocol used to inform a <tt>NDHotKeyEvent</tt> target of events.
-	@discussion The informal protocol <tt>NDHotKeyEventTragetWillChange</tt> defines a method used to notify a <tt>NDHotKeyEvent</tt> target that the target will change.
- */
-@interface NSObject (NDHotKeyEventTragetWillChange)
-
-/*!
-	@method targetWillChangeToObject:forHotKeyEvent:
-	@abstract Message sent to a target object to inform it that the target is going to change.
-	@discussion This method can be used to notify the receiver that it will no longer be the target for a <tt>NDHotKeyEvent</tt> or used to prevent the target from changing by returning <tt>NO</tt>
-	@param target The new target for the <tt>NDHotKeyEvent</tt>  or a collection (for example <tt>NSArray</tt>) of target.
-	@param hotKeyEvent The <tt>NDHotKeyEvent</tt> for which the target is changing.
-	@result Return <tt>NO</tt> to prevent the target from changing, otherwise return <tt>YES</tt>.
-  */
-- (BOOL)targetWillChangeToObject:(id)target forHotKeyEvent:(NDHotKeyEvent *)hotKeyEvent;
-
-@end
