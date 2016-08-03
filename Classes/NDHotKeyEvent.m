@@ -445,7 +445,7 @@ static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSU
 - (void)setIsEnabled:(BOOL)aFlag { [self setEnabled:aFlag]; }
 
 - (BOOL)isEnabled { return _isEnabled.individual && _isEnabled.collective; }
-- (id <NDHotKeyEventTarget>)target { return target; }
+- (id <NDHotKeyEventTarget>)target { return _target; }
 - (NDHotKeyEventType)currentEventType { return _currentEventType; }
 
 #ifdef NS_BLOCKS_AVAILABLE
