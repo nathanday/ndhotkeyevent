@@ -44,7 +44,7 @@
 
 - (BOOL)getKeyCombo
 {
-	int					theResponse;
+	NSInteger			theResponse;
 	NSPanel				* thePanel = nil;
 	NSModalSession		theSession;
 

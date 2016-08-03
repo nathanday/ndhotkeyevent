@@ -2,7 +2,7 @@
 #import "NDHotKeyEvent.h"
 #import "AddController.h"
 
-@interface HotKeyReponder : NSObject
+@interface HotKeyReponder : NSObject <NDHotKeyEventTarget>
 {
 	WindowController		* controller;
 	NDHotKeyEvent			* hotKey;
@@ -20,12 +20,6 @@
 
 @implementation WindowController
 @synthesize		useBlocks;
-
-- (void)dealloc
-{
-	[allHotKeyReponder release];
-	[super dealloc];
-}
 
 - (IBAction)clear:(id)aSender
 {
@@ -185,7 +179,7 @@ static char						* eventNames[] = { "No Event", "Pressed Event", "Released Event
 
 + (id)hotKeyReponderWithController:(WindowController *)aController hotKey:(NDHotKeyEvent *)aHotKey
 {
-	return [[[self alloc] initWithController:aController hotKey:aHotKey] autorelease];
+	return [[self alloc] initWithController:aController hotKey:aHotKey];
 }
 
 - (id)initWithController:(WindowController *)aController hotKey:(NDHotKeyEvent *)aHotKey
@@ -193,16 +187,15 @@ static char						* eventNames[] = { "No Event", "Pressed Event", "Released Event
 	if( self = [self init] )
 	{
 		controller = aController;
-		hotKey = [aHotKey retain];
+		hotKey = aHotKey;
 		count = hotKeyReponderCount++;
 
 //		[hotKey setTarget:self selector:@selector(hotKeyFired:)];
 
 		if( ![aController useBlocks] )
 		{
-			if( [hotKey setTarget:self selectorReleased:@selector(hotKeyReleased:) selectorPressed:@selector(hotKeyPressed:)] == NO )
+			if( [hotKey setTarget:self] == NO )
 			{
-				[self release];
 				self = nil;
 			}
 		}
@@ -217,19 +210,12 @@ static char						* eventNames[] = { "No Event", "Pressed Event", "Released Event
 				[controller appendText:[NSString stringWithFormat:@"Block: [#%lu] Released hot key: %@", count, [aHotKey stringValue]]];
 			}] == NO )
 			{
-				[self release];
 				self = nil;
 			}
 		}
 	}
 
 	return self;
-}
-
-- (void)dealloc
-{
-	[hotKey release];
-	[super dealloc];
 }
 
 - (NSString *)description
@@ -270,7 +256,6 @@ static char						* eventNames[] = { "No Event", "Pressed Event", "Released Event
 	NSParameterAssert( aTarget != self );
 	NSParameterAssert( aEvent == hotKey );
 
-	[hotKey autorelease];
 	hotKey = nil;
 	
 	return YES;		// return yes to say it is ok
