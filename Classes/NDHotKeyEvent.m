@@ -99,7 +99,7 @@ static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSU
 		@synchronized([self class]) {
 			if( theHotKeyEvents != nil && hotKeysEventHandler == NULL )
 			{
-				if( InstallEventHandler( GetEventDispatcherTarget(), NewEventHandlerUPP((EventHandlerProcPtr)eventHandlerCallback), 2, theTypeSpec, theHotKeyEvents, &hotKeysEventHandler ) != noErr )
+				if( InstallEventHandler( GetEventDispatcherTarget(), NewEventHandlerUPP((EventHandlerProcPtr)eventHandlerCallback), 2, theTypeSpec, (__bridge void *)(theHotKeyEvents), &hotKeysEventHandler ) != noErr )
 					NSLog(@"Could not install Event handler");
 			}
 		}
@@ -207,37 +207,37 @@ static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSU
 
 + (instancetype)hotKeyWithEvent:(NSEvent *)anEvent
 {
-	return [[[self alloc] initWithEvent:anEvent] autorelease];
+	return [[self alloc] initWithEvent:anEvent];
 }
 
 + (instancetype)hotKeyWithEvent:(NSEvent *)anEvent target:(id)aTarget selector:(SEL)aSelector
 {
-	return [[[self alloc] initWithEvent:anEvent target:aTarget selector:aSelector] autorelease];
+	return [[self alloc] initWithEvent:anEvent target:aTarget selector:aSelector];
 }
 
 + (instancetype)hotKeyWithKeyCharacter:(unichar)aKeyCharacter modifierFlags:(NSUInteger)aModifierFlags
 {
-	return [[[self alloc] initWithKeyCharacter:aKeyCharacter modifierFlags:aModifierFlags target:nil selector:(SEL)0] autorelease];
+	return [[self alloc] initWithKeyCharacter:aKeyCharacter modifierFlags:aModifierFlags target:nil selector:(SEL)0];
 }
 
 + (instancetype)hotKeyWithKeyCode:(UInt16)aKeyCode modifierFlags:(NSUInteger)aModifierFlags
 {
-	return [[[self alloc] initWithKeyCode:aKeyCode modifierFlags:aModifierFlags target:nil selector:(SEL)0] autorelease];
+	return [[self alloc] initWithKeyCode:aKeyCode modifierFlags:aModifierFlags target:nil selector:(SEL)0];
 }
 
 + (instancetype)hotKeyWithKeyCharacter:(unichar)aKeyCharacter modifierFlags:(NSUInteger)aModifierFlags target:(id)aTarget selector:(SEL)aSelector
 {
-	return [[[self alloc] initWithKeyCharacter:aKeyCharacter modifierFlags:aModifierFlags target:aTarget selector:aSelector] autorelease];
+	return [[self alloc] initWithKeyCharacter:aKeyCharacter modifierFlags:aModifierFlags target:aTarget selector:aSelector];
 }
 
 + (instancetype)hotKeyWithKeyCode:(UInt16)aKeyCode modifierFlags:(NSUInteger)aModifierFlags target:(id)aTarget selector:(SEL)aSelector
 {
-	return [[[self alloc] initWithKeyCode:aKeyCode modifierFlags:aModifierFlags target:aTarget selector:aSelector] autorelease];
+	return [[self alloc] initWithKeyCode:aKeyCode modifierFlags:aModifierFlags target:aTarget selector:aSelector];
 }
 
 + (instancetype)hotKeyWithWithPropertyList:(id)aPropertyList
 {
-	return [[[self alloc] initWithPropertyList:aPropertyList] autorelease];
+	return [[self alloc] initWithPropertyList:aPropertyList];
 }
 
 + (NSString *)description
@@ -256,7 +256,6 @@ static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSU
 #pragma mark - creation and destruction
 - (instancetype)init
 {
-	[self release];
 	NSAssert( NO, @"You can not initialize a Hot Key with the init method" );
 	return nil;
 }
@@ -304,7 +303,7 @@ static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSU
 		[self addHotKey];
 	}
 	else
-		[self release], self = nil;
+		self = nil;
 
 	return self;
 }
@@ -387,7 +386,7 @@ static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSU
 		}
 	}
 	else
-		[self release], self = nil;
+		self = nil;
 
 	return self;
 }
@@ -402,37 +401,18 @@ static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSU
 		nil];
 }
 
-- (oneway void)release
-{
-	/*
-	 *	We need to remove the hot key from the hash table before it's retain count reaches zero
-	 */
-	if( [self retainCount] == 1 )
-	{
-		NSMapTable		* theAllHotKeyEvents = [NDHotKeyEvent allHotKeyEvents];
-		if( theAllHotKeyEvents )
-		{
-			@synchronized([self class]) {
-				if( [self retainCount] == 1 )		// check again because it might have changed
-				{
-					switchHotKey( self, NO );
-					[theAllHotKeyEvents removeObjectForKey:[NSNumber numberWithUnsignedInt:[self hotKeyId]]];
-				}
-			}
-		}
-	}
-	[super release];
-}
-
 - (void)dealloc
 {
 	if( reference )
 	{
+		switchHotKey( self, NO );
 		if( UnregisterEventHotKey( reference ) != noErr )	// in lock from release
 			NSLog( @"Failed to unregister hot key %@", self );
 	}
+
+	[[NDHotKeyEvent allHotKeyEvents] removeObjectForKey:@(self.hotKeyId)];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NDKeyboardLayoutSelectedKeyboardInputSourceChangedNotification object:nil];
-	[super dealloc];
+
 }
 
 - (BOOL)setEnabled:(BOOL)aFlag
@@ -498,8 +478,8 @@ static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSU
 	selectorPressed = aSelectorPressed;
 
 #ifdef NS_BLOCKS_AVAILABLE
-	[releasedBlock release], releasedBlock = nil;
-	[pressedBlock release], pressedBlock = nil;
+	releasedBlock = nil;
+	pressedBlock = nil;
 #endif
 
 	return theResult;		// was change succesful
@@ -513,10 +493,10 @@ static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSU
 	if( ![target respondsToSelector:@selector(targetWillChangeToObject:forHotKeyEvent:)] || [target targetWillChangeToObject:nil forHotKeyEvent:self] )
 	{
 		if( releasedBlock != aReleasedBlock )
-			[releasedBlock release], releasedBlock = [aReleasedBlock copy];
+			releasedBlock = [aReleasedBlock copy];
 
 		if( pressedBlock != aPressedBlock )
-			[pressedBlock release], pressedBlock = [aPressedBlock copy];
+			pressedBlock = [aPressedBlock copy];
 
 		selectorReleased = (SEL)0;
 		selectorPressed = (SEL)0;
@@ -734,7 +714,7 @@ static OSStatus switchHotKey( NDHotKeyEvent * self, BOOL aFlag )
  */
 + (id)hotKeyWithKeyCode:(UInt16)aKeyCode character:(unichar)aChar modifierFlags:(NSUInteger)aModifierFlags target:(id)aTarget selector:(SEL)aSelector
 {
-	return [[[self alloc] initWithKeyCode:aKeyCode modifierFlags:aModifierFlags target:aTarget selector:aSelector] autorelease];
+	return [[self alloc] initWithKeyCode:aKeyCode modifierFlags:aModifierFlags target:aTarget selector:aSelector];
 }
 
 /*
