@@ -38,15 +38,6 @@
 #import <Cocoa/Cocoa.h>
 #import <Carbon/Carbon.h>
 
-/*
-	using NDHashTable clas instead of the NDHashTable functions that existed prior to 10.5 we can support garabage collection easier
- */
-#if MAC_OS_X_VERSION_10_5 <= MAC_OS_X_VERSION_MAX_ALLOWED
-	#define NDMapTableClassDefined
-#else
-	#warning Support for 10.4 and earily has been depreciated
-#endif
-
 /*!
 	@defined NDHotKeyEventThreadSafe
 	@abstract A flag to enable thread safety.

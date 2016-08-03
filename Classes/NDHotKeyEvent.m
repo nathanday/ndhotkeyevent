@@ -29,11 +29,7 @@
 static const NSUInteger		kNDHotKeyEventVersion = 2;
 
 @interface NDHotKeyEvent ()
-#ifdef NDMapTableClassDefined
 + (NSMapTable *)allHotKeyEvents;
-#else
-+ (NSHashTable *)allHotKeyEvents;
-#endif
 - (void)addHotKey;
 - (void)removeHotKey;
 - (BOOL)setCollectiveEnabled:(BOOL)aFlag;
@@ -91,21 +87,11 @@ static OSStatus	switchHotKey( NDHotKeyEvent * self, BOOL aFlag );
 	#define	NDHotKeyEventUnlock // unlock
 #endif
 
-#ifdef NDMapTableClassDefined
 static NSMapTable		* allHotKeyEvents = nil;
-#else
-static NSHashTable		* allHotKeyEvents = NULL;
-#endif
 static EventHandlerRef	hotKeysEventHandler = NULL;
 static OSType			signature = 0;
 
 static pascal OSErr eventHandlerCallback( EventHandlerCallRef anInHandlerCallRef, EventRef anInEvent, void * self );
-
-#ifndef NDMapTableClassDefined
-static NSUInteger hashValueHashFunction( NSHashTable * aTable, const void * aHotKeyEvent );
-static BOOL isEqualHashFunction( NSHashTable * aTable, const void * aFirstHotKeyEvent, const void * aSecondHotKeyEvent);
-static NSString * describeHashFunction( NSHashTable * aTable, const void * aHotKeyEvent );
-#endif
 
 static UInt32 _idForCharacterAndModifier( unichar aCharacter, NSUInteger aModFlags ) { return (UInt32)(aCharacter | (aModFlags<<16)); }
 
@@ -114,12 +100,6 @@ static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSU
 	*aModFlags = anId>>16;
 	*aCharacter = anId&0xFFFF;
 }
-
-struct HotKeyMappingEntry
-{
-	UInt32				hotKeyId;
-	NDHotKeyEvent		* hotKeyEvent;
-};
 
 + (BOOL)install
 {
@@ -182,11 +162,7 @@ struct HotKeyMappingEntry
 + (BOOL)setAllEnabled:(BOOL)aFlag
 {
 	BOOL			theAllSucceeded = YES;
-#ifdef NDMapTableClassDefined
 	NSMapTable		* theAllHotKeyEvents = [NDHotKeyEvent allHotKeyEvents];
-#else
-	NSHashTable		* theAllHotKeyEvents = [NDHotKeyEvent allHotKeyEvents];
-#endif
 
 	/*
 	 * need to install before to make sure the method 'setCollectiveEnabled:'
@@ -194,7 +170,6 @@ struct HotKeyMappingEntry
 	 */
 	if( theAllHotKeyEvents && [NDHotKeyEvent install] )
 	{
-#ifdef NDMapTableClassDefined
 		NDHotKeyEventLock;
 			for( NDHotKeyEvent * theHotEvent in [theAllHotKeyEvents objectEnumerator] )
 			{
@@ -202,21 +177,6 @@ struct HotKeyMappingEntry
 					theAllSucceeded = NO;
 			}
 		NDHotKeyEventUnlock;
-#else
-		NSHashEnumerator			theEnumerator;
-		struct HotKeyMappingEntry	* theHotKeyMapEntry;
-		NDHotKeyEventLock;
-			theEnumerator =  NSEnumerateHashTable( theAllHotKeyEvents );
-
-			while( (theHotKeyMapEntry = (struct HotKeyMappingEntry*)NSNextHashEnumeratorItem(&theEnumerator) ) )
-			{
-				if( ![theHotKeyMapEntry->hotKeyEvent setCollectiveEnabled:aFlag] )
-					theAllSucceeded = NO;
-			}
-
-			NSEndHashTableEnumeration( &theEnumerator );
-		NDHotKeyEventUnlock;
-#endif
 	}
 
 	return theAllSucceeded;
@@ -259,29 +219,13 @@ struct HotKeyMappingEntry
 + (instancetype)findHotKeyForId:(UInt32)anID
 {
 	NDHotKeyEvent				* theResult = nil;
-#ifdef NDMapTableClassDefined
 	NSMapTable		* theAllHotKeyEvents = [NDHotKeyEvent allHotKeyEvents];
-#else
-	NSHashTable		* theAllHotKeyEvents = [NDHotKeyEvent allHotKeyEvents];
-#endif
-	
+
 	if( theAllHotKeyEvents )
 	{
-#ifdef NDMapTableClassDefined
 		NDHotKeyEventLock;
 		theResult = [theAllHotKeyEvents objectForKey:[NSNumber numberWithUnsignedInt:anID]];
 		NDHotKeyEventUnlock;
-#else
-		struct HotKeyMappingEntry		* theFoundEntry = NULL;
-		struct HotKeyMappingEntry		theDummyEntry = {anID,nil};
-		
-		NDHotKeyEventLock;
-		theFoundEntry = NSHashGet( theAllHotKeyEvents, (void*)&theDummyEntry);
-		if( theFoundEntry != NULL )
-			[[theFoundEntry->hotKeyEvent retain] autorelease];
-		NDHotKeyEventUnlock;
-		theResult = (theFoundEntry) ? theFoundEntry->hotKeyEvent : nil;
-#endif
 	}
 	
 	return theResult;
@@ -324,20 +268,12 @@ struct HotKeyMappingEntry
 
 + (NSString *)description
 {
-#ifdef NDMapTableClassDefined
 	NSMapTable		* theAllHotKeyEvents = [NDHotKeyEvent allHotKeyEvents];
-#else
-	NSHashTable		* theAllHotKeyEvents = [NDHotKeyEvent allHotKeyEvents];
-#endif
 	NSString		* theDescription = nil;
 	if( theAllHotKeyEvents )
 	{
 		NDHotKeyEventLock;
-#ifdef NDMapTableClassDefined
 		theDescription = [theAllHotKeyEvents description];
-#else
-		theDescription = NSStringFromHashTable(theAllHotKeyEvents);
-#endif
 		NDHotKeyEventUnlock;
 	}
 	return theDescription;
@@ -499,27 +435,14 @@ struct HotKeyMappingEntry
 	 */
 	if( [self retainCount] == 1 )
 	{
-#ifdef NDMapTableClassDefined
 		NSMapTable		* theAllHotKeyEvents = [NDHotKeyEvent allHotKeyEvents];
-#else
-		NSHashTable		* theAllHotKeyEvents = [NDHotKeyEvent allHotKeyEvents];
-#endif
 		if( theAllHotKeyEvents )
 		{
-#ifndef NDMapTableClassDefined
-			struct HotKeyMappingEntry		theDummyEntry = {[self hotKeyId],nil};
-#endif
 			NDHotKeyEventLock;
 				if( [self retainCount] == 1 )		// check again because it might have changed
 				{
 					switchHotKey( self, NO );
-#ifdef NDMapTableClassDefined
 					[theAllHotKeyEvents removeObjectForKey:[NSNumber numberWithUnsignedInt:[self hotKeyId]]];
-#else
-					id		theHotKeyEvent = NSHashGet( theAllHotKeyEvents, (void*)&theDummyEntry );
-					if( theHotKeyEvent )
-						NSHashRemove( theAllHotKeyEvents, theHotKeyEvent );
-#endif
 				}
 			NDHotKeyEventUnlock;
 		}
@@ -721,33 +644,8 @@ pascal OSErr eventHandlerCallback( EventHandlerCallRef anInHandlerCallRef, Event
 	return theError;
 }
 
-#ifndef NDMapTableClassDefined
-
-NSUInteger hashValueHashFunction( NSHashTable * aTable, const void * aHotKeyEntry )
-{
-	struct HotKeyMappingEntry	* theHotKeyEntry = (struct HotKeyMappingEntry*)aHotKeyEntry;
-	return  theHotKeyEntry->hotKeyId;
-}
-
-BOOL isEqualHashFunction( NSHashTable * aTable, const void * aFirstHotKeyEntry, const void * aSecondHotKeyEntry)
-{
-	struct HotKeyMappingEntry		* theFirst = (struct HotKeyMappingEntry*)aFirstHotKeyEntry,
-									* theSecond = (struct HotKeyMappingEntry*)aSecondHotKeyEntry;
-	return theFirst->hotKeyId == theSecond->hotKeyId;
-}
-
-NSString * describeHashFunction( NSHashTable * aTable, const void * aHotKeyEntry )
-{
-	NDHotKeyEvent		* theHotKey;
-
-	theHotKey = ((struct HotKeyMappingEntry*)aHotKeyEntry)->hotKeyEvent;
-	return [theHotKey description];
-}
-#endif
-
 #pragma mark Private methods
 
-#ifdef NDMapTableClassDefined
 + (NSMapTable *)allHotKeyEvents
 {
 	if( allHotKeyEvents == NULL )
@@ -759,80 +657,26 @@ NSString * describeHashFunction( NSHashTable * aTable, const void * aHotKeyEntry
 	}
 	return allHotKeyEvents;
 }
-#else
-
-+ (NSHashTable *)allHotKeyEvents
-{
-	if( allHotKeyEvents == NULL )
-	{
-		NSHashTableCallBacks		theHashCallBacks;
-
-		theHashCallBacks.hash = hashValueHashFunction;
-		theHashCallBacks.isEqual = isEqualHashFunction;
-		theHashCallBacks.retain = NULL;
-		theHashCallBacks.release = NULL;
-		theHashCallBacks.describe = describeHashFunction;
-
-		NDHotKeyEventLock;
-			if( allHotKeyEvents == NULL )
-				allHotKeyEvents = NSCreateHashTableWithZone( theHashCallBacks, 0, NULL);
-		NDHotKeyEventUnlock;
-	}
-
-	return allHotKeyEvents;
-}
-#endif
 
 + (void)currentKeyboardLayoutChanged:(NSNotification *)aNotification
 {
-#ifdef NDMapTableClassDefined
 	NSMapTable			* theAllHotKeyEvents = [NDHotKeyEvent allHotKeyEvents];
-#else
-	NSHashTable			* theAllHotKeyEvents = [NDHotKeyEvent allHotKeyEvents];
-#endif
 
-#ifdef NDMapTableClassDefined
     NDHotKeyEventLock;
     for( NDHotKeyEvent * theHotEvent in [theAllHotKeyEvents objectEnumerator] )
     {
         switchHotKey( theHotEvent, theHotEvent.isEnabled );
     }
     NDHotKeyEventUnlock;
-#else
-    NSHashEnumerator			theEnumerator;
-    struct HotKeyMappingEntry	* theHotKeyMapEntry;
-    NDHotKeyEventLock;
-    theEnumerator =  NSEnumerateHashTable( theAllHotKeyEvents );
-
-    while( (theHotKeyMapEntry = (struct HotKeyMappingEntry*)NSNextHashEnumeratorItem(&theEnumerator) ) )
-    {
-        switchHotKey( theHotKeyMapEntry->hotKeyEvent, theHotKeyMapEntry->hotKeyEvent.isEnabled );
-    }
-
-    NSEndHashTableEnumeration( &theEnumerator );
-    NDHotKeyEventUnlock;
-#endif
 }
 
 - (void)addHotKey
 {
-#ifdef NDMapTableClassDefined
 	NSMapTable			* theAllHotKeyEvents = [NDHotKeyEvent allHotKeyEvents];
-#else
-	NSHashTable			* theAllHotKeyEvents = [NDHotKeyEvent allHotKeyEvents];
-#endif
 	if( theAllHotKeyEvents )
 	{
 		NDHotKeyEventLock;
-#ifdef NDMapTableClassDefined
 			[theAllHotKeyEvents setObject:self forKey:[NSNumber numberWithUnsignedInt:[self hotKeyId]]];
-#else
-			struct HotKeyMappingEntry	* theEntry = (struct HotKeyMappingEntry *)malloc(sizeof(struct HotKeyMappingEntry));
-			theEntry->hotKeyId = [self hotKeyId];
-			theEntry->hotKeyEvent = self;
-
-			NSParameterAssert( NSHashInsertIfAbsent( theAllHotKeyEvents, (void*)theEntry ) == NULL );
-#endif
 		NDHotKeyEventUnlock;
 	}
 }
@@ -841,29 +685,12 @@ NSString * describeHashFunction( NSHashTable * aTable, const void * aHotKeyEntry
 {
 	[self setEnabled:NO];
 
-#ifdef NDMapTableClassDefined
 	NSMapTable			* theAllHotKeyEvents = [NDHotKeyEvent allHotKeyEvents];
-#else
-	NSHashTable			* theAllHotKeyEvents = [NDHotKeyEvent allHotKeyEvents];
-#endif
 
 	if( theAllHotKeyEvents )
 	{
-#ifndef NDMapTableClassDefined
-		struct HotKeyMappingEntry	theDummyEntry = {[self hotKeyId],nil};
-		struct HotKeyMappingEntry	* theEntry = NULL;
-#endif
 		NDHotKeyEventLock;
-#ifdef NDMapTableClassDefined
 			[theAllHotKeyEvents removeObjectForKey:[NSNumber numberWithUnsignedInt:[self hotKeyId]]];
-#else
-			theEntry = (struct HotKeyMappingEntry*)NSHashGet( theAllHotKeyEvents, (void*)&theDummyEntry);
-			if( theEntry )
-			{
-				NSParameterAssert( theEntry->hotKeyEvent == self );
-				NSHashRemove( theAllHotKeyEvents, theEntry );
-			}
-#endif
 		NDHotKeyEventUnlock;
 	}
 }
