@@ -386,7 +386,7 @@ static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSU
 
 }
 
-- (OSStatus)switchHotKey:(BOOL)aFlag
+- (BOOL)switchHotKey:(BOOL)aFlag error:(NSError **)error
 {
 	OSStatus		theError = noErr;
 	if( aFlag )
@@ -395,29 +395,53 @@ static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSU
 
 		if( _reference )
 			theError = UnregisterEventHotKey( _reference );
-		if( theError == noErr )
+
+		if ( theError != noErr )
 		{
-			theHotKeyID.signature = [NDHotKeyEvent signature];
-			theHotKeyID.id = [self hotKeyId];
+			if ( error )
+			{
+				*error = [NSError errorWithDomain:NSOSStatusErrorDomain code:theError userInfo:nil];
+			}
+			return NO;
+		}
 
-			NSCAssert( theHotKeyID.signature, @"HotKeyEvent signature has not been set yet" );
-			NSCParameterAssert(sizeof(unsigned long) >= sizeof(id) );
+		theHotKeyID.signature = [NDHotKeyEvent signature];
+		theHotKeyID.id = [self hotKeyId];
 
-			theError = RegisterEventHotKey( self.keyCode, NDCarbonModifierFlagsForCocoaModifierFlags(self.modifierFlags), theHotKeyID, GetEventDispatcherTarget(), 0, &_reference );
+		NSCAssert( theHotKeyID.signature, @"HotKeyEvent signature has not been set yet" );
+		NSCParameterAssert(sizeof(unsigned long) >= sizeof(id) );
+
+		theError = RegisterEventHotKey( self.keyCode, NDCarbonModifierFlagsForCocoaModifierFlags(self.modifierFlags), theHotKeyID, GetEventDispatcherTarget(), 0, &_reference );
+		if ( theError != noErr )
+		{
+			if ( error )
+			{
+				*error = [NSError errorWithDomain:NSOSStatusErrorDomain code:theError userInfo:nil];
+			}
+			return NO;
 		}
 	}
 	else
 	{
 		theError = UnregisterEventHotKey( _reference );
+		if ( theError != noErr )
+		{
+			if ( error )
+			{
+				*error = [NSError errorWithDomain:NSOSStatusErrorDomain code:theError userInfo:nil];
+			}
+			return NO;
+		}
 		_reference = NULL;
 	}
 
-	return theError;
+	return YES;
 }
 
 - (BOOL)setEnabled:(BOOL)aFlag
 {
 	BOOL		theResult = YES;
+	NSError		*error = nil;
 
 	if( [NDHotKeyEvent install] )
 	{
@@ -426,15 +450,15 @@ static void _getCharacterAndModifierForId( UInt32 anId, unichar *aCharacter, NSU
 		 */
 		@synchronized([self class]) {
 			if( aFlag == YES && _isEnabled.collective == YES  && _isEnabled.individual == NO )
-				theResult = ([self switchHotKey:YES] == noErr);
+				theResult = [self switchHotKey:YES error:&error];
 			else if( aFlag == NO && _isEnabled.collective == YES  && _isEnabled.individual == YES )
-				theResult = ([self switchHotKey:NO] == noErr);
+				theResult = [self switchHotKey:NO error:&error];
 		}
 
 		if( theResult )
 			_isEnabled.individual = aFlag;
 		else
-			NSLog(@"%s failed ", aFlag ? "enable" : "disable" );
+			NSLog(@"%s failed: %@", (aFlag ? "enable" : "disable"), error );
 	}
 	else
 		theResult = NO;
@@ -602,7 +626,7 @@ pascal OSErr eventHandlerCallback( EventHandlerCallRef anInHandlerCallRef, Event
 	@synchronized([self class]) {
 		for( NDHotKeyEvent * theHotEvent in [[NDHotKeyEvent allHotKeyEvents] objectEnumerator] )
 		{
-			[theHotEvent switchHotKey:theHotEvent.isEnabled];
+			[theHotEvent switchHotKey:theHotEvent.isEnabled error:NULL];
 		}
 	}
 }
@@ -626,6 +650,7 @@ pascal OSErr eventHandlerCallback( EventHandlerCallRef anInHandlerCallRef, Event
 - (BOOL)setCollectiveEnabled:(BOOL)aFlag
 {
 	BOOL		theResult = YES;
+	NSError		*error = nil;
 	
 	if( [NDHotKeyEvent install] )
 	{
@@ -634,15 +659,15 @@ pascal OSErr eventHandlerCallback( EventHandlerCallRef anInHandlerCallRef, Event
 		 */
 		@synchronized([self class]) {
 			if( aFlag == YES && _isEnabled.collective == NO  && _isEnabled.individual == YES )
-				theResult = ([self switchHotKey:YES] == noErr);
+				theResult = [self switchHotKey:YES error:&error];
 			else if( aFlag == NO && _isEnabled.collective == YES  && _isEnabled.individual == YES )
-				theResult = ([self switchHotKey:NO] == noErr);
+				theResult = [self switchHotKey:NO error:&error];
 		}
 
 		if( theResult )
 			_isEnabled.collective = aFlag;
 		else
-			NSLog(@"%s failed", aFlag ? "enable" : "disable" );
+			NSLog(@"collective %s failed: %@", (aFlag ? "enable" : "disable"), error );
 	}
 	else
 		theResult = NO;
