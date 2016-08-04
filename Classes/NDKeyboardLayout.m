@@ -488,7 +488,8 @@ void NDKeyboardLayoutNotificationCallback( CFNotificationCenterRef aCenter, void
 
 		NSUInteger		thePos = _characterForModifierFlags(theCharacter,aModifierFlags);
 
-		if( UCKeyTranslate( self.keyboardLayoutPtr, aKeyCode,
+		if( UCKeyTranslate( self.keyboardLayoutPtr,
+							 aKeyCode,
 							 kUCKeyActionDisplay,
 							 NDCarbonModifierFlagsForCocoaModifierFlags(aModifierFlags),
 							 LMGetKbdType(),
