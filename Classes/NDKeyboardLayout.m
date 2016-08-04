@@ -132,6 +132,7 @@ struct UnmappedEntry	unmappedKeys[] =
 
 @interface NDKeyboardLayout () {
 @private
+	TISInputSourceRef				inputSource;
 	CFDataRef						keyboardLayoutData;
 	struct ReverseMappingEntry		* mappings;
 	NSUInteger						numberOfMappings;
@@ -429,15 +430,18 @@ void NDKeyboardLayoutNotificationCallback( CFNotificationCenterRef aCenter, void
 
 - (instancetype)initWithInputSource:(TISInputSourceRef)aSource
 {
-	if( (self = [super init]) != nil )
-	{
-		if( aSource != NULL && (keyboardLayoutData = (CFDataRef)TISGetInputSourceProperty(aSource, kTISPropertyUnicodeKeyLayoutData)) != nil )
-		{
-			CFRetain( keyboardLayoutData );
-		}
-		else
-			self = nil;
-	}
+	NSParameterAssert(aSource != nil);
+
+	self = [super init];
+	if (!self) return nil;
+
+	inputSource = aSource;
+	keyboardLayoutData = (CFDataRef)TISGetInputSourceProperty(inputSource, kTISPropertyUnicodeKeyLayoutData);
+	// Only Unicode layouts please ?
+	if (!keyboardLayoutData) return nil;
+
+	CFRetain( keyboardLayoutData );
+
 	return self;
 }
 
@@ -447,6 +451,8 @@ void NDKeyboardLayoutNotificationCallback( CFNotificationCenterRef aCenter, void
 		free( (void*)mappings );
 	if( keyboardLayoutData != NULL )
 		CFRelease( keyboardLayoutData );
+	if ( inputSource != NULL )
+		CFRelease( inputSource );
 }
 
 - (NSString*)stringForCharacter:(unichar)aCharacter modifierFlags:(NSUInteger)aModifierFlags
