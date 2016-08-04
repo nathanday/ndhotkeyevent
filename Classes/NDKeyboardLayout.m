@@ -155,8 +155,9 @@ static struct ReverseMappingEntry * _searchReverseMapping( struct ReverseMapping
 				high = aLength - 1,
 				mid,
 				result;
+	struct ReverseMappingEntry *entry = NULL;
 
-    while( low <= high )
+    while( low <= high && entry == NULL )
 	{
         mid = (low + high)>>1;
         result = _reverseMappingEntryCmpFunc( &aMapping[mid], aSearchValue );
@@ -166,8 +167,8 @@ static struct ReverseMappingEntry * _searchReverseMapping( struct ReverseMapping
             low = mid + 1;
         else
             return &aMapping[mid];
-    }
-    return NULL;
+	}
+    return entry;
 }
 
 static struct UnmappedEntry * _unmappedEntryForKeyCode( UInt16 aKeyCode )
@@ -176,8 +177,9 @@ static struct UnmappedEntry * _unmappedEntryForKeyCode( UInt16 aKeyCode )
 				high = sizeof(unmappedKeys)/sizeof(*unmappedKeys) - 1,
 				mid,
 				result;
+	struct UnmappedEntry *entry = NULL;
 
-    while( low <= high )
+    while( low <= high && entry == NULL )
 	{
         mid = (low + high)>>1;
         result = unmappedKeys[mid].keyCode - aKeyCode;
@@ -186,9 +188,9 @@ static struct UnmappedEntry * _unmappedEntryForKeyCode( UInt16 aKeyCode )
         else if( result < 0 )
             low = mid + 1;
         else
-            return &unmappedKeys[mid];
-    }
-    return '\0';
+            entry = &unmappedKeys[mid];
+	}
+    return entry;
 }
 
 static const size_t			kBufferSize = 7;
