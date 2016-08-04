@@ -339,13 +339,13 @@ UInt32 NDCarbonModifierFlagsForCocoaModifierFlags( NSUInteger aModifierFlags )
 #ifdef DEBUGGING_CODE
 	for( NSUInteger i = 1; i < numberOfMappings; i++ )
 	{
-		fprintf( stderr, "%d -> %c[%d]%s\n",
+		fprintf( stderr, "keycode: 0x%02x -> char: %c (0x%02x), keypad: %s\n",
 				mappings[i].keyCode,
 				(char)mappings[i].character,
 				mappings[i].character,
 				mappings[i].keypad ? " keypad" : ""
 				);
-		NSAssert3( mappings[i-1].character <= mappings[i].character, @"[%d] %d <= %d", i, mappings[i-1].character, mappings[i].character );
+		NSAssert( mappings[i-1].character <= mappings[i].character, @"[%ld] %d <= %d", (unsigned long)i, mappings[i-1].character, mappings[i].character );
 	}
 #endif
 }
