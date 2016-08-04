@@ -532,14 +532,15 @@ void NDKeyboardLayoutNotificationCallback( CFNotificationCenterRef aCenter, void
 	}
 	else
 		theChar  = theEntry->character;
-	return toupper(theChar);
+
+	return theChar;
 }
 
 - (UInt16)keyCodeForCharacter:(unichar)aCharacter { return [self keyCodeForCharacter:aCharacter numericPad:NO]; }
 
 - (UInt16)keyCodeForCharacter:(unichar)aCharacter numericPad:(BOOL)aNumericPad
 {
-	struct ReverseMappingEntry	theSearchValue = { tolower(aCharacter), aNumericPad, 0 };
+	struct ReverseMappingEntry	theSearchValue = { aCharacter, aNumericPad, 0 };
 	struct ReverseMappingEntry	* theEntry = NULL;
 	theEntry = _searchReverseMapping( mappings, numberOfMappings, &theSearchValue );
 
