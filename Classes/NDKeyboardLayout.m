@@ -539,6 +539,14 @@ void NDKeyboardLayoutNotificationCallback( CFNotificationCenterRef aCenter, void
 	return theEntry ? theEntry->keyCode : '\0';
 }
 
+- (NSString *)localizedName {
+	return (__bridge_transfer NSString *)TISGetInputSourceProperty(inputSource, kTISPropertyLocalizedName);
+}
+
+- (NSString *)description {
+	return [NSString stringWithFormat:@"<%@ %p name: %@>", NSStringFromClass([self class]), self, [self localizedName]];
+}
+
 #pragma mark - private
 
 - (const UCKeyboardLayout *)keyboardLayoutPtr { return (const UCKeyboardLayout *)CFDataGetBytePtr(keyboardLayoutData); }
