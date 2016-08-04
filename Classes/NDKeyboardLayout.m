@@ -372,41 +372,60 @@ void NDKeyboardLayoutNotificationCallback( CFNotificationCenterRef aCenter, void
 									);
 }
 
-+ (instancetype)keyboardLayout
-{
-	if( kCurrentKeyboardLayout == nil )
-	{
-		@synchronized(self)
-		{	/*
-				Try different method until we succeed.
-			 */
-			TISInputSourceRef (*theInputSourceFunctions[])() = {
-									TISCopyInputMethodKeyboardLayoutOverride,
-                                    TISCopyCurrentASCIICapableKeyboardLayoutInputSource,
-                                    TISCopyCurrentKeyboardLayoutInputSource,
-								};
++ (TISInputSourceRef)currentInputSource {
+	/*
+	 Try different method until we succeed.
+	 */
+	TISInputSourceRef (*theInputSourceFunctions[])() = {
+		TISCopyInputMethodKeyboardLayoutOverride,
+		TISCopyCurrentASCIICapableKeyboardLayoutInputSource,
+		TISCopyCurrentKeyboardLayoutInputSource,
+	};
 
-			for( NSUInteger i = 0; i < sizeof(theInputSourceFunctions)/sizeof(*theInputSourceFunctions) && kCurrentKeyboardLayout == nil; i++ )
-			{
-				TISInputSourceRef		theInputSource = theInputSourceFunctions[i]();
-				if( theInputSource != NULL )
-				{
-					kCurrentKeyboardLayout = [[self alloc] initWithInputSource:theInputSource];
-					CFRelease(theInputSource);
-				}
-			}
+	for( NSUInteger i = 0; i < sizeof(theInputSourceFunctions)/sizeof(*theInputSourceFunctions); i++ )
+	{
+		TISInputSourceRef		theInputSource = theInputSourceFunctions[i]();
+		if( theInputSource != NULL )
+		{
+			return theInputSource;
 		}
 	}
+	return nil;
+}
 
-	return kCurrentKeyboardLayout;
++ (instancetype)keyboardLayout
+{
+	@synchronized(self)
+	{
+		if( kCurrentKeyboardLayout == nil )
+		{
+
+			TISInputSourceRef ref = [self currentInputSource];
+			if (!ref) {
+				NSLog(@"Unexpected input source");
+				return nil;
+			}
+			kCurrentKeyboardLayout = [[self alloc] initWithInputSource:ref];
+		}
+
+		return kCurrentKeyboardLayout;
+	}
 }
 
 - (instancetype)init
 {
-	return [[self class] keyboardLayout];
+	TISInputSourceRef ref = [[self class] currentInputSource];
+	if (!ref) return nil;
+
+	return [self initWithInputSource:ref];
 }
 
-- (instancetype)initWithLanguage:(NSString *)aLangauge { return [self initWithInputSource:TISCopyInputSourceForLanguage((__bridge CFStringRef)aLangauge)]; }
+- (instancetype)initWithLanguage:(NSString *)aLangauge {
+	TISInputSourceRef ref = TISCopyInputSourceForLanguage((__bridge CFStringRef)aLangauge);
+	if (!ref) return nil;
+
+	return [self initWithInputSource:ref];
+}
 
 - (instancetype)initWithInputSource:(TISInputSourceRef)aSource
 {
