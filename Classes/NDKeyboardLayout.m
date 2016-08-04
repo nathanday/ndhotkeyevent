@@ -442,6 +442,11 @@ void NDKeyboardLayoutNotificationCallback( CFNotificationCenterRef aCenter, void
 
 	CFRetain( keyboardLayoutData );
 
+	// Generate mappings now because LMGetKbdType() *could* change
+	// I haven't been able to see it return anything other than 44,
+	// but better be safe.
+	[self generateMappings];
+
 	return self;
 }
 
@@ -533,8 +538,6 @@ void NDKeyboardLayoutNotificationCallback( CFNotificationCenterRef aCenter, void
 {
 	struct ReverseMappingEntry	theSearchValue = { tolower(aCharacter), aNumericPad, 0 };
 	struct ReverseMappingEntry	* theEntry = NULL;
-	if( mappings == NULL )
-		[self generateMappings];
 	theEntry = _searchReverseMapping( mappings, numberOfMappings, &theSearchValue );
 
 	return (theEntry ? theEntry->keyCode : 0);
