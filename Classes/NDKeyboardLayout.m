@@ -149,7 +149,7 @@ static int _reverseMappingEntryCmpFunc( const void * a, const void * b )
 	return theA->character != theB->character ? theA->character - theB->character : theA->keypad - theB->keypad;
 }
 
-static struct ReverseMappingEntry * _searchreverseMapping( struct ReverseMappingEntry * aMapping, NSUInteger aLength, struct ReverseMappingEntry * aSearchValue )
+static struct ReverseMappingEntry * _searchReverseMapping( struct ReverseMappingEntry * aMapping, NSUInteger aLength, struct ReverseMappingEntry * aSearchValue )
 {
     NSInteger	low = 0,
 				high = aLength - 1,
@@ -535,8 +535,9 @@ void NDKeyboardLayoutNotificationCallback( CFNotificationCenterRef aCenter, void
 	struct ReverseMappingEntry	* theEntry = NULL;
 	if( mappings == NULL )
 		[self generateMappings];
-	theEntry = _searchreverseMapping( mappings, numberOfMappings, &theSearchValue );
-	return theEntry ? theEntry->keyCode : '\0';
+	theEntry = _searchReverseMapping( mappings, numberOfMappings, &theSearchValue );
+
+	return (theEntry ? theEntry->keyCode : 0);
 }
 
 - (NSString *)localizedName {
