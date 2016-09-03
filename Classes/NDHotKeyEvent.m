@@ -623,6 +623,7 @@ pascal OSErr eventHandlerCallback( EventHandlerCallRef anInHandlerCallRef, Event
 		// We have to remap all keys to their new virtual key position
 		// Start by copying all current hotkeys
 		NSMapTable *oldHotKeys = [[NDHotKeyEvent allHotKeyEvents] copy];
+		NSMutableSet *enabledHotKeys = [NSMutableSet set];
 
 		for( NDHotKeyEvent * theHotEvent in [oldHotKeys objectEnumerator] )
 		{
@@ -632,17 +633,23 @@ pascal OSErr eventHandlerCallback( EventHandlerCallRef anInHandlerCallRef, Event
 			unichar oldChar = [oldLayout characterForKeyCode:theHotEvent.keyCode];
 			UInt16 newKeyCode = [[NDKeyboardLayout keyboardLayout] keyCodeForCharacter:oldChar];
 
-			// Update our table, removing ourselves first since our hash depends on the keycode
+			// Update all our hotkey keycodes, removing them first since their hash depends on its value
 			BOOL wasEnabled = theHotEvent.isEnabled;
 			[theHotEvent removeHotKey];
 			theHotEvent.keyCode = newKeyCode;
-			[theHotEvent addHotKey];
+			if (wasEnabled) {
+				[enabledHotKeys addObject:theHotEvent];
+			}
+		}
 
-			// We can reenable ourselves, if appropriate
+		// Now that all hot keys have been remapped, we add them back and re-enable them
+		for( NDHotKeyEvent *theHotEvent in [oldHotKeys objectEnumerator]) {
+			[theHotEvent addHotKey];
 			NSError *error = nil;
+			BOOL wasEnabled = [enabledHotKeys containsObject:theHotEvent];
 			if (![theHotEvent setEnabled:wasEnabled])
 			{
-				NSLog(@"error restoring hotkey state %@: %@", @(wasEnabled), error);
+				NSLog(@"error restoring hotkey %@: %@", theHotEvent.stringValue, error);
 			}
 		}
 	}
