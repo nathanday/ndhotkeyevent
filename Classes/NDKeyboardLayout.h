@@ -39,17 +39,24 @@ extern NSString		* const NDKeyboardLayoutSelectedKeyboardInputSourceChangedNotif
 extern NSString		* const NDKeyboardLayoutPreviousKeyboardLayoutUserInfoKey;
 
 /*!
+ @function NDStringForModifiers
+ Converts modifiers to their unicode characters
+ @param modifierFlags ￼one or more of the flags <tt>NSShiftKeyMask</tt>, <tt>NSControlKeyMask</tt>, <tt>NSAlternateKeyMask</tt>, <tt>NSCommandKeyMask</tt>
+ */
+NSString *NDStringForModifiers(NSUInteger modifierFlags);
+
+/*!
 	@function NDCocoaModifierFlagsForCarbonModifierFlags
 	Convert Carbon modifer flags to Cocoa modifier flags.
 	@param modifierFlags one or more of the flags <tt>shiftKey</tt>, <tt>controlKey</tt>, <tt>optionKey</tt>, <tt>cmdKey</tt>
  */
-NSUInteger NDCocoaModifierFlagsForCarbonModifierFlags( NSUInteger modifierFlags );
+NSUInteger NDCocoaModifierFlagsForCarbonModifierFlags( UInt32 modifierFlags );
 /*!
 	@function NDCarbonModifierFlagsForCocoaModifierFlags
 	Convert Cocoa modifer flags to Carbon modifier flags.
 	@param modifierFlags ￼one or more of the flags <tt>NSShiftKeyMask</tt>, <tt>NSControlKeyMask</tt>, <tt>NSAlternateKeyMask</tt>, <tt>NSCommandKeyMask</tt>
  */
-NSUInteger NDCarbonModifierFlagsForCocoaModifierFlags( NSUInteger modifierFlags );
+UInt32 NDCarbonModifierFlagsForCocoaModifierFlags( NSUInteger modifierFlags );
 
 /*!
 	@class NDKeyboardLayout
@@ -63,7 +70,7 @@ NSUInteger NDCarbonModifierFlagsForCocoaModifierFlags( NSUInteger modifierFlags 
 	@method keyboardLayout
 	Get a keyboard layout for the current keyboard
  */
-+ (id)keyboardLayout;
++ (instancetype)keyboardLayout;
 
 /*!
 	@method init
@@ -71,19 +78,19 @@ NSUInteger NDCarbonModifierFlagsForCocoaModifierFlags( NSUInteger modifierFlags 
 	returned from <tt>[NSLocale preferredLanguages]</tt> is attempted and if finally if that fails a keyboard layout
 	for the most recently used ASCII-capable keyboard is created. If that fails then this method returns <tt>nil</tt>.
  */
-- (id)init;
+- (instancetype)init;
 /*!
 	@method initWithLanguage:
 	@abstract initialise a keyboard layout.
 	@discussion Initialises a KeyboardLayout with an <tt>TISInputSourceRef</tt> for the supplied language.
  */
-- (id)initWithLanguage:(NSString *)langauge;
+- (instancetype)initWithLanguage:(NSString *)langauge;
 /*!
 	@method initWithInputSource:
 	@abstract initialise a keyboard layout.
 	@discussion Initialises a KeyboardLayout with an <tt>TISInputSourceRef</tt>, this method is called with the result from <tt>initWithInputSource:TISCopyCurrentKeyboardInputSource()</tt>.
  */
-- (id)initWithInputSource:(TISInputSourceRef)source;
+- (instancetype)initWithInputSource:(TISInputSourceRef)source NS_DESIGNATED_INITIALIZER;
 
 /*!
 	@method stringForCharacter:modifierFlags:
@@ -92,7 +99,7 @@ NSUInteger NDCarbonModifierFlagsForCocoaModifierFlags( NSUInteger modifierFlags 
 	@param character The unmodified character on the keyboard.
 	@param modifierFlags Modifier flags <tt>NSControlKeyMask</tt>, <tt>NSAlternateKeyMask</tt>, <tt>NSShiftKeyMask</tt>, <tt>NSCommandKeyMask</tt> and <tt>NSNumericPadKeyMask</tt>.
  */
-- (NSString*)stringForCharacter:(unichar)character modifierFlags:(UInt32)modifierFlags;
+- (NSString*)stringForCharacter:(unichar)character modifierFlags:(NSUInteger)modifierFlags;
 /*!
 	@method stringForKeyCode:modifierFlags:
 	@abstract Get a string for display purposes. 
@@ -100,7 +107,7 @@ NSUInteger NDCarbonModifierFlagsForCocoaModifierFlags( NSUInteger modifierFlags 
 	@param keyCode A value specifying the virtual key code that is to be translated. For ADB keyboards, virtual key codes are in the range from 0 to 127.
 	@param modifierFlags Modifier flags <tt>NSControlKeyMask</tt>, <tt>NSAlternateKeyMask</tt>, <tt>NSShiftKeyMask</tt>, <tt>NSCommandKeyMask</tt> and <tt>NSNumericPadKeyMask</tt>.
  */
-- (NSString*)stringForKeyCode:(UInt16)keyCode modifierFlags:(UInt32)modifierFlags;
+- (NSString*)stringForKeyCode:(UInt16)keyCode modifierFlags:(NSUInteger)modifierFlags;
 /*!
 	@method characterForKeyCode:
 	@abstract Get the key character for a given key code.

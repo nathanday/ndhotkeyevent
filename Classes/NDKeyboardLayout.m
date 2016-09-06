@@ -29,6 +29,8 @@
 NSString		* const NDKeyboardLayoutSelectedKeyboardInputSourceChangedNotification = @"NDKeyboardLayoutSelectedKeyboardInputSourceChanged";
 NSString		* const NDKeyboardLayoutPreviousKeyboardLayoutUserInfoKey = @"NDKeyboardLayoutPreviousKeyboardLayout";
 
+NSString		* const NDKeyboardLayoutEnabledKeyboardInputSourcesChangedNotification = @"NDKeyboardLayoutEnabledKeyboardInputSourcesChanged";
+
 struct ReverseMappingEntry
 {
 	UniChar		character;
@@ -43,13 +45,22 @@ struct UnmappedEntry
 	unichar		description[4];
 };
 
+/* Those must be kept sorted by keyCode */
 struct UnmappedEntry	unmappedKeys[] =
 {
+    {kVK_Return, 0x24, {0x21A9, '\0', '\0', '\0'}},
+    {kVK_Tab, 0x30, {0x21E5, '\0', '\0', '\0'}},
+    {kVK_Space,        0x31, {0x23B5, '\0', '\0', '\0'}}, // 0x02FD
 	{NSDeleteFunctionKey, 0x33, {0x232B,'\0','\0','\0'}},
+    {kVK_Escape,       0x35, {0x238B, '\0', '\0', '\0'}},
 	{NSF17FunctionKey, 0x40, {'F','1','7','\0'}},
 	{NSClearDisplayFunctionKey, 0x47, {0x2327,'\0','\0','\0'}},
+//    {kVK_VolumeUp, 0x48, {}},
+//    {kVK_VolumeDown, 0x49, {}},
+//    {kVK_Mute, 0x4A, {}},
 	{NSF18FunctionKey, 0x4F, {'F','1','8','\0'}},
 	{NSF19FunctionKey, 0x50, {'F','1','9','\0'}},
+    {NSF20FunctionKey, 0x5A, {'F', '2', '0', '\0'}},
 	{NSF5FunctionKey, 0x60, {'F','5','\0','\0'}},
 	{NSF6FunctionKey, 0x61, {'F','6','\0','\0'}},
 	{NSF7FunctionKey, 0x62, {'F','7','\0','\0'}},
@@ -63,6 +74,7 @@ struct UnmappedEntry	unmappedKeys[] =
 	{NSF10FunctionKey, 0x6D, {'F','1','0','\0'}},
 	{NSF12FunctionKey, 0x6F, {'F','1','2','\0'}},
 	{NSF15FunctionKey, 0x71, {'F','1','5','\0'}},
+    {NSHelpFunctionKey, 0x72, {'H', 'e', 'l', 'p'}},
 	{NSHomeFunctionKey, 0x73, {0x21F1,'\0','\0','\0'}},
 	{NSPageUpFunctionKey, 0x74, {0x21DE,'\0','\0','\0'}},
 	{NSDeleteCharFunctionKey, 0x75, {0x2326,'\0','\0','\0'}},
@@ -74,8 +86,7 @@ struct UnmappedEntry	unmappedKeys[] =
 	{NSLeftArrowFunctionKey, 0x7B, {0x2190,'\0','\0','\0'}},
 	{NSRightArrowFunctionKey, 0x7C, {0x2192,'\0','\0','\0'}},
 	{NSDownArrowFunctionKey, 0x7D, {0x2193,'\0','\0','\0'}},
-	{NSUpArrowFunctionKey, 0x7E, {0x2191,'\0','\0','\0'}}
-//	{NSF20FunctionKey, 0xXXXX},
+	{NSUpArrowFunctionKey, 0x7E, {0x2191,'\0','\0','\0'}},
 //	{NSF21FunctionKey, 0xXXXX},
 //	{NSF22FunctionKey, 0xXXXX},
 //	{NSF23FunctionKey, 0xXXXX},
@@ -119,9 +130,9 @@ struct UnmappedEntry	unmappedKeys[] =
 //	{NSModeSwitchFunctionKey, 0xXXXX}
 };
 
-@interface NDKeyboardLayout ()
-{
+@interface NDKeyboardLayout () {
 @private
+	TISInputSourceRef				inputSource;
 	CFDataRef						keyboardLayoutData;
 	struct ReverseMappingEntry		* mappings;
 	NSUInteger						numberOfMappings;
@@ -138,14 +149,15 @@ static int _reverseMappingEntryCmpFunc( const void * a, const void * b )
 	return theA->character != theB->character ? theA->character - theB->character : theA->keypad - theB->keypad;
 }
 
-static struct ReverseMappingEntry * _searchreverseMapping( struct ReverseMappingEntry * aMapping, NSUInteger aLength, struct ReverseMappingEntry * aSearchValue )
+static struct ReverseMappingEntry * _searchReverseMapping( struct ReverseMappingEntry * aMapping, NSUInteger aLength, struct ReverseMappingEntry * aSearchValue )
 {
     NSInteger	low = 0,
 				high = aLength - 1,
 				mid,
 				result;
-    
-    while( low <= high )
+	struct ReverseMappingEntry *entry = NULL;
+
+    while( low <= high && entry == NULL )
 	{
         mid = (low + high)>>1;
         result = _reverseMappingEntryCmpFunc( &aMapping[mid], aSearchValue );
@@ -155,8 +167,8 @@ static struct ReverseMappingEntry * _searchreverseMapping( struct ReverseMapping
             low = mid + 1;
         else
             return &aMapping[mid];
-    }
-    return NULL;
+	}
+    return entry;
 }
 
 static struct UnmappedEntry * _unmappedEntryForKeyCode( UInt16 aKeyCode )
@@ -165,8 +177,9 @@ static struct UnmappedEntry * _unmappedEntryForKeyCode( UInt16 aKeyCode )
 				high = sizeof(unmappedKeys)/sizeof(*unmappedKeys) - 1,
 				mid,
 				result;
-    
-    while( low <= high )
+	struct UnmappedEntry *entry = NULL;
+
+    while( low <= high && entry == NULL )
 	{
         mid = (low + high)>>1;
         result = unmappedKeys[mid].keyCode - aKeyCode;
@@ -175,34 +188,54 @@ static struct UnmappedEntry * _unmappedEntryForKeyCode( UInt16 aKeyCode )
         else if( result < 0 )
             low = mid + 1;
         else
-            return &unmappedKeys[mid];
-    }
-    return '\0';
+            entry = &unmappedKeys[mid];
+	}
+    return entry;
 }
 
-static const size_t			kBufferSize = 4;
-static NSUInteger _characterForModifierFlags( unichar aBuff[kBufferSize], UInt32 aModifierFlags )
+static const size_t			kBufferSize = 7;
+static NSUInteger _characterForModifierFlags( unichar aBuff[kBufferSize], NSUInteger aModifierFlags )
 {
 	NSUInteger		thePos = 0;
 	memset( aBuff, 0, kBufferSize );
-	if(aModifierFlags & NSControlKeyMask)
-		aBuff[thePos++] = kControlUnicode;
-	
-	if(aModifierFlags & NSAlternateKeyMask)
-		aBuff[thePos++] = kOptionUnicode;
-	
-	if(aModifierFlags & NSShiftKeyMask)
-		aBuff[thePos++] = kShiftUnicode;
-	
+
+    // Based on menus hotkeys order
+
 	if(aModifierFlags & NSCommandKeyMask)
 		aBuff[thePos++] = kCommandUnicode;
+
+	if(aModifierFlags & NSShiftKeyMask)
+		aBuff[thePos++] = kShiftUnicode;
+
+	if(aModifierFlags & NSAlternateKeyMask)
+		aBuff[thePos++] = kOptionUnicode;
+
+	if(aModifierFlags & NSControlKeyMask)
+		aBuff[thePos++] = kControlUnicode;
+
+    if(aModifierFlags & NSFunctionKeyMask) {
+        aBuff[thePos++] = 'F';
+        aBuff[thePos++] = 'n';
+        aBuff[thePos++] = '-';
+    }
+
 	return thePos;
+}
+
+/*
+ * NDStringForModifiers
+ */
+NSString *NDStringForModifiers(NSUInteger aModifierFlags)
+{
+    unichar charBuffer[kBufferSize];
+    NSUInteger length = _characterForModifierFlags(charBuffer, aModifierFlags);
+    return [NSString stringWithCharacters:charBuffer length:length];
 }
 
 /*
  * NDCocoaModifierFlagsForCarbonModifierFlags()
  */
-NSUInteger NDCocoaModifierFlagsForCarbonModifierFlags( NSUInteger aModifierFlags )
+NSUInteger NDCocoaModifierFlagsForCarbonModifierFlags( UInt32 aModifierFlags )
 {
 	NSUInteger	theCocoaModifierFlags = 0;
 	
@@ -224,9 +257,9 @@ NSUInteger NDCocoaModifierFlagsForCarbonModifierFlags( NSUInteger aModifierFlags
 /*
  * NDCarbonModifierFlagsForCocoaModifierFlags()
  */
-NSUInteger NDCarbonModifierFlagsForCocoaModifierFlags( NSUInteger aModifierFlags )
+UInt32 NDCarbonModifierFlagsForCocoaModifierFlags( NSUInteger aModifierFlags )
 {
-	NSUInteger	theCarbonModifierFlags = 0;
+	UInt32	theCarbonModifierFlags = 0;
 	
 	if(aModifierFlags & NSShiftKeyMask)
 		theCarbonModifierFlags |= shiftKey;
@@ -306,31 +339,34 @@ NSUInteger NDCarbonModifierFlagsForCocoaModifierFlags( NSUInteger aModifierFlags
 #ifdef DEBUGGING_CODE
 	for( NSUInteger i = 1; i < numberOfMappings; i++ )
 	{
-		fprintf( stderr, "%d -> %c[%d]%s\n",
+		fprintf( stderr, "keycode: 0x%02x -> char: %c (0x%02x), keypad: %s\n",
 				mappings[i].keyCode,
 				(char)mappings[i].character,
 				mappings[i].character,
 				mappings[i].keypad ? " keypad" : ""
 				);
-		NSAssert3( mappings[i-1].character <= mappings[i].character, @"[%d] %d <= %d", i, mappings[i-1].character, mappings[i].character );
+		NSAssert( mappings[i-1].character <= mappings[i].character, @"[%ld] %d <= %d", (unsigned long)i, mappings[i-1].character, mappings[i].character );
 	}
 #endif
 }
 
 #pragma mark Constructor Methods
 
-static volatile NDKeyboardLayout		* kCurrentKeyboardLayout = nil;
+static NDKeyboardLayout		* kCurrentKeyboardLayout = nil;
 
-void NDKeyboardLayoutNotificationCallback( CFNotificationCenterRef aCenter, void * self, CFStringRef aName, const void * anObj, CFDictionaryRef aUserInfo )
+void NDKeyboardLayoutNotificationCallback( CFNotificationCenterRef aCenter, void * observer, CFStringRef aName, const void * anObj, CFDictionaryRef aUserInfo )
 {
-	NSDictionary		* theUserInfo = [NSDictionary dictionaryWithObject:kCurrentKeyboardLayout forKey:NDKeyboardLayoutPreviousKeyboardLayoutUserInfoKey];
-	@synchronized(self) { [kCurrentKeyboardLayout release], kCurrentKeyboardLayout = nil; }
-	[[NSNotificationCenter defaultCenter] postNotificationName:NDKeyboardLayoutSelectedKeyboardInputSourceChangedNotification object:self userInfo:theUserInfo];
+    id observerId = (__bridge id)observer;
+    if (CFStringCompare(aName, kTISNotifySelectedKeyboardInputSourceChanged, 0) == 0) {
+        NSDictionary		* theUserInfo = @{NDKeyboardLayoutPreviousKeyboardLayoutUserInfoKey: kCurrentKeyboardLayout};
+        @synchronized(observerId) { kCurrentKeyboardLayout = nil; }
+        [[NSNotificationCenter defaultCenter] postNotificationName:NDKeyboardLayoutSelectedKeyboardInputSourceChangedNotification object:observerId userInfo:theUserInfo];
+    }
 }
 
 + (void)initialize
 {
-	CFNotificationCenterAddObserver( CFNotificationCenterGetLocalCenter(),
+	CFNotificationCenterAddObserver( CFNotificationCenterGetDistributedCenter(),
 									(const void *)self,
 									NDKeyboardLayoutNotificationCallback,
 									kTISNotifySelectedKeyboardInputSourceChanged,
@@ -339,54 +375,80 @@ void NDKeyboardLayoutNotificationCallback( CFNotificationCenterRef aCenter, void
 									);
 }
 
-+ (id)keyboardLayout
-{
-	if( kCurrentKeyboardLayout == nil )
++ (TISInputSourceRef)currentInputSource {
+	/*
+	 Try different method until we succeed.
+	 */
+	TISInputSourceRef (*theInputSourceFunctions[])() = {
+		TISCopyInputMethodKeyboardLayoutOverride,
+		TISCopyCurrentASCIICapableKeyboardLayoutInputSource,
+		TISCopyCurrentKeyboardLayoutInputSource,
+	};
+
+	for( NSUInteger i = 0; i < sizeof(theInputSourceFunctions)/sizeof(*theInputSourceFunctions); i++ )
 	{
-		@synchronized(self)
-		{	/*
-				Try different method until we succeed.
-			 */
-			TISInputSourceRef (*theInputSourceFunctions[])() = {
-									TISCopyInputMethodKeyboardLayoutOverride,
-									TISCopyCurrentKeyboardLayoutInputSource,
-									TISCopyCurrentASCIICapableKeyboardLayoutInputSource
-								};
-
-			for( NSUInteger i = 0; i < sizeof(theInputSourceFunctions)/sizeof(*theInputSourceFunctions) && kCurrentKeyboardLayout == nil; i++ )
-			{
-				TISInputSourceRef		theInputSource = theInputSourceFunctions[i]();
-				if( theInputSource != NULL )
-				{
-					kCurrentKeyboardLayout = [[self alloc] initWithInputSource:theInputSource];
-					CFRelease(theInputSource);
-				}
-			}
-		}
-	}
-
-	return kCurrentKeyboardLayout;
-}
-
-- (id)init
-{
-	[self release];
-	return [[NDKeyboardLayout keyboardLayout] retain];
-}
-
-- (id)initWithLanguage:(NSString *)aLangauge { return [self initWithInputSource:TISCopyInputSourceForLanguage((CFStringRef)aLangauge)]; }
-
-- (id)initWithInputSource:(TISInputSourceRef)aSource
-{
-	if( (self = [super init]) != nil )
-	{
-		if( aSource != NULL && (keyboardLayoutData = (CFDataRef)CFMakeCollectable(TISGetInputSourceProperty(aSource, kTISPropertyUnicodeKeyLayoutData))) != nil )
+		TISInputSourceRef		theInputSource = theInputSourceFunctions[i]();
+		if( theInputSource != NULL )
 		{
-			CFRetain( keyboardLayoutData );
+			return theInputSource;
 		}
-		else
-			self = nil, [self release];
 	}
+	return nil;
+}
+
++ (instancetype)keyboardLayout
+{
+	@synchronized(self)
+	{
+		if( kCurrentKeyboardLayout == nil )
+		{
+
+			TISInputSourceRef ref = [self currentInputSource];
+			if (!ref) {
+				NSLog(@"Unexpected input source");
+				return nil;
+			}
+			kCurrentKeyboardLayout = [[self alloc] initWithInputSource:ref];
+		}
+
+		return kCurrentKeyboardLayout;
+	}
+}
+
+- (instancetype)init
+{
+	TISInputSourceRef ref = [[self class] currentInputSource];
+	if (!ref) return nil;
+
+	return [self initWithInputSource:ref];
+}
+
+- (instancetype)initWithLanguage:(NSString *)aLangauge {
+	TISInputSourceRef ref = TISCopyInputSourceForLanguage((__bridge CFStringRef)aLangauge);
+	if (!ref) return nil;
+
+	return [self initWithInputSource:ref];
+}
+
+- (instancetype)initWithInputSource:(TISInputSourceRef)aSource
+{
+	NSParameterAssert(aSource != nil);
+
+	self = [super init];
+	if (!self) return nil;
+
+	inputSource = aSource;
+	keyboardLayoutData = (CFDataRef)TISGetInputSourceProperty(inputSource, kTISPropertyUnicodeKeyLayoutData);
+	// Only Unicode layouts please ?
+	if (!keyboardLayoutData) return nil;
+
+	CFRetain( keyboardLayoutData );
+
+	// Generate mappings now because LMGetKbdType() *could* change
+	// I haven't been able to see it return anything other than 44,
+	// but better be safe.
+	[self generateMappings];
+
 	return self;
 }
 
@@ -396,15 +458,16 @@ void NDKeyboardLayoutNotificationCallback( CFNotificationCenterRef aCenter, void
 		free( (void*)mappings );
 	if( keyboardLayoutData != NULL )
 		CFRelease( keyboardLayoutData );
-	[super dealloc];
+	if ( inputSource != NULL )
+		CFRelease( inputSource );
 }
 
-- (NSString*)stringForCharacter:(unichar)aCharacter modifierFlags:(UInt32)aModifierFlags
+- (NSString*)stringForCharacter:(unichar)aCharacter modifierFlags:(NSUInteger)aModifierFlags
 {
 	return [self stringForKeyCode:[self keyCodeForCharacter:aCharacter numericPad:(aModifierFlags&NSNumericPadKeyMask) != 0] modifierFlags:aModifierFlags];
 }
 
-- (NSString*)stringForKeyCode:(UInt16)aKeyCode modifierFlags:(UInt32)aModifierFlags
+- (NSString*)stringForKeyCode:(UInt16)aKeyCode modifierFlags:(NSUInteger)aModifierFlags
 {
 	NSString				* theResult = nil;
 	struct UnmappedEntry	* theEntry = _unmappedEntryForKeyCode( aKeyCode );		// is it one of the unmapped values
@@ -415,7 +478,7 @@ void NDKeyboardLayoutNotificationCallback( CFNotificationCenterRef aCenter, void
 		memset( theCharacter, 0, sizeof(theCharacter) );
 		NSUInteger	thePos = _characterForModifierFlags(theCharacter,aModifierFlags);
 		memcpy( theCharacter+thePos, theEntry->description, sizeof(theEntry->description) );
-		theResult = [NSString stringWithCharacters:theCharacter length:sizeof(theEntry->description)/sizeof(*theEntry->description)+thePos];
+        theResult = [NSString stringWithCharacters:theCharacter length:thePos+1];
 	}
 	else
 	{
@@ -425,7 +488,8 @@ void NDKeyboardLayoutNotificationCallback( CFNotificationCenterRef aCenter, void
 
 		NSUInteger		thePos = _characterForModifierFlags(theCharacter,aModifierFlags);
 
-		if( UCKeyTranslate( self.keyboardLayoutPtr, aKeyCode,
+		if( UCKeyTranslate( self.keyboardLayoutPtr,
+							 aKeyCode,
 							 kUCKeyActionDisplay,
 							 NDCarbonModifierFlagsForCocoaModifierFlags(aModifierFlags),
 							 LMGetKbdType(),
@@ -436,7 +500,7 @@ void NDKeyboardLayoutNotificationCallback( CFNotificationCenterRef aCenter, void
 							 theCharacter+thePos ) == noErr )
 		{
 
-			theResult = [[NSString stringWithCharacters:theCharacter length:theLength+thePos] uppercaseString];
+			theResult = [NSString stringWithCharacters:theCharacter length:theLength+thePos].uppercaseString;
 		}
 	}
 	return theResult;
@@ -468,19 +532,27 @@ void NDKeyboardLayoutNotificationCallback( CFNotificationCenterRef aCenter, void
 	}
 	else
 		theChar  = theEntry->character;
-	return toupper(theChar);
+
+	return theChar;
 }
 
 - (UInt16)keyCodeForCharacter:(unichar)aCharacter { return [self keyCodeForCharacter:aCharacter numericPad:NO]; }
 
 - (UInt16)keyCodeForCharacter:(unichar)aCharacter numericPad:(BOOL)aNumericPad
 {
-	struct ReverseMappingEntry	theSearchValue = { tolower(aCharacter), aNumericPad, 0 };
+	struct ReverseMappingEntry	theSearchValue = { aCharacter, aNumericPad, 0 };
 	struct ReverseMappingEntry	* theEntry = NULL;
-	if( mappings == NULL )
-		[self generateMappings];
-	theEntry = _searchreverseMapping( mappings, numberOfMappings, &theSearchValue );
-	return theEntry ? theEntry->keyCode : '\0';
+	theEntry = _searchReverseMapping( mappings, numberOfMappings, &theSearchValue );
+
+	return (theEntry ? theEntry->keyCode : 0);
+}
+
+- (NSString *)localizedName {
+	return (__bridge_transfer NSString *)TISGetInputSourceProperty(inputSource, kTISPropertyLocalizedName);
+}
+
+- (NSString *)description {
+	return [NSString stringWithFormat:@"<%@ %p name: %@>", NSStringFromClass([self class]), self, [self localizedName]];
 }
 
 #pragma mark - private
